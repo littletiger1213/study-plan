@@ -204,6 +204,26 @@ table.wt tr.total td{font-weight:650;background:var(--surface);border-bottom:non
 textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:9px;font-size:12.5px;line-height:1.55;color:var(--text);resize:vertical;background:#FDFCFA;min-height:76px}
 textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 
+/* ---------- 云同步（GitHub Gist） ---------- */
+.sync-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#C9C4B8;margin-right:5px;vertical-align:1px}
+.sync-dot.ok{background:var(--teal)}
+.sync-dot.err{background:var(--coral)}
+.sync-dot.busy{background:var(--amber)}
+#syncmodal{position:fixed;inset:0;z-index:82;display:none;background:rgba(28,26,22,.3)}
+#syncmodal.on{display:block}
+.sync-card{position:absolute;left:50%;top:12%;transform:translateX(-50%);width:520px;max-width:94vw;background:#fff;border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.22);max-height:80vh;display:flex;flex-direction:column}
+.sync-h{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);font-weight:650;font-size:14px}
+.sync-h .x{margin-left:auto;border:none;background:var(--surface);color:var(--muted);width:28px;height:28px;border-radius:8px;font-size:15px}
+.sync-b{padding:14px 16px;overflow-y:auto}
+.sync-b label{display:block;font-size:11.5px;color:var(--muted);margin:10px 0 4px}
+.sync-b input{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;color:var(--text);font-family:inherit}
+.sync-b input:focus{outline:none;border-color:var(--blue)}
+.sync-b .tip{font-size:11px;color:var(--muted);line-height:1.6;margin-top:10px;background:var(--surface);border-radius:8px;padding:8px 10px}
+.sync-b .row{display:flex;gap:8px;margin-top:14px}
+.sync-b .row .btn{flex:1;text-align:center}
+#sync-status{font-size:11.5px;color:var(--muted);margin-top:10px;min-height:16px}
+.sync-b .err{color:var(--coral);font-size:11.5px;margin-top:6px}
+
 /* ---------- 历史快照 ---------- */
 #snapmodal{position:fixed;inset:0;z-index:80;display:none;background:rgba(28,26,22,.3)}
 #snapmodal.on{display:block}
@@ -274,6 +294,7 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
     <div class="stat small" data-page-node-id="d6EBneyh6ru7FTJpe2sGnq"><div class="k" data-page-node-id="07g4Oxn6hIe7P1DS1JmHK4">已排入</div><div class="v" id="s-asg" data-page-node-id="xVzlHaO3TabYDHUokvpxJr">0<em data-page-node-id="MqeRCDYyvKOOZDtj2QJrlL">条</em></div></div>
   </div>
   <div class="acts" data-page-node-id="SWijWMFQo2KuWwOpo0oqr1">
+    <button class="btn" id="btn-sync" data-page-node-id="syncbtn0001"><span class="sync-dot" id="sync-dot"></span>同步</button>
     <button class="btn primary" id="btn-save" data-page-node-id="4ZEAB71iJ0vRytglsNqNlO">保存进度</button>
     <button class="btn" id="btn-hist" data-page-node-id="4vk8DL4XxW8ky89GGNYfPV">历史记录</button>
     <button class="btn" id="btn-xlsx" data-page-node-id="uid1CRtU3H018jSLEKHmRZ">导出 Excel</button>
@@ -351,6 +372,31 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
       <div class="fld" data-page-node-id="wWAYl8aCacE4Su9fSZsPyG">
         <div class="lb" data-page-node-id="tVwhsV526zUzfFH3CiJbaP"><b data-page-node-id="CCGAIYs5epBecmPLgDU8dz">自定义内容</b><span class="r" data-page-node-id="h2LEFtD5DoNrT4LgYzKbn6">可自由编辑，显示在日历格子里</span></div>
         <textarea id="dp-note" placeholder="今天学了哪些、哪里卡住、明天怎么调整…（随手记，自动保存）"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="syncmodal" data-page-node-id="syncmodal0001">
+  <div class="dp-mask" id="sync-mask" data-page-node-id="syncmask0001"></div>
+  <div class="sync-card" data-page-node-id="synccard0001">
+    <div class="sync-h" data-page-node-id="synch0001">云同步（GitHub Gist）<button class="x" id="sync-close" data-page-node-id="syncclose0001">×</button></div>
+    <div class="sync-b" data-page-node-id="syncb0001">
+      <label data-page-node-id="synclabel1">Gist ID（在 gist.github.com 创建后，地址栏最后一段）</label>
+      <input id="sync-gist" type="text" placeholder="例如 a1b2c3d4e5f6..." data-page-node-id="syncgist0001">
+      <label data-page-node-id="synclabel2">GitHub Token（需要有 gist 权限的 Personal Access Token）</label>
+      <input id="sync-token" type="password" placeholder="ghp_..." data-page-node-id="synctoken0001">
+      <div id="sync-status" data-page-node-id="syncstatus0001"></div>
+      <div id="sync-err" class="err" data-page-node-id="syncerr0001"></div>
+      <div class="row" data-page-node-id="syncrow0001">
+        <button class="btn primary" id="btn-sync-connect" data-page-node-id="syncconnect0001">连接并同步</button>
+        <button class="btn" id="btn-sync-push" data-page-node-id="syncpush0001">推送到云端</button>
+        <button class="btn ghost" id="btn-sync-pull" data-page-node-id="syncpull0001">从云端拉取</button>
+      </div>
+      <div class="tip" data-page-node-id="synctip0001">
+        手机和电脑都输入<b>同一个 Gist ID + Token</b>，数据就自动互通。<br>
+        每次改动会自动推送到云端（防抖），也可手动点「推送到云端 / 从云端拉取」。<br>
+        注意：Token 仅存在本机浏览器 localStorage，请勿在公共设备使用。
       </div>
     </div>
   </div>
@@ -487,11 +533,141 @@ function load() {
     });
   } catch (e) {}
 }
+/* ========== 云同步（GitHub Gist） ========== */
+const SK = 'study-plan-sync-v1';
+let gistId = '';
+let gistToken = '';
+let syncBusy = false;
+let gistTimer = null;
+
+function syncCfgLoad() {
+  try {
+    const raw = localStorage.getItem(SK);
+    if (!raw) return;
+    const o = JSON.parse(raw);
+    gistId = o.id || '';
+    gistToken = o.token || '';
+    if (document.getElementById('sync-gist')) document.getElementById('sync-gist').value = gistId;
+    if (document.getElementById('sync-token')) document.getElementById('sync-token').value = gistToken;
+  } catch (e) {}
+}
+function syncCfgSave() {
+  try { localStorage.setItem(SK, JSON.stringify({ id: gistId, token: gistToken })); } catch (e) {}
+}
+function syncDot(cls) {
+  const d = document.getElementById('sync-dot');
+  if (d) { d.className = 'sync-dot' + (cls ? ' ' + cls : ''); }
+}
+function syncStatus(msg) {
+  const s = document.getElementById('sync-status');
+  if (s) s.textContent = msg;
+}
+function syncErr(msg) {
+  const e = document.getElementById('sync-err');
+  if (e) e.textContent = msg || '';
+}
+function gistApi(path, opts) {
+  if (!gistToken) return Promise.reject(new Error('未设置 Token'));
+  return fetch('https://api.github.com' + path, Object.assign({
+    headers: {
+      'Authorization': 'Bearer ' + gistToken,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json'
+    }
+  }, opts || {}));
+}
+function gistEnabled() {
+  return !!(gistId && gistToken);
+}
+/* 从云端拉取：成功则覆盖本地 state 并重渲染 */
+function gistPull(manual) {
+  if (!gistEnabled()) return Promise.resolve();
+  syncDot('busy');
+  syncStatus('正在从云端拉取…');
+  return gistApi('/gists/' + encodeURIComponent(gistId))
+    .then(function (r) {
+      if (r.status === 404) throw new Error('Gist 不存在（404）');
+      if (!r.ok) throw new Error('拉取失败 HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (g) {
+      const f = g.files && g.files['study-plan.json'];
+      if (!f || !f.content) { syncDot('ok'); syncStatus('云端暂无数据'); return; }
+      const o = JSON.parse(f.content);
+      if (!o || o.v !== 4) throw new Error('云端数据格式不对');
+      state.days = o.days || {};
+      state.done = o.done || {};
+      state.snaps = o.snaps || [];
+      state.mpp = o.mpp || 8;
+      state.defW = o.defW == null ? 2 : o.defW;
+      state.defThu = o.defThu == null ? 1.5 : o.defThu;
+      state.defE = o.defE == null ? 4 : o.defE;
+      DAYS.forEach(function (d) {
+        const sp = SPECIAL_DAYS[d.k];
+        if (!state.days[d.k]) state.days[d.k] = { h: sp && sp.h != null ? sp.h : defaultH(d.dow), c: [], note: '', ex: dayExtras(d.k, d.dow) };
+        const x = state.days[d.k];
+        x.c = (x.c || []).filter(function (i) { return typeof i === 'number' && i >= 0 && i < CAT.length; });
+        x.note = x.note || '';
+        x.h = Number(x.h) || 0;
+        if (!Array.isArray(x.ex)) x.ex = dayExtras(d.k, d.dow);
+        if (sp) {
+          if (sp.h != null) x.h = sp.h;
+          if (sp.ex) sp.ex.forEach(function (e) { if (x.ex.indexOf(e) < 0) x.ex.push(e); });
+        }
+      });
+      save();
+      rebuildMap();
+      renderAll();
+      renderSelbar();
+      syncDot('ok');
+      syncStatus('已从云端同步（' + (o.updatedAt || '') + '）');
+      if (manual) toast('已从云端拉取并刷新');
+    })
+    .catch(function (err) {
+      syncDot('err');
+      syncStatus('同步失败');
+      syncErr(err.message || String(err));
+      if (manual) toast('同步失败：' + (err.message || err));
+    });
+}
+/* 推送到云端：把本地 state 写入 Gist 的 study-plan.json */
+function gistPush(quiet) {
+  if (!gistEnabled() || syncBusy) return;
+  clearTimeout(gistTimer);
+  gistTimer = setTimeout(function () {
+    syncBusy = true;
+    syncDot('busy');
+    if (!quiet) syncStatus('正在推送到云端…');
+    const payload = JSON.parse(JSON.stringify(state));
+    payload.updatedAt = dk(new Date()) + ' ' + new Date().toTimeString().slice(0, 8);
+    gistApi('/gists/' + encodeURIComponent(gistId), {
+      method: 'PATCH',
+      body: JSON.stringify({ files: { 'study-plan.json': { content: JSON.stringify(payload) } } })
+    })
+      .then(function (r) {
+        if (r.status === 404) throw new Error('Gist 不存在（404），请检查 Gist ID');
+        if (!r.ok) throw new Error('推送失败 HTTP ' + r.status);
+        syncDot('ok');
+        syncStatus('已同步 ' + new Date().toTimeString().slice(0, 8));
+        syncErr('');
+        if (!quiet) toast('已推送到云端');
+      })
+      .catch(function (err) {
+        syncDot('err');
+        syncStatus('同步失败');
+        syncErr(err.message || String(err));
+        if (!quiet) toast('同步失败：' + (err.message || err));
+      })
+      .finally(function () { syncBusy = false; });
+  }, quiet ? 800 : 0);
+}
+
 let stTimer = null;
 function save() {
   clearTimeout(stTimer);
   stTimer = setTimeout(() => {
     try { localStorage.setItem(CK, JSON.stringify(state)); } catch (e) {}
+    gistPush(true);
   }, 100);
 }
 function dayOf(k) {
@@ -1475,11 +1651,55 @@ document.getElementById('btn-xlsx').addEventListener('click', function () {
   }
 });
 
+/* ========== 云同步 UI 事件 ========== */
+document.getElementById('btn-sync').addEventListener('click', function () {
+  syncCfgLoad();
+  syncErr('');
+  syncStatus(gistEnabled() ? '已配置，将自动同步' : '未配置，请填写 Gist ID 与 Token');
+  document.getElementById('syncmodal').classList.add('on');
+});
+document.getElementById('sync-close').addEventListener('click', function () { document.getElementById('syncmodal').classList.remove('on'); });
+document.getElementById('sync-mask').addEventListener('click', function () { document.getElementById('syncmodal').classList.remove('on'); });
+document.getElementById('btn-sync-connect').addEventListener('click', function () {
+  gistId = document.getElementById('sync-gist').value.trim();
+  gistToken = document.getElementById('sync-token').value.trim();
+  if (!gistId || !gistToken) { syncErr('请填写 Gist ID 和 Token'); return; }
+  syncCfgSave();
+  syncErr('');
+  syncStatus('连接中，先拉取云端…');
+  gistPull(true).then(function () {
+    if (document.getElementById('syncmodal').classList.contains('on')) {
+      syncStatus('已连接，后续自动同步');
+    }
+  });
+});
+document.getElementById('btn-sync-push').addEventListener('click', function () {
+  gistId = document.getElementById('sync-gist').value.trim();
+  gistToken = document.getElementById('sync-token').value.trim();
+  if (!gistId || !gistToken) { syncErr('请填写 Gist ID 和 Token'); return; }
+  syncCfgSave();
+  syncErr('');
+  gistPush(false);
+});
+document.getElementById('btn-sync-pull').addEventListener('click', function () {
+  gistId = document.getElementById('sync-gist').value.trim();
+  gistToken = document.getElementById('sync-token').value.trim();
+  if (!gistId || !gistToken) { syncErr('请填写 Gist ID 和 Token'); return; }
+  syncCfgSave();
+  syncErr('');
+  gistPull(true);
+});
+
 /* ========== 启动 ========== */
 load();
+syncCfgLoad();
 rebuildMap();
 renderAll();
 renderSelbar();
+/* 若已配置同步，启动后自动从云端拉取一次 */
+if (gistEnabled()) {
+  gistPull(false).then(function () {});
+}
 </script>
 <script>
 if ('serviceWorker' in navigator) {
