@@ -4,11 +4,14 @@
 <meta charset="UTF-8" data-page-node-id="CgVbFnN4XOXmD9FBWxKNXH">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" data-page-node-id="nRpE8uRjdeVbvnCgmF3GHj">
 <meta name="format-detection" content="telephone=no" data-page-node-id="z9jEYJ2ZGpdnT0kd2Y3vI4">
-<title>虎力全开·高项学习计划//一期 2026</title>
 <meta name="theme-color" content="#185FA5">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="高项学习计划">
+<title>虎力全开·高项学习计划//一期 2026</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
@@ -478,6 +481,67 @@ function isLeaf(i) {
 }
 const LEAF_TOTAL = CAT.filter((c, i) => isLeaf(i)).length;
 
+/* 已排入计数：勾选节→计其下目数（无目计1）；勾选章→逐节累计（节无目计1）；勾选目→计1 */
+const NUMIDX = {};
+CAT.forEach(function (c, i) { NUMIDX[c.num] = i; });
+function childSecs(num) {
+  return CAT.filter(function (o) { return o.lv === 2 && o.num.indexOf(num + '.') === 0; });
+}
+function childItems(num) {
+  return CAT.filter(function (o) { return o.lv === 3 && o.num.indexOf(num + '.') === 0; });
+}
+function asgW(i) {
+  const c = CAT[i];
+  if (!c) return 0;
+  if (c.lv === 3) return 1;
+  if (LEAF_EXTRAS[c.num] === 1) return 1;          /* 无目的特殊节 */
+  if (c.lv === 2) return childItems(c.num).length || 1;
+  /* lv1 章：逐节累计 */
+  let n = 0;
+  childSecs(c.num).forEach(function (s) {
+    n += childItems(s.num).length || 1;
+  });
+  return n;
+}
+function dayAsg(x) {
+  return (x.c || []).reduce(function (s, i) { return s + asgW(i); }, 0);
+}
+/* 某「目/特殊节」是否已排入：自身被排入，或其父节/所属章被整勾 */
+function isAsg(i) {
+  if (A2D[i]) return true;
+  const c = CAT[i];
+  if (!c) return false;
+  const nums = [];
+  if (c.lv === 3) {
+    nums.push(c.num.slice(0, c.num.lastIndexOf('.')));
+    nums.push(c.num.slice(0, c.num.indexOf('.')));
+  } else if (c.lv === 2) {
+    nums.push(c.num.slice(0, c.num.indexOf('.')));
+  }
+  return nums.some(function (n) {
+    const j = NUMIDX[n];
+    return j !== undefined && !!A2D[j];
+  });
+}
+/* 已排入条目对应的日期（含整勾父级继承） */
+function asgDay(i) {
+  if (A2D[i]) return A2D[i];
+  const c = CAT[i];
+  if (!c) return null;
+  const nums = [];
+  if (c.lv === 3) {
+    nums.push(c.num.slice(0, c.num.lastIndexOf('.')));
+    nums.push(c.num.slice(0, c.num.indexOf('.')));
+  } else if (c.lv === 2) {
+    nums.push(c.num.slice(0, c.num.indexOf('.')));
+  }
+  for (let x = 0; x < nums.length; x++) {
+    const j = NUMIDX[nums[x]];
+    if (j !== undefined && A2D[j]) return A2D[j];
+  }
+  return null;
+}
+
 /* 固定活动：按星期(0=周日..6=周六) */
 const FIXED = {
   2: ['羽毛球训练 20:30–22:00'],
@@ -929,7 +993,7 @@ function renderWeeks() {
       const h = Number(x.h) || 0;
       if (d.work) wh += h; else eh += h;
       const c = x.c || [];
-      asg += c.length;
+      asg += dayAsg(x);
       task += c.length;
       done += c.filter(i => isDone(i)).length;
     });
@@ -1649,8 +1713,8 @@ function buildXlsx() {
       c.lv === 1 ? '第' + c.num + '章' : c.num,
       '第' + (c.ch + 1) + '章 ' + (chName[c.ch] || ''),
       c.t, c.pg, c.pp,
-      A2D[i] ? '已排入' : '未排入',
-      A2D[i] ? md(A2D[i]) : '',
+      (isLeaf(i) ? isAsg(i) : !!A2D[i]) ? '已排入' : '未排入',
+      (isLeaf(i) ? isAsg(i) : !!A2D[i]) ? md(asgDay(i) || '') : '',
       isDone(i) ? '已完成' : ''
     ]);
   });
@@ -1662,7 +1726,7 @@ function buildXlsx() {
     CAT.forEach(function (c, i) { if (c.ch === ch && isLeaf(i)) idxs.push(i); });
     if (!idxs.length) continue;
     const dn = idxs.filter(i => isDone(i)).length;
-    const asg = idxs.filter(i => A2D[i]).length;
+    const asg = idxs.filter(i => isAsg(i)).length;
     let pgs = 0;
     idxs.forEach(function (i) { pgs += CAT[i].pp; });
     d4.push(['第' + (ch + 1) + '章', chName[ch] || '', idxs.length, dn,
@@ -1875,6 +1939,5 @@ if (gistEnabled()) {
   gistPull(false).then(function () {});
 }
 </script>
-<script>if ("serviceWorker" in navigator) { window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); }); }</script>
 </body>
 </html>
