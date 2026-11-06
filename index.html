@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="0FnhmeBPLzpdsOV2rRtXaF">
+<head data-page-node-id="ptSxMHVYeautyNJHoZfvDz">
+<meta charset="UTF-8" data-page-node-id="CgVbFnN4XOXmD9FBWxKNXH">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" data-page-node-id="nRpE8uRjdeVbvnCgmF3GHj">
+<meta name="format-detection" content="telephone=no" data-page-node-id="z9jEYJ2ZGpdnT0kd2Y3vI4">
+<meta name="theme-color" content="#185FA5">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="虎力全开">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>虎力全开·高项学习计划//一期 2026</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --blue:#185FA5;--blue-l:#EAF3FB;--teal:#1D9E75;--teal-l:#E6F5EF;--coral:#D85A30;
+  --text:#23211C;--muted:#8A857C;--line:#E8E5DD;--line2:#F1EEE7;--surface:#F7F6F2;
+  --amber:#B97A1E;--amber-l:#FDF4E3;--r:10px;
+}
+html,body{margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  color:var(--text);background:#fff;font-size:13px;line-height:1.45;
+  height:100vh;overflow:hidden;
+}
+button{font-family:inherit;cursor:pointer}
+input,textarea{font-family:inherit}
+
+/* ---------- 顶栏 ---------- */
+.topbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:9px 16px;border-bottom:1px solid var(--line);background:#fff}
+.brand{font-size:15px;font-weight:700;letter-spacing:.2px;white-space:nowrap}
+.brand small{font-weight:400;color:var(--muted);font-size:11px;margin-left:6px}
+.ts{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:4px 9px;min-width:0}
+.stat .k{font-size:10px;color:var(--muted);letter-spacing:.3px;white-space:nowrap}
+.stat .v{font-size:13.5px;font-weight:650;white-space:nowrap;font-variant-numeric:tabular-nums}
+.stat .v em{font-style:normal;font-size:10.5px;font-weight:400;color:var(--muted);margin-left:2px}
+.stat.prog{position:relative;overflow:hidden;min-width:132px}
+.pbar{height:3px;border-radius:2px;background:#E6E2D9;margin-top:4px;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--teal);width:0;transition:.3s}
+.acts{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:8px;padding:6px 11px;font-size:12px;white-space:nowrap;transition:.14s}
+.btn:hover{border-color:#CFC9BC;background:#FCFBF8}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.primary:hover{background:#134E88}
+.btn.ghost{color:var(--muted)}
+.btn.sm{padding:4px 8px;font-size:11px}
+
+/* ---------- 布局 ---------- */
+.layout{display:flex;height:calc(100vh - 55px);align-items:stretch}
+.calarea{flex:1;min-width:0;overflow-y:auto;overflow-x:hidden;padding:12px 16px 40px}
+.side{width:340px;flex:none;border-left:1px solid var(--line);display:flex;flex-direction:column;background:#FCFBF8;min-height:0}
+
+/* ---------- 工具条 ---------- */
+
+/* ---------- 月历 ---------- */
+.month{margin-bottom:20px}
+.month-h{display:flex;align-items:baseline;gap:9px;margin-bottom:7px}
+.month-h h2{font-size:14px;font-weight:650;margin:0}
+.month-h .m-sub{font-size:11px;color:var(--muted)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal-dow{text-align:center;font-size:10.5px;color:var(--muted);padding:1px 0 3px;letter-spacing:1px}
+.cal-dow.we{color:var(--teal)}
+
+.cell{min-height:104px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:4px 5px;display:flex;flex-direction:column;gap:2px;overflow:visible;cursor:pointer;transition:.12s;position:relative}
+.cell:hover{border-color:#BFD6EA;box-shadow:0 1px 6px rgba(24,95,165,.08)}
+.cell.out{background:#FBFBF9;border-style:dashed;cursor:default;opacity:.45}
+.cell.out:hover{border-color:var(--line);box-shadow:none}
+.cell.today{box-shadow:inset 0 0 0 1.5px var(--blue)}
+.cell.over{background:var(--blue-l);border-color:var(--blue);border-style:dashed}
+.cell.doneall{background:#FAFEFC}
+.cell.undone{background:#FDF0EE;border-color:#E0A69C}
+.cell.undone .c-d{color:var(--coral)}
+.cell.undone .c-hh{color:var(--coral)}
+.c-h{display:flex;align-items:center;gap:4px;font-size:11px;min-height:16px}
+.c-d{font-weight:700;font-size:11.5px;font-variant-numeric:tabular-nums}
+.cell.today .c-d{color:var(--blue)}
+.c-w{color:var(--muted);font-size:10px}
+.c-hh{margin-left:auto;font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.c-hh b{color:var(--blue);font-weight:650}
+.c-hh .ok{color:var(--teal);font-weight:650}
+
+/* 分区标题 */
+.c-sec{display:flex;align-items:center;gap:3px;font-size:9px;color:#B0AB9F;letter-spacing:.5px;margin-top:1px}
+.c-sec::after{content:"";flex:1;height:1px;background:var(--line2)}
+
+/* 学习任务 */
+.c-tks{display:flex;flex-direction:column;gap:2px;min-height:0}
+.tk{display:flex;align-items:flex-start;gap:4px;font-size:10.5px;line-height:1.4;background:var(--blue-l);color:#15548F;border-radius:5px;padding:2px 5px 2px 3px}
+.tk .chk{margin-top:1.5px}
+.tk .tkt{flex:1;min-width:0;word-break:break-all}
+.tk .tkn{font-weight:650;font-variant-numeric:tabular-nums;flex:none;white-space:nowrap}
+.tk.on{background:var(--teal-l);color:#12674E}
+.tk.on .tkt{color:#1C5B47}
+.more{font-size:9.5px;color:var(--muted);padding-left:2px}
+
+/* 其他安排 */
+.c-extras{display:flex;flex-direction:column;gap:2px;min-height:0}
+.ex{display:flex;align-items:center;gap:3px;font-size:10px;line-height:1.35;background:var(--amber-l);color:#8A5F1E;border-radius:5px;padding:1px 4px;overflow:hidden;white-space:nowrap}
+.ex .ext{overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.ex .exdot{flex:none;width:4px;height:4px;border-radius:50%;background:#D9A94E}
+.c-empty{font-size:10px;color:#D6D1C7;border:1px dashed #EAE7DF;border-radius:5px;padding:2px 4px;text-align:center;margin-top:1px}
+.c-note{font-size:9.5px;color:#9A948A;line-height:1.35;border-left:2px solid #EDE9E0;padding-left:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
+/* 勾选框：打勾，不划掉 */
+.chk{width:13px;height:13px;border-radius:3.5px;border:1.4px solid #CBC5B9;background:#fff;flex:none;position:relative;transition:.12s;cursor:pointer}
+.chk:hover{border-color:var(--teal)}
+.chk.on{background:var(--teal);border-color:var(--teal)}
+.chk.on::after{content:"";position:absolute;left:3.5px;top:.5px;width:3.5px;height:7px;border:solid #fff;border-width:0 1.6px 1.6px 0;transform:rotate(40deg)}
+.chk.none{border-color:transparent;background:transparent;cursor:default;pointer-events:none}
+
+/* ---------- 周汇总 ---------- */
+.wsec{margin-top:8px}
+.wsec h3{font-size:13px;font-weight:650;margin:0 0 8px;display:flex;align-items:center;gap:8px}
+.wsec h3 span{font-weight:400;font-size:11px;color:var(--muted)}
+.wscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.wt{width:100%;border-collapse:collapse;font-size:12px}
+table.wt th{text-align:right;font-weight:600;font-size:10.5px;color:var(--muted);letter-spacing:.3px;padding:6px 8px;border-bottom:1px solid var(--line);background:var(--surface);white-space:nowrap}
+table.wt th:first-child,table.wt th:nth-child(2){text-align:left}
+table.wt td{padding:6px 8px;border-bottom:1px solid var(--line2);text-align:right;font-variant-numeric:tabular-nums}
+table.wt td:first-child,table.wt td:nth-child(2){text-align:left;white-space:nowrap}
+table.wt tr:hover td{background:#FCFBF8}
+table.wt tr.total td{font-weight:650;background:var(--surface);border-bottom:none}
+.wtag{display:inline-block;font-size:10px;padding:1px 6px;border-radius:20px;background:var(--blue-l);color:var(--blue);font-weight:600}
+.wtag.rest{background:#F1EFE9;color:#8A857C}
+.nowrow td{background:#FFFBEF}
+
+/* ---------- 侧栏目录 ---------- */
+.side-h{display:flex;align-items:center;gap:8px;padding:10px 12px 8px;border-bottom:1px solid var(--line);font-size:13px;font-weight:650;background:#fff}
+.side-h .cnt{font-weight:400;font-size:10.5px;color:var(--muted)}
+.side-h .mini{margin-left:auto;display:flex;gap:5px}
+.side-t{display:flex;gap:6px;padding:8px 12px;border-bottom:1px solid var(--line);background:#fff;align-items:center}
+.side-t input[type=search]{flex:1;min-width:0;border:1px solid var(--line);border-radius:7px;padding:5px 8px;font-size:12px;background:var(--surface);color:var(--text);outline:none}
+.side-t input[type=search]:focus{border-color:#BFD6EA;background:#fff}
+.tgl{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);white-space:nowrap;cursor:pointer;user-select:none}
+#catalog{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 6px 60px}
+.cat-item{display:flex;align-items:center;gap:4px;padding:3px 5px;border-radius:6px;cursor:grab;font-size:11.5px;line-height:1.4;position:relative}
+.cat-item:hover{background:#F2EFE8}
+.cat-item.drag{opacity:.45}
+.cat-item.lv1{font-weight:650;font-size:12px;margin-top:5px;background:#F7F6F2}
+.cat-item.lv1:hover{background:#EFECE4}
+.cat-item.lv2{padding-left:14px;color:#3B3833}
+.cat-item.lv3{padding-left:28px;color:#5A554C;font-size:11px}
+.cat-item .caret{width:12px;flex:none;color:var(--muted);font-size:9px;text-align:center;cursor:pointer}
+.cat-item .num{flex:none;font-variant-numeric:tabular-nums;color:var(--muted);font-size:10.5px;min-width:44px}
+.cat-item.lv1 .num{min-width:40px;color:var(--blue)}
+.cat-item .tt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cat-item.done .tt{color:#12674E;font-weight:600}
+.cat-item .pg{flex:none;font-size:9.5px;color:#B6B0A5;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cat-item .daytag{flex:none;font-size:9.5px;padding:0 4px;border-radius:4px;background:var(--blue-l);color:var(--blue);font-variant-numeric:tabular-nums}
+.cat-item.pick{background:#FDF4E3;box-shadow:inset 0 0 0 1px #E9C877}
+
+/* ---------- 选中提示条 ---------- */
+#selbar{position:fixed;left:50%;bottom:-70px;transform:translateX(-50%);background:#23211C;color:#fff;border-radius:22px;padding:9px 14px;display:flex;align-items:center;gap:10px;font-size:12px;box-shadow:0 6px 22px rgba(0,0,0,.22);transition:.22s;z-index:60;max-width:92vw}
+#selbar.on{bottom:18px}
+#selbar .sbn{opacity:.65;font-size:11px;white-space:nowrap}
+#selbar .sbt{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#selbar button{background:rgba(255,255,255,.16);border:none;color:#fff;border-radius:14px;padding:3px 10px;font-size:11px}
+
+/* ---------- 当日面板 ---------- */
+#daypanel{position:fixed;inset:0;z-index:70;display:none}
+#daypanel.on{display:block}
+.dp-mask{position:absolute;inset:0;background:rgba(28,26,22,.28)}
+.dp-card{position:absolute;right:0;top:0;bottom:0;width:440px;max-width:100vw;background:#fff;box-shadow:-8px 0 30px rgba(0,0,0,.13);display:flex;flex-direction:column;animation:slidein .18s ease-out}
+@keyframes slidein{from{transform:translateX(18px);opacity:.6}to{transform:none;opacity:1}}
+.dp-h{display:flex;align-items:center;gap:8px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.dp-h b{font-size:15px}
+.dp-h .tag{font-size:10.5px;padding:1px 7px;border-radius:20px;background:var(--blue-l);color:var(--blue);font-weight:600}
+.dp-h .tag.we{background:var(--teal-l);color:var(--teal)}
+.dp-h .x{margin-left:auto;border:none;background:var(--surface);color:var(--muted);width:28px;height:28px;border-radius:8px;font-size:15px;line-height:1}
+.dp-b{flex:1;overflow-y:auto;padding:14px 16px 26px}
+.fld{margin-bottom:14px}
+.fld .lb{font-size:11px;color:var(--muted);margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.fld .lb .r{margin-left:auto;font-size:10.5px;color:#A9A399}
+.fld .lb b{color:var(--text);font-weight:600}
+.ih{display:flex;align-items:center;gap:6px}
+.ih input[type=number]{width:80px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;font-size:14px;font-weight:600;color:var(--text);text-align:center;font-variant-numeric:tabular-nums}
+.ih input[type=number]:focus{outline:none;border-color:var(--blue)}
+.ih span{font-size:12px;color:var(--muted)}
+.dp-list{border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.dp-item{display:flex;align-items:center;gap:7px;padding:7px 9px;border-bottom:1px solid var(--line2);font-size:12px}
+.dp-item:last-child{border-bottom:none}
+.dp-item .n{font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums;flex:none;min-width:40px}
+.dp-item .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dp-item.on .t{color:#12674E;font-weight:600}
+.dp-item .del{border:none;background:none;color:#C6C0B5;font-size:13px;padding:0 2px;flex:none}
+.dp-item .del:hover{color:var(--coral)}
+
+/* 其他安排编辑 */
+.ex-row{display:flex;align-items:center;gap:6px;padding:6px 9px;border-bottom:1px solid var(--line2);font-size:12px}
+.ex-row:last-child{border-bottom:none}
+.ex-row .et{flex:1;min-width:0;border:none;background:transparent;color:var(--text);font-size:12px;padding:2px 0}
+.ex-row .et:focus{outline:none}
+.ex-row .exdot{flex:none;width:5px;height:5px;border-radius:50%;background:#D9A94E}
+.ex-row .del{border:none;background:none;color:#C6C0B5;font-size:13px;padding:0 2px;flex:none}
+.ex-row .del:hover{color:var(--coral)}
+.ex-add{display:flex;gap:6px;margin-top:6px}
+.ex-add input{flex:1;min-width:0;border:1px solid var(--line);border-radius:7px;padding:5px 8px;font-size:12px}
+.ex-add input:focus{outline:none;border-color:var(--blue)}
+.dp-empty{font-size:11.5px;color:var(--muted);padding:12px;text-align:center}
+textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:9px;font-size:12.5px;line-height:1.55;color:var(--text);resize:vertical;background:#FDFCFA;min-height:76px}
+textarea:focus{outline:none;border-color:var(--blue);background:#fff}
+
+/* ---------- 历史快照 ---------- */
+#snapmodal{position:fixed;inset:0;z-index:80;display:none;background:rgba(28,26,22,.3)}
+#snapmodal.on{display:block}
+.sm-card{position:absolute;left:50%;top:9%;transform:translateX(-50%);width:520px;max-width:94vw;background:#fff;border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.22);max-height:78vh;display:flex;flex-direction:column}
+.sm-h{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);font-weight:650;font-size:14px}
+.sm-h .x{margin-left:auto;border:none;background:var(--surface);color:var(--muted);width:28px;height:28px;border-radius:8px;font-size:15px}
+.sm-b{overflow-y:auto;padding:8px 12px 16px}
+.snap{display:flex;align-items:center;gap:10px;padding:9px 8px;border-bottom:1px solid var(--line2);font-size:12px}
+.snap:last-child{border-bottom:none}
+.snap .tm{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.snap .meta{color:var(--muted);font-size:11px;flex:1}
+.snap button{border:1px solid var(--line);background:#fff;border-radius:7px;padding:3px 9px;font-size:11px}
+.snap button.d:hover{border-color:var(--coral);color:var(--coral)}
+
+/* ---------- toast ---------- */
+#toast{position:fixed;left:50%;top:16px;transform:translate(-50%,-14px);opacity:0;background:#23211C;color:#fff;border-radius:8px;padding:8px 14px;font-size:12px;z-index:90;transition:.2s;pointer-events:none;box-shadow:0 6px 20px rgba(0,0,0,.2)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width:1000px){
+  body{height:auto;overflow:auto}
+  .layout{height:auto;flex-direction:column}
+  .calarea{overflow:visible;padding:10px 10px 20px}
+  .side{width:auto;border-left:none;border-top:1px solid var(--line);max-height:none}
+  #catalog{max-height:58vh}
+  .cal{min-width:620px}
+  .month{overflow-x:auto}
+  .cell{min-height:96px}
+  .topbar{padding:8px 10px;gap:8px}
+  .brand{font-size:14px}
+  .acts{width:100%;order:9;margin-left:0;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px}
+  .acts .btn{flex:none}
+  .dp-card{width:100%;border-radius:14px 14px 0 0;top:auto;height:auto;max-height:88vh}
+  .dp-h{padding:13px 14px}
+  .dp-b{padding:12px 14px 24px}
+  .ih input[type=number]{width:92px;padding:9px;font-size:16px}
+  .dp-item{padding:10px 9px;font-size:13px}
+  .dp-item .chk{width:17px;height:17px}
+  .dp-item .chk.on::after{left:5px;top:1px;width:4.5px;height:9px}
+  .cat-item{padding:6px 5px;font-size:12.5px}
+  .cat-item.lv3{font-size:12px}
+  table.wt{min-width:540px}
+  #selbar{bottom:-90px}
+  #selbar.on{bottom:12px}
+}
+@media (max-width:560px){
+  .stat{padding:3px 7px}
+  .stat.small{display:none}
+  table.wt{font-size:11px}
+  table.wt th,table.wt td{padding:5px 4px}
+}
+</style>
+</head>
+<body data-page-node-id="dGh67tpFleHOGLDtuF96sn">
+
+<div class="topbar" data-page-node-id="oFBOCzIRyEsh1KsEK8eCmy">
+  <div class="brand" data-page-node-id="a5NepHsz1dTWHZd5iw30HL">虎力全开·高项学习计划//一期<small data-page-node-id="1oxFZuQPJp3ORYANkhuyrI">2026.11.09 – 12.31</small></div>
+  <div class="ts" data-page-node-id="JAbrtOoOnsAoR0AR3R46Cz">
+    <div class="stat prog" data-page-node-id="2ow9cU5hPkopdHAmuUdhEt">
+      <div class="k" data-page-node-id="HTG7g44pHVdVKvm5WwxBVi">整体进度</div>
+      <div class="v" id="s-prog" data-page-node-id="I4j3cErqA12hdusRD320bC">0 / 0 <em data-page-node-id="GkuoMAB72IMCcCTsoWPOxB">已完成</em></div>
+      <div class="pbar" data-page-node-id="0hS5alGBhNyLZkA9Dfn5Oy"><i id="s-bar-done" data-page-node-id="I4emDxENlcM6cNRgAVeDWg"></i></div>
+    </div>
+    <div class="stat" data-page-node-id="z6PnaCm5bCgubblZl69VtA"><div class="k" data-page-node-id="vDRK0uVDMJdvl97SXTpi4h">计划总时长</div><div class="v" id="s-h" data-page-node-id="YiDEn2z8PFugprwXKTsunW">0<em data-page-node-id="RvrebpfAqL4FBGCHiv3ZMZ">h</em></div></div>
+    <div class="stat" data-page-node-id="ryDo5ue6gCQLPGuDa3eVIy"><div class="k" data-page-node-id="B4rpNYw4qMiXc4NeglE7NA">工作日</div><div class="v" id="s-wd" data-page-node-id="wI9Gpca40YKBUEW2QXJ5QR">0<em data-page-node-id="UrM3quujwxH9MJ3Rx8Wbzz">h</em></div></div>
+    <div class="stat" data-page-node-id="Oa2j7gO8GjkjuUo460ZD6U"><div class="k" data-page-node-id="FvtGEC8MTG2JUOI3aIie5B">周末</div><div class="v" id="s-we" data-page-node-id="79QDsFSz8FtB815gtbCzux">0<em data-page-node-id="LH11DCl6BiWF92KHG7Fhuu">h</em></div></div>
+    <div class="stat" data-page-node-id="fdytVe5iZVHVqATAc0kvh1"><div class="k" data-page-node-id="vDKyxqdax06N01QCS4Fuzr">总页数</div><div class="v" id="s-pg" data-page-node-id="lIEjyg1aN8bqfQkYkbh5Fz">0<em data-page-node-id="3sxJ27Ilf8oO5EtDZKbcrT">页</em></div></div>
+    <div class="stat small" data-page-node-id="d6EBneyh6ru7FTJpe2sGnq"><div class="k" data-page-node-id="07g4Oxn6hIe7P1DS1JmHK4">已排入</div><div class="v" id="s-asg" data-page-node-id="xVzlHaO3TabYDHUokvpxJr">0<em data-page-node-id="MqeRCDYyvKOOZDtj2QJrlL">条</em></div></div>
+  </div>
+  <div class="acts" data-page-node-id="SWijWMFQo2KuWwOpo0oqr1">
+    <button class="btn primary" id="btn-save" data-page-node-id="4ZEAB71iJ0vRytglsNqNlO">保存进度</button>
+    <button class="btn" id="btn-hist" data-page-node-id="4vk8DL4XxW8ky89GGNYfPV">历史记录</button>
+    <button class="btn" id="btn-xlsx" data-page-node-id="uid1CRtU3H018jSLEKHmRZ">导出 Excel</button>
+    <button class="btn ghost" id="btn-json" data-page-node-id="UOzhYpepwJGasDIPy7VDaf">备份 JSON</button>
+    <button class="btn ghost" id="btn-restore" data-page-node-id="doZdVO0C60eypMh69PoW9j">恢复</button>
+    <input type="file" id="fileinput" accept=".json" style="display:none" data-page-node-id="fAqS2b5yNp1Yox2vqaapE8">
+  </div>
+</div>
+
+<div class="layout" data-page-node-id="pKiCQ5VWckHaffgzI6OVoV">
+  <div class="calarea" id="calarea" data-page-node-id="Xr1rFPC48KrotAmyi78wxK">
+    <div id="calwrap" data-page-node-id="Q0qxbxMdc15DB0eNQDqZPI"></div>
+    <div class="wsec" data-page-node-id="FPNTagjwrrOgJlxJg3Ve3V">
+      <h3 data-page-node-id="hp2v2DYSmnbAYmgf3mepqI">周汇总 <span data-page-node-id="0znji7KnNSBExT76IFGkCV">工作日 / 周末分列，只统计计划时长</span></h3>
+      <div class="wscroll" data-page-node-id="qjictGdKqdF6qBfD5e6h0q">
+      <table class="wt" id="wtb" data-page-node-id="Id2XFfeQ3CBmnme8vJZxfD">
+        <thead data-page-node-id="IL1JE5EzfgreFP61izldH7">
+          <tr data-page-node-id="Tt8Q80t1TvLqAHc7H6NBXM">
+            <th data-page-node-id="oNu4hgLCewxCuz5f8DeV5q">周次</th><th data-page-node-id="uwxsfnOFZQ2uhEkpDAYsYQ">日期范围</th><th data-page-node-id="hkE1foujoX6cyCNC7ytTqJ">天数</th>
+            <th data-page-node-id="bwmxpg9yRHyOpZ1sTKYeag">工作日时长</th><th data-page-node-id="TLf1BFXsdDSAJl7Bgb6H33">周末时长</th><th data-page-node-id="CnIFJa7kq3xJ9G4A7OYH3I">合计</th>
+            <th data-page-node-id="UdiFgiSc26U0TBC6hUA71L">完成任务</th><th data-page-node-id="tUaF3OcB9cVrueGEakGDo3">排入</th>
+          </tr>
+        </thead>
+        <tbody id="wtbody" data-page-node-id="nynGJrmAtWRsVvmYksGj0L"></tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <aside class="side" data-page-node-id="Ah1Uc0EoTLYOcJyPIuiF3G">
+    <div class="side-h" data-page-node-id="GSW4LeD74DRv4qupPZb4Uq">
+      <span data-page-node-id="9BaamUW1SEP8wnvK7sjZB3">学习目录</span><span class="cnt" id="cat-cnt" data-page-node-id="xoLyDzGICJJ71EVkB0zGfR"></span>
+      <div class="mini" data-page-node-id="8M4DmMsnbJo02QAajtCmnA">
+        <button class="btn sm ghost" id="btn-expand" data-page-node-id="x834LkOxqfdCHqMki3bzW0">全展开</button>
+        <button class="btn sm ghost" id="btn-collapse" data-page-node-id="VYuB6TuYdlKdHYqVyVTNL3">收起章</button>
+      </div>
+    </div>
+    <div class="side-t" data-page-node-id="cuIyEhrt8pwlVmaVaDc3P3">
+      <input type="search" id="q" placeholder="搜索章节 / 编号…" data-page-node-id="iBlFB23dPHNRjqIvwUdoIo">
+      <label class="tgl" data-page-node-id="oCNiwJQDOMIVGC8aJCELZM"><input type="checkbox" id="onlyUndone" data-page-node-id="fFHOdqHnHNdVWDSqGXC2gv"> 只看未完成</label>
+    </div>
+    <div id="catalog" data-page-node-id="DRYKydAIvCTAlgxEEq1yt1"></div>
+  </aside>
+</div>
+
+<div id="selbar" data-page-node-id="wqBcvZPvt2Bp1HnN12Syvy">
+  <span class="sbn" data-page-node-id="KJ1Yf1nYYTsxMWxdMFEtic">已选</span><span class="sbt" id="sel-txt" data-page-node-id="piLl0zbLHl4GIxFKgeOJgy"></span>
+  <button id="sel-cancel" data-page-node-id="EwglVdHwXUAKdcYzG9N7SD">取消</button>
+</div>
+
+<div id="daypanel" data-page-node-id="GBWbMHnjZ99c7jRUKEQkCO">
+  <div class="dp-mask" id="dp-mask" data-page-node-id="uV6miBZRLHD5lXwAm0CcVH"></div>
+  <div class="dp-card" data-page-node-id="fDnom7CwghXw1LUMb7FuPB">
+    <div class="dp-h" data-page-node-id="nLGGGPuY617rnriW09VunX">
+      <b id="dp-title" data-page-node-id="bgRZJnfH8ywo3CpJk5gC2j">—</b><span class="tag" id="dp-type" data-page-node-id="AML5lzHpBXY0kVmt0Mo7zM"></span>
+      <button class="x" id="dp-close" data-page-node-id="izz3BZxhwfypbjbU0h7svJ">×</button>
+    </div>
+    <div class="dp-b" data-page-node-id="Bi8dTnBP6WJUbiBxu1PHZW">
+      <div class="fld" data-page-node-id="5Q2wqoeu8HhadpeU9H5jcu">
+        <div class="lb" data-page-node-id="udC6Brra30fgdzExfEIk2K"><b data-page-node-id="wBAI4VGinZcnzz39ZFoCZh">计划时长</b><span class="r" id="dp-pginfo" data-page-node-id="g1o62YtfZPqs3S4jAEyhzt"></span></div>
+        <div class="ih" data-page-node-id="N9QE6DBs8D8VPqBUX2x7yb">
+          <input type="number" id="dp-h" min="0" max="16" step="0.5" value="0" data-page-node-id="rwwamRx5LIQ8B06tymTZ25">
+          <span data-page-node-id="2dMupFd2row5MgPrz7KHHV">小时</span>
+        </div>
+      </div>
+      <div class="fld" data-page-node-id="cOiESr8eaObH6RccskBd2K">
+        <div class="lb" data-page-node-id="YTqY77Lyw9YmATcPsyQ7uj"><b data-page-node-id="XpiWJwZOA4n4Pt4c2LKKPU">学习任务</b>（章节）<span class="r" id="dp-cnt" data-page-node-id="iA5VmEZG2U0j4pdr7SmHjc"></span></div>
+        <div class="dp-list" id="dp-list" data-page-node-id="DOsCuuc0UFPsip5i2G02X2"></div>
+      </div>
+      <div class="fld" data-page-node-id="5UZ7nf4xJFSynX9S1TYoA3">
+        <div class="lb" data-page-node-id="mhRBSp3UnZ13goJbxZDKDq"><b data-page-node-id="A6nr457G3NhbSFB1JG4eBV">其他安排</b><span class="r" data-page-node-id="bWdPgeEdI44ffikoxBxVmj">固定活动 + 自定义</span></div>
+        <div class="dp-list" id="dp-extras" data-page-node-id="aOWWF8A2v0tPO0WJU3dC8Y"></div>
+        <div class="ex-add" data-page-node-id="BqzvNO1fKbbVbbtdwn3oyj"><input type="text" id="ex-new" placeholder="添加一项其他安排…" data-page-node-id="dHCxahEgu8rNZsGQltRUet"><button class="btn sm" id="ex-addbtn" data-page-node-id="NPFXnJGGrVXQWeUfA6aGsu">添加</button></div>
+      </div>
+      <div class="fld" data-page-node-id="wWAYl8aCacE4Su9fSZsPyG">
+        <div class="lb" data-page-node-id="tVwhsV526zUzfFH3CiJbaP"><b data-page-node-id="CCGAIYs5epBecmPLgDU8dz">自定义内容</b><span class="r" data-page-node-id="h2LEFtD5DoNrT4LgYzKbn6">可自由编辑，显示在日历格子里</span></div>
+        <textarea id="dp-note" placeholder="今天学了哪些、哪里卡住、明天怎么调整…（随手记，自动保存）"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="snapmodal" data-page-node-id="GOQexOeGTsHHDItKr6iMjy">
+  <div class="dp-mask" id="sm-mask" data-page-node-id="B2n7VoLLGtX3VgbdzZNScT"></div>
+  <div class="sm-card" data-page-node-id="GUzB6gcA4o6iKPWlfHKrWj">
+    <div class="sm-h" data-page-node-id="H40dBR5VnjXVZREI5augjF">历史记录<span id="snap-cnt" style="font-weight:400;font-size:11px;color:#8A857C;margin-left:8px" data-page-node-id="mhrbLS0aghtMb7EsqWjLRf"></span><button class="x" id="sm-close" data-page-node-id="vwgVP8WmoBo5Df4pprP8On">×</button></div>
+    <div class="sm-b" id="snap-list" data-page-node-id="jHFhH8fAxt2YuYCJs6rSx5"></div>
+  </div>
+</div>
+
+<div id="toast" data-page-node-id="WhgFsMCTVh7vyDmoqoc7WE"></div>
+
+<script>
+/* ========== 目录数据（解析自 目录.xlsx；24章 / 120节 / 398目 = 542 条） ========== */
+const CAT = [{"lv":1,"num":"1","t":"信息化发展","pg":1,"ch":0,"pp":36},{"lv":2,"num":"1.1","t":"信息与信息化","pg":1,"ch":0,"pp":6},{"lv":3,"num":"1.1.1","t":"信息","pg":2,"ch":0,"pp":1},{"lv":3,"num":"1.1.2","t":"信息系统","pg":2,"ch":0,"pp":2},{"lv":3,"num":"1.1.3","t":"信息化","pg":4,"ch":0,"pp":3},{"lv":2,"num":"1.2","t":"现代化基础设施","pg":7,"ch":0,"pp":5},{"lv":3,"num":"1.2.1","t":"新型基础设施建设","pg":7,"ch":0,"pp":1},{"lv":3,"num":"1.2.2","t":"工业互联网","pg":8,"ch":0,"pp":2},{"lv":3,"num":"1.2.3","t":"车联网","pg":10,"ch":0,"pp":2},{"lv":2,"num":"1.3","t":"现代化创新发展","pg":12,"ch":0,"pp":4},{"lv":3,"num":"1.3.1","t":"农业农村现代化","pg":12,"ch":0,"pp":1},{"lv":3,"num":"1.3.2","t":"两化融合与智能制造","pg":13,"ch":0,"pp":2},{"lv":3,"num":"1.3.3","t":"消费互联网","pg":15,"ch":0,"pp":1},{"lv":2,"num":"1.4","t":"数字中国","pg":16,"ch":0,"pp":12},{"lv":3,"num":"1.4.1","t":"数字经济","pg":17,"ch":0,"pp":3},{"lv":3,"num":"1.4.2","t":"数字政府","pg":20,"ch":0,"pp":3},{"lv":3,"num":"1.4.3","t":"数字社会","pg":23,"ch":0,"pp":4},{"lv":3,"num":"1.4.4","t":"数字生态","pg":27,"ch":0,"pp":1},{"lv":2,"num":"1.5","t":"数字化转型与元宇宙","pg":28,"ch":0,"pp":9},{"lv":3,"num":"1.5.1","t":"数字化转型","pg":28,"ch":0,"pp":6},{"lv":3,"num":"1.5.2","t":"元宇宙","pg":34,"ch":0,"pp":3},{"lv":1,"num":"2","t":"信息技术发展","pg":37,"ch":1,"pp":30},{"lv":2,"num":"2.1","t":"信息技术及其发展","pg":37,"ch":1,"pp":12},{"lv":3,"num":"2.1.1","t":"计算机软硬件","pg":37,"ch":1,"pp":1},{"lv":3,"num":"2.1.2","t":"计算机网络","pg":38,"ch":1,"pp":3},{"lv":3,"num":"2.1.3","t":"存储和数据库","pg":41,"ch":1,"pp":6},{"lv":3,"num":"2.1.4","t":"信息安全","pg":47,"ch":1,"pp":1},{"lv":3,"num":"2.1.5","t":"信息技术的发展","pg":48,"ch":1,"pp":1},{"lv":2,"num":"2.2","t":"新一代信息技术及应用","pg":49,"ch":1,"pp":18},{"lv":3,"num":"2.2.1","t":"物联网","pg":49,"ch":1,"pp":2},{"lv":3,"num":"2.2.2","t":"云计算","pg":51,"ch":1,"pp":4},{"lv":3,"num":"2.2.3","t":"大数据","pg":55,"ch":1,"pp":2},{"lv":3,"num":"2.2.4","t":"区块链","pg":57,"ch":1,"pp":3},{"lv":3,"num":"2.2.5","t":"人工智能","pg":60,"ch":1,"pp":3},{"lv":3,"num":"2.2.6","t":"虚拟现实","pg":63,"ch":1,"pp":4},{"lv":1,"num":"3","t":"信息系统治理","pg":67,"ch":2,"pp":26},{"lv":2,"num":"3.1","t":"IT治理","pg":67,"ch":2,"pp":13},{"lv":3,"num":"3.1.1","t":"IT治理基础","pg":67,"ch":2,"pp":2},{"lv":3,"num":"3.1.2","t":"IT治理体系","pg":69,"ch":2,"pp":4},{"lv":3,"num":"3.1.3","t":"IT治理任务","pg":73,"ch":2,"pp":1},{"lv":3,"num":"3.1.4","t":"IT治理方法与标准","pg":74,"ch":2,"pp":6},{"lv":2,"num":"3.2","t":"IT审计","pg":80,"ch":2,"pp":13},{"lv":3,"num":"3.2.1","t":"IT审计基础","pg":80,"ch":2,"pp":3},{"lv":3,"num":"3.2.2","t":"审计方法与技术","pg":83,"ch":2,"pp":5},{"lv":3,"num":"3.2.3","t":"审计流程","pg":88,"ch":2,"pp":1},{"lv":3,"num":"3.2.4","t":"审计内容","pg":89,"ch":2,"pp":4},{"lv":1,"num":"4","t":"信息系统管理","pg":93,"ch":3,"pp":36},{"lv":2,"num":"4.1","t":"管理方法","pg":93,"ch":3,"pp":14},{"lv":3,"num":"4.1.1","t":"管理基础","pg":93,"ch":3,"pp":1},{"lv":3,"num":"4.1.2","t":"规划和组织","pg":94,"ch":3,"pp":4},{"lv":3,"num":"4.1.3","t":"设计和实施","pg":98,"ch":3,"pp":2},{"lv":3,"num":"4.1.4","t":"运维和服务","pg":100,"ch":3,"pp":4},{"lv":3,"num":"4.1.5","t":"优化和持续改进","pg":104,"ch":3,"pp":3},{"lv":2,"num":"4.2","t":"管理要点","pg":107,"ch":3,"pp":22},{"lv":3,"num":"4.2.1","t":"数据管理","pg":107,"ch":3,"pp":12},{"lv":3,"num":"4.2.2","t":"运维管理","pg":119,"ch":3,"pp":6},{"lv":3,"num":"4.2.3","t":"信息安全管理","pg":125,"ch":3,"pp":4},{"lv":1,"num":"5","t":"信息系统工程","pg":129,"ch":4,"pp":54},{"lv":2,"num":"5.1","t":"软件工程","pg":129,"ch":4,"pp":17},{"lv":3,"num":"5.1.1","t":"架构设计","pg":129,"ch":4,"pp":2},{"lv":3,"num":"5.1.2","t":"需求分析","pg":131,"ch":4,"pp":7},{"lv":3,"num":"5.1.3","t":"软件设计","pg":138,"ch":4,"pp":2},{"lv":3,"num":"5.1.4","t":"软件实现","pg":140,"ch":4,"pp":2},{"lv":3,"num":"5.1.5","t":"部署交付","pg":142,"ch":4,"pp":2},{"lv":3,"num":"5.1.6","t":"过程管理","pg":144,"ch":4,"pp":2},{"lv":2,"num":"5.2","t":"数据工程","pg":146,"ch":4,"pp":17},{"lv":3,"num":"5.2.1","t":"数据建模","pg":147,"ch":4,"pp":2},{"lv":3,"num":"5.2.2","t":"数据标准化","pg":149,"ch":4,"pp":4},{"lv":3,"num":"5.2.3","t":"数据运维","pg":153,"ch":4,"pp":4},{"lv":3,"num":"5.2.4","t":"数据开发利用","pg":157,"ch":4,"pp":4},{"lv":3,"num":"5.2.5","t":"数据库安全","pg":161,"ch":4,"pp":2},{"lv":2,"num":"5.3","t":"系统集成","pg":163,"ch":4,"pp":7},{"lv":3,"num":"5.3.1","t":"集成基础","pg":163,"ch":4,"pp":1},{"lv":3,"num":"5.3.2","t":"网络集成","pg":164,"ch":4,"pp":1},{"lv":3,"num":"5.3.3","t":"数据集成","pg":165,"ch":4,"pp":2},{"lv":3,"num":"5.3.4","t":"软件集成","pg":167,"ch":4,"pp":2},{"lv":3,"num":"5.3.5","t":"应用集成","pg":169,"ch":4,"pp":1},{"lv":2,"num":"5.4","t":"安全工程","pg":170,"ch":4,"pp":13},{"lv":3,"num":"5.4.1","t":"工程概述","pg":170,"ch":4,"pp":1},{"lv":3,"num":"5.4.2","t":"安全系统","pg":171,"ch":4,"pp":3},{"lv":3,"num":"5.4.3","t":"工程基础","pg":174,"ch":4,"pp":1},{"lv":3,"num":"5.4.4","t":"工程体系架构","pg":174,"ch":4,"pp":9},{"lv":1,"num":"6","t":"项目管理概论","pg":183,"ch":5,"pp":42},{"lv":2,"num":"6.1","t":"PMBOK的发展","pg":183,"ch":5,"pp":1},{"lv":2,"num":"6.2","t":"项目基本要素","pg":184,"ch":5,"pp":12},{"lv":3,"num":"6.2.1","t":"项目基础","pg":184,"ch":5,"pp":2},{"lv":3,"num":"6.2.2","t":"项目管理的重要性","pg":186,"ch":5,"pp":1},{"lv":3,"num":"6.2.3","t":"项目成功的标准","pg":187,"ch":5,"pp":1},{"lv":3,"num":"6.2.4","t":"项目、项目集、项目组合和运营管理之间的关系","pg":187,"ch":5,"pp":4},{"lv":3,"num":"6.2.5","t":"项目内外部运行环境","pg":191,"ch":5,"pp":1},{"lv":3,"num":"6.2.6","t":"组织系统","pg":192,"ch":5,"pp":2},{"lv":3,"num":"6.2.7","t":"项目管理和产品管理","pg":194,"ch":5,"pp":2},{"lv":2,"num":"6.3","t":"项目经理的角色","pg":196,"ch":5,"pp":5},{"lv":3,"num":"6.3.1","t":"项目经理的定义","pg":196,"ch":5,"pp":1},{"lv":3,"num":"6.3.2","t":"项目经理的影响力范围","pg":196,"ch":5,"pp":2},{"lv":3,"num":"6.3.3","t":"项目经理的能力","pg":198,"ch":5,"pp":3},{"lv":2,"num":"6.4","t":"价值驱动的项目管理知识体系","pg":201,"ch":5,"pp":24},{"lv":3,"num":"6.4.1","t":"项目管理原则","pg":202,"ch":5,"pp":11},{"lv":3,"num":"6.4.2","t":"项目生命周期和项目阶段","pg":213,"ch":5,"pp":3},{"lv":3,"num":"6.4.3","t":"项目管理过程组","pg":216,"ch":5,"pp":3},{"lv":3,"num":"6.4.4","t":"项目管理知识领域","pg":219,"ch":5,"pp":2},{"lv":3,"num":"6.4.5","t":"项目绩效域","pg":221,"ch":5,"pp":1},{"lv":3,"num":"6.4.6","t":"价值交付系统","pg":221,"ch":5,"pp":4},{"lv":1,"num":"7","t":"项目立项管理","pg":225,"ch":6,"pp":12},{"lv":2,"num":"7.1","t":"项目建议与立项申请","pg":225,"ch":6,"pp":1},{"lv":2,"num":"7.2","t":"项目可行性研究","pg":225,"ch":6,"pp":9},{"lv":3,"num":"7.2.1","t":"可行性研究的内容","pg":225,"ch":6,"pp":3},{"lv":3,"num":"7.2.2","t":"初步可行性研究","pg":228,"ch":6,"pp":2},{"lv":3,"num":"7.2.3","t":"详细可行性研究","pg":230,"ch":6,"pp":4},{"lv":2,"num":"7.3","t":"项目评估与决策","pg":234,"ch":6,"pp":3},{"lv":1,"num":"8","t":"项目整合管理","pg":237,"ch":7,"pp":35},{"lv":2,"num":"8.1","t":"管理基础","pg":237,"ch":7,"pp":2},{"lv":3,"num":"8.1.1","t":"执行整合","pg":237,"ch":7,"pp":1},{"lv":3,"num":"8.1.2","t":"整合的复杂性","pg":238,"ch":7,"pp":1},{"lv":3,"num":"8.1.3","t":"管理新实践","pg":238,"ch":7,"pp":1},{"lv":3,"num":"8.1.4","t":"项目管理计划和项目文件","pg":239,"ch":7,"pp":1},{"lv":2,"num":"8.2","t":"项目整合管理过程","pg":239,"ch":7,"pp":3},{"lv":3,"num":"8.2.1","t":"过程概述","pg":239,"ch":7,"pp":2},{"lv":3,"num":"8.2.2","t":"裁剪考虑因素","pg":241,"ch":7,"pp":1},{"lv":3,"num":"8.2.3","t":"敏捷与适应方法","pg":241,"ch":7,"pp":1},{"lv":2,"num":"8.3","t":"制定项目章程","pg":242,"ch":7,"pp":3},{"lv":3,"num":"8.3.1","t":"输入","pg":242,"ch":7,"pp":1},{"lv":3,"num":"8.3.2","t":"工具与技术","pg":243,"ch":7,"pp":1},{"lv":3,"num":"8.3.3","t":"输出","pg":244,"ch":7,"pp":1},{"lv":2,"num":"8.4","t":"制订项目管理计划","pg":245,"ch":7,"pp":6},{"lv":3,"num":"8.4.1","t":"输入","pg":246,"ch":7,"pp":1},{"lv":3,"num":"8.4.2","t":"工具与技术","pg":246,"ch":7,"pp":1},{"lv":3,"num":"8.4.3","t":"输出","pg":247,"ch":7,"pp":4},{"lv":2,"num":"8.5","t":"指导与管理项目工作","pg":251,"ch":7,"pp":4},{"lv":3,"num":"8.5.1","t":"输入","pg":252,"ch":7,"pp":1},{"lv":3,"num":"8.5.2","t":"工具与技术","pg":253,"ch":7,"pp":1},{"lv":3,"num":"8.5.3","t":"输出","pg":253,"ch":7,"pp":2},{"lv":2,"num":"8.6","t":"管理项目知识","pg":255,"ch":7,"pp":3},{"lv":3,"num":"8.6.1","t":"输入","pg":255,"ch":7,"pp":1},{"lv":3,"num":"8.6.2","t":"工具与技术","pg":256,"ch":7,"pp":1},{"lv":3,"num":"8.6.3","t":"输出","pg":257,"ch":7,"pp":1},{"lv":2,"num":"8.7","t":"监控项目工作","pg":258,"ch":7,"pp":4},{"lv":3,"num":"8.7.1","t":"输入","pg":259,"ch":7,"pp":1},{"lv":3,"num":"8.7.2","t":"工具与技术","pg":260,"ch":7,"pp":1},{"lv":3,"num":"8.7.3","t":"输出","pg":261,"ch":7,"pp":1},{"lv":2,"num":"8.8","t":"实施整体变更控制","pg":262,"ch":7,"pp":3},{"lv":3,"num":"8.8.1","t":"输入","pg":263,"ch":7,"pp":1},{"lv":3,"num":"8.8.2","t":"工具与技术","pg":264,"ch":7,"pp":1},{"lv":3,"num":"8.8.3","t":"输出","pg":265,"ch":7,"pp":1},{"lv":2,"num":"8.9","t":"结束项目或阶段","pg":265,"ch":7,"pp":7},{"lv":3,"num":"8.9.1","t":"输入","pg":266,"ch":7,"pp":2},{"lv":3,"num":"8.9.2","t":"工具与技术","pg":268,"ch":7,"pp":1},{"lv":3,"num":"8.9.3","t":"输出","pg":268,"ch":7,"pp":4},{"lv":1,"num":"9","t":"项目范围管理","pg":272,"ch":8,"pp":25},{"lv":2,"num":"9.1","t":"管理基础","pg":272,"ch":8,"pp":0},{"lv":3,"num":"9.1.1","t":"产品范围和项目范围","pg":272,"ch":8,"pp":1},{"lv":3,"num":"9.1.2","t":"管理新实践","pg":272,"ch":8,"pp":1},{"lv":2,"num":"9.2","t":"项目范围管理过程","pg":272,"ch":8,"pp":3},{"lv":3,"num":"9.2.1","t":"过程概述","pg":272,"ch":8,"pp":2},{"lv":3,"num":"9.2.2","t":"裁剪考虑因素","pg":274,"ch":8,"pp":1},{"lv":3,"num":"9.2.3","t":"敏捷与适应方法","pg":274,"ch":8,"pp":1},{"lv":2,"num":"9.3","t":"规划范围管理","pg":275,"ch":8,"pp":1},{"lv":3,"num":"9.3.1","t":"输入","pg":275,"ch":8,"pp":1},{"lv":3,"num":"9.3.2","t":"工具与技术","pg":276,"ch":8,"pp":1},{"lv":3,"num":"9.3.3","t":"输出","pg":276,"ch":8,"pp":1},{"lv":2,"num":"9.4","t":"收集需求","pg":276,"ch":8,"pp":6},{"lv":3,"num":"9.4.1","t":"输入","pg":277,"ch":8,"pp":1},{"lv":3,"num":"9.4.2","t":"工具与技术","pg":278,"ch":8,"pp":2},{"lv":3,"num":"9.4.3","t":"输出","pg":280,"ch":8,"pp":2},{"lv":2,"num":"9.5","t":"定义范围","pg":282,"ch":8,"pp":2},{"lv":3,"num":"9.5.1","t":"输入","pg":282,"ch":8,"pp":1},{"lv":3,"num":"9.5.2","t":"工具与技术","pg":283,"ch":8,"pp":1},{"lv":3,"num":"9.5.3","t":"输出","pg":283,"ch":8,"pp":1},{"lv":2,"num":"9.6","t":"创建WBS","pg":284,"ch":8,"pp":5},{"lv":3,"num":"9.6.1","t":"输入","pg":285,"ch":8,"pp":1},{"lv":3,"num":"9.6.2","t":"工具与技术","pg":285,"ch":8,"pp":3},{"lv":3,"num":"9.6.3","t":"输出","pg":288,"ch":8,"pp":1},{"lv":2,"num":"9.7","t":"确认范围","pg":289,"ch":8,"pp":3},{"lv":3,"num":"9.7.1","t":"输入","pg":291,"ch":8,"pp":1},{"lv":3,"num":"9.7.2","t":"工具与技术.","pg":292,"ch":8,"pp":1},{"lv":3,"num":"9.7.3","t":"输出","pg":292,"ch":8,"pp":1},{"lv":2,"num":"9.8","t":"控制范围","pg":292,"ch":8,"pp":5},{"lv":3,"num":"9.8.1","t":"输入","pg":293,"ch":8,"pp":1},{"lv":3,"num":"9.8.2","t":"工具与技术","pg":294,"ch":8,"pp":1},{"lv":3,"num":"9.8.3","t":"输出","pg":294,"ch":8,"pp":3},{"lv":1,"num":"10","t":"项目进度管理","pg":297,"ch":9,"pp":37},{"lv":2,"num":"10.1","t":"管理基础","pg":297,"ch":9,"pp":1},{"lv":3,"num":"10.1.1","t":"项目进度计划的定义和总要求","pg":297,"ch":9,"pp":1},{"lv":3,"num":"10.1.2","t":"管理新实践","pg":297,"ch":9,"pp":1},{"lv":2,"num":"10.2","t":"项目进度管理过程","pg":298,"ch":9,"pp":2},{"lv":3,"num":"10.2.1","t":"过程概述","pg":298,"ch":9,"pp":1},{"lv":3,"num":"10.2.2","t":"裁剪考虑因素","pg":299,"ch":9,"pp":1},{"lv":3,"num":"10.2.3","t":"敏捷与适应方法","pg":299,"ch":9,"pp":1},{"lv":2,"num":"10.3","t":"规划进度管理","pg":300,"ch":9,"pp":2},{"lv":3,"num":"10.3.1","t":"输入","pg":300,"ch":9,"pp":1},{"lv":3,"num":"10.3.2","t":"工具与技术","pg":301,"ch":9,"pp":1},{"lv":3,"num":"10.3.3","t":"输出","pg":301,"ch":9,"pp":1},{"lv":2,"num":"10.4","t":"定义活动","pg":302,"ch":9,"pp":2},{"lv":3,"num":"10.4.1","t":"输入","pg":302,"ch":9,"pp":1},{"lv":3,"num":"10.4.2","t":"工具与技术","pg":303,"ch":9,"pp":1},{"lv":3,"num":"10.4.3","t":"输出","pg":303,"ch":9,"pp":1},{"lv":2,"num":"10.5","t":"排列活动顺序","pg":304,"ch":9,"pp":6},{"lv":3,"num":"10.5.1","t":"输入","pg":305,"ch":9,"pp":1},{"lv":3,"num":"10.5.2","t":"工具与技术","pg":305,"ch":9,"pp":4},{"lv":3,"num":"10.5.3","t":"输出","pg":309,"ch":9,"pp":1},{"lv":2,"num":"10.6","t":"估算活动持续时间","pg":310,"ch":9,"pp":4},{"lv":3,"num":"10.6.1","t":"输入","pg":311,"ch":9,"pp":1},{"lv":3,"num":"10.6.2","t":"工具与技术","pg":312,"ch":9,"pp":2},{"lv":3,"num":"10.6.3","t":"输出","pg":314,"ch":9,"pp":1},{"lv":2,"num":"10.7","t":"制订进度计划","pg":314,"ch":9,"pp":12},{"lv":3,"num":"10.7.1","t":"输入","pg":314,"ch":9,"pp":3},{"lv":3,"num":"10.7.2","t":"工具与技术","pg":317,"ch":9,"pp":6},{"lv":3,"num":"10.7.3","t":"输出","pg":323,"ch":9,"pp":3},{"lv":2,"num":"10.8","t":"控制进度","pg":326,"ch":9,"pp":8},{"lv":3,"num":"10.8.1","t":"输入","pg":327,"ch":9,"pp":1},{"lv":3,"num":"10.8.2","t":"工具与技术","pg":328,"ch":9,"pp":1},{"lv":3,"num":"10.8.3","t":"输出","pg":329,"ch":9,"pp":5},{"lv":1,"num":"11","t":"项目成本管理","pg":334,"ch":10,"pp":24},{"lv":2,"num":"11.1","t":"管理基础","pg":334,"ch":10,"pp":3},{"lv":3,"num":"11.1.1","t":"重要性和意义","pg":334,"ch":10,"pp":1},{"lv":3,"num":"11.1.2","t":"相关术语和定义","pg":335,"ch":10,"pp":1},{"lv":3,"num":"11.1.3","t":"管理新实践","pg":336,"ch":10,"pp":1},{"lv":2,"num":"11.2","t":"项目成本管理过程","pg":337,"ch":10,"pp":1},{"lv":3,"num":"11.2.1","t":"过程概述","pg":337,"ch":10,"pp":1},{"lv":3,"num":"11.2.2","t":"裁剪考虑因素","pg":338,"ch":10,"pp":1},{"lv":3,"num":"11.2.3","t":"敏捷与适应方法","pg":338,"ch":10,"pp":1},{"lv":2,"num":"11.3","t":"规划成本管理","pg":338,"ch":10,"pp":3},{"lv":3,"num":"11.3.1","t":"输入","pg":339,"ch":10,"pp":1},{"lv":3,"num":"11.3.2","t":"工具与技术","pg":340,"ch":10,"pp":1},{"lv":3,"num":"11.3.3","t":"输出","pg":340,"ch":10,"pp":1},{"lv":2,"num":"11.4","t":"估算成本","pg":341,"ch":10,"pp":4},{"lv":3,"num":"11.4.1","t":"输入","pg":342,"ch":10,"pp":1},{"lv":3,"num":"11.4.2","t":"工具与技术","pg":343,"ch":10,"pp":1},{"lv":3,"num":"11.4.3","t":"输出","pg":344,"ch":10,"pp":1},{"lv":2,"num":"11.5","t":"制定预算","pg":345,"ch":10,"pp":4},{"lv":3,"num":"11.5.1","t":"输入","pg":345,"ch":10,"pp":1},{"lv":3,"num":"11.5.2","t":"工具与技术","pg":346,"ch":10,"pp":1},{"lv":3,"num":"11.5.3","t":"输出","pg":347,"ch":10,"pp":2},{"lv":2,"num":"11.6","t":"控制成本","pg":349,"ch":10,"pp":9},{"lv":3,"num":"11.6.1","t":"输入","pg":349,"ch":10,"pp":1},{"lv":3,"num":"11.6.2","t":"工具与技术","pg":350,"ch":10,"pp":5},{"lv":3,"num":"11.6.3","t":"输出","pg":355,"ch":10,"pp":3},{"lv":1,"num":"12","t":"项目质量管理","pg":358,"ch":11,"pp":22},{"lv":2,"num":"12.1","t":"管理基础","pg":358,"ch":11,"pp":3},{"lv":3,"num":"12.1.1","t":"质量与项目质量","pg":358,"ch":11,"pp":1},{"lv":3,"num":"12.1.2","t":"质量管理","pg":359,"ch":11,"pp":1},{"lv":3,"num":"12.1.3","t":"质量管理标准体系","pg":360,"ch":11,"pp":1},{"lv":3,"num":"12.1.4","t":"管理新实践","pg":360,"ch":11,"pp":1},{"lv":2,"num":"12.2","t":"项目质量管理过程","pg":361,"ch":11,"pp":2},{"lv":3,"num":"12.2.1","t":"过程概述","pg":361,"ch":11,"pp":1},{"lv":3,"num":"12.2.2","t":"裁剪考虑因素","pg":362,"ch":11,"pp":1},{"lv":3,"num":"12.2.3","t":"敏捷与适应方法","pg":363,"ch":11,"pp":1},{"lv":2,"num":"12.3","t":"规划质量管理","pg":363,"ch":11,"pp":5},{"lv":3,"num":"12.3.1","t":"输入","pg":364,"ch":11,"pp":1},{"lv":3,"num":"12.3.2","t":"工具与技术","pg":365,"ch":11,"pp":2},{"lv":3,"num":"12.3.3","t":"输出","pg":367,"ch":11,"pp":1},{"lv":2,"num":"12.4","t":"管理质量","pg":368,"ch":11,"pp":5},{"lv":3,"num":"12.4.1","t":"输入","pg":369,"ch":11,"pp":1},{"lv":3,"num":"12.4.2","t":"工具与技术","pg":370,"ch":11,"pp":2},{"lv":3,"num":"12.4.3","t":"输出","pg":372,"ch":11,"pp":1},{"lv":2,"num":"12.5","t":"控制质量","pg":373,"ch":11,"pp":7},{"lv":3,"num":"12.5.1","t":"输入","pg":374,"ch":11,"pp":1},{"lv":3,"num":"12.5.2","t":"工具与技术","pg":375,"ch":11,"pp":1},{"lv":3,"num":"12.5.3","t":"输出","pg":376,"ch":11,"pp":4},{"lv":1,"num":"13","t":"项目资源管理","pg":380,"ch":12,"pp":34},{"lv":2,"num":"13.1","t":"管理基础","pg":380,"ch":12,"pp":7},{"lv":3,"num":"13.1.1","t":"相关术语和定义","pg":380,"ch":12,"pp":6},{"lv":3,"num":"13.1.2","t":"管理新实践","pg":386,"ch":12,"pp":1},{"lv":2,"num":"13.2","t":"项目资源管理过程","pg":387,"ch":12,"pp":2},{"lv":3,"num":"13.2.1","t":"过程概述","pg":387,"ch":12,"pp":1},{"lv":3,"num":"13.2.2","t":"裁剪考虑因素","pg":388,"ch":12,"pp":1},{"lv":3,"num":"13.2.3","t":"敏捷与适应方法","pg":388,"ch":12,"pp":1},{"lv":2,"num":"13.3","t":"规划资源管理","pg":389,"ch":12,"pp":4},{"lv":3,"num":"13.3.1","t":"输入","pg":389,"ch":12,"pp":1},{"lv":3,"num":"13.3.2","t":"工具与技术","pg":390,"ch":12,"pp":2},{"lv":3,"num":"13.3.3","t":"输出","pg":392,"ch":12,"pp":1},{"lv":2,"num":"13.4","t":"估算活动资源","pg":393,"ch":12,"pp":3},{"lv":3,"num":"13.4.1","t":"输入","pg":393,"ch":12,"pp":1},{"lv":3,"num":"13.4.2","t":"工具与技术","pg":394,"ch":12,"pp":1},{"lv":3,"num":"13.4.3","t":"输出","pg":395,"ch":12,"pp":1},{"lv":2,"num":"13.5","t":"获取资源","pg":396,"ch":12,"pp":4},{"lv":3,"num":"13.5.1","t":"输入","pg":397,"ch":12,"pp":1},{"lv":3,"num":"13.5.2","t":"工具与技术","pg":398,"ch":12,"pp":1},{"lv":3,"num":"13.5.3","t":"输出","pg":399,"ch":12,"pp":1},{"lv":2,"num":"13.6","t":"建设团队","pg":400,"ch":12,"pp":4},{"lv":3,"num":"13.6.1","t":"输入","pg":401,"ch":12,"pp":1},{"lv":3,"num":"13.6.2","t":"工具与技术","pg":402,"ch":12,"pp":1},{"lv":3,"num":"13.6.3","t":"输出","pg":403,"ch":12,"pp":1},{"lv":2,"num":"13.7","t":"管理团队","pg":404,"ch":12,"pp":4},{"lv":3,"num":"13.7.1","t":"输入","pg":405,"ch":12,"pp":1},{"lv":3,"num":"13.7.2","t":"工具与技术","pg":406,"ch":12,"pp":1},{"lv":3,"num":"13.7.3","t":"输出","pg":407,"ch":12,"pp":1},{"lv":2,"num":"13.8","t":"控制资源","pg":408,"ch":12,"pp":6},{"lv":3,"num":"13.8.1","t":"输入","pg":409,"ch":12,"pp":1},{"lv":3,"num":"13.8.2","t":"工具与技术","pg":410,"ch":12,"pp":1},{"lv":3,"num":"13.8.3","t":"输出","pg":410,"ch":12,"pp":4},{"lv":1,"num":"14","t":"项目沟通管理","pg":414,"ch":13,"pp":17},{"lv":2,"num":"14.1","t":"管理基础","pg":414,"ch":13,"pp":3},{"lv":3,"num":"14.1.1","t":"沟通","pg":414,"ch":13,"pp":1},{"lv":3,"num":"14.1.2","t":"沟通模型","pg":414,"ch":13,"pp":1},{"lv":3,"num":"14.1.3","t":"沟通分类","pg":415,"ch":13,"pp":1},{"lv":3,"num":"14.1.4","t":"沟通技巧","pg":415,"ch":13,"pp":1},{"lv":3,"num":"14.1.5","t":"管理新实践","pg":416,"ch":13,"pp":1},{"lv":2,"num":"14.2","t":"项目沟通管理过程","pg":417,"ch":13,"pp":1},{"lv":3,"num":"14.2.1","t":"过程概述","pg":417,"ch":13,"pp":1},{"lv":3,"num":"14.2.2","t":"裁剪考虑因素","pg":418,"ch":13,"pp":1},{"lv":3,"num":"14.2.3","t":"敏捷与适应方法","pg":418,"ch":13,"pp":1},{"lv":2,"num":"14.3","t":"规划沟通管理","pg":418,"ch":13,"pp":5},{"lv":3,"num":"14.3.1","t":"输入","pg":419,"ch":13,"pp":1},{"lv":3,"num":"14.3.2","t":"工具与技术","pg":420,"ch":13,"pp":2},{"lv":3,"num":"14.3.3","t":"输出","pg":422,"ch":13,"pp":1},{"lv":2,"num":"14.4","t":"管理沟通","pg":423,"ch":13,"pp":4},{"lv":3,"num":"14.4.1","t":"输入","pg":424,"ch":13,"pp":1},{"lv":3,"num":"14.4.2","t":"工具与技术","pg":425,"ch":13,"pp":1},{"lv":3,"num":"14.4.3","t":"输出","pg":426,"ch":13,"pp":1},{"lv":2,"num":"14.5","t":"监督沟通","pg":427,"ch":13,"pp":4},{"lv":3,"num":"14.5.1","t":"输入","pg":428,"ch":13,"pp":1},{"lv":3,"num":"14.5.2","t":"工具与技术","pg":428,"ch":13,"pp":1},{"lv":3,"num":"14.5.3","t":"输出","pg":429,"ch":13,"pp":2},{"lv":1,"num":"15","t":"项目风险管理","pg":431,"ch":14,"pp":41},{"lv":2,"num":"15.1","t":"管理基础","pg":431,"ch":14,"pp":5},{"lv":3,"num":"15.1.1","t":"项目风险概述","pg":431,"ch":14,"pp":1},{"lv":3,"num":"15.1.2","t":"风险的属性","pg":431,"ch":14,"pp":2},{"lv":3,"num":"15.1.3","t":"风险的分类","pg":433,"ch":14,"pp":1},{"lv":3,"num":"15.1.4","t":"风险成本及其负担","pg":434,"ch":14,"pp":1},{"lv":3,"num":"15.1.5","t":"管理新实践","pg":435,"ch":14,"pp":1},{"lv":2,"num":"15.2","t":"项目风险管理过程","pg":436,"ch":14,"pp":2},{"lv":3,"num":"15.2.1","t":"过程概述","pg":436,"ch":14,"pp":2},{"lv":3,"num":"15.2.2","t":"裁剪考虑因素","pg":438,"ch":14,"pp":1},{"lv":3,"num":"15.2.3","t":"敏捷与适应方法","pg":438,"ch":14,"pp":1},{"lv":2,"num":"15.3","t":"规划风险管理","pg":438,"ch":14,"pp":5},{"lv":3,"num":"15.3.1","t":"输入","pg":439,"ch":14,"pp":1},{"lv":3,"num":"15.3.2","t":"工具与技术","pg":440,"ch":14,"pp":1},{"lv":3,"num":"15.3.3","t":"输出","pg":440,"ch":14,"pp":3},{"lv":2,"num":"15.4","t":"识别风险","pg":443,"ch":14,"pp":5},{"lv":3,"num":"15.4.1","t":"输入","pg":444,"ch":14,"pp":1},{"lv":3,"num":"15.4.2","t":"工具与技术","pg":445,"ch":14,"pp":2},{"lv":3,"num":"15.4.3","t":"输出","pg":447,"ch":14,"pp":1},{"lv":2,"num":"15.5","t":"实施定性风险分析","pg":448,"ch":14,"pp":4},{"lv":3,"num":"15.5.1","t":"输入","pg":448,"ch":14,"pp":1},{"lv":3,"num":"15.5.2","t":"工具与技术","pg":449,"ch":14,"pp":2},{"lv":3,"num":"15.5.3","t":"输出","pg":451,"ch":14,"pp":1},{"lv":2,"num":"15.6","t":"实施定量风险分析","pg":452,"ch":14,"pp":5},{"lv":3,"num":"15.6.1","t":"输入","pg":453,"ch":14,"pp":1},{"lv":3,"num":"15.6.2","t":"工具与技术","pg":454,"ch":14,"pp":3},{"lv":3,"num":"15.6.3","t":"输出","pg":457,"ch":14,"pp":1},{"lv":2,"num":"15.7","t":"规划风险应对","pg":457,"ch":14,"pp":6},{"lv":3,"num":"15.7.1","t":"输入","pg":458,"ch":14,"pp":1},{"lv":3,"num":"15.7.2","t":"工具与技术","pg":459,"ch":14,"pp":3},{"lv":3,"num":"15.7.3","t":"输出","pg":462,"ch":14,"pp":1},{"lv":2,"num":"15.8","t":"实施风险应对","pg":463,"ch":14,"pp":2},{"lv":3,"num":"15.8.1","t":"输入","pg":464,"ch":14,"pp":1},{"lv":3,"num":"15.8.2","t":"工具与技术","pg":464,"ch":14,"pp":1},{"lv":3,"num":"15.8.3","t":"输出","pg":465,"ch":14,"pp":1},{"lv":2,"num":"15.9","t":"监督风险","pg":465,"ch":14,"pp":3},{"lv":3,"num":"15.9.1","t":"输入","pg":466,"ch":14,"pp":1},{"lv":3,"num":"15.9.2","t":"工具与技术","pg":467,"ch":14,"pp":1},{"lv":3,"num":"15.9.3","t":"输出","pg":467,"ch":14,"pp":1},{"lv":2,"num":"15.10","t":"风险管理示例","pg":468,"ch":14,"pp":4},{"lv":1,"num":"16","t":"项目采购管理","pg":472,"ch":15,"pp":31},{"lv":2,"num":"16.1","t":"管理基础","pg":472,"ch":15,"pp":2},{"lv":3,"num":"16.1.1","t":"协议/采购合同","pg":472,"ch":15,"pp":1},{"lv":3,"num":"16.1.2","t":"管理新实践","pg":473,"ch":15,"pp":1},{"lv":2,"num":"16.2","t":"项目采购管理过程","pg":474,"ch":15,"pp":1},{"lv":3,"num":"16.2.1","t":"过程概述","pg":474,"ch":15,"pp":1},{"lv":3,"num":"16.2.2","t":"裁剪考虑因素","pg":475,"ch":15,"pp":1},{"lv":3,"num":"16.2.3","t":"敏捷与适应方法","pg":475,"ch":15,"pp":1},{"lv":2,"num":"16.3","t":"规划采购管理","pg":475,"ch":15,"pp":8},{"lv":3,"num":"16.3.1","t":"输入","pg":476,"ch":15,"pp":2},{"lv":3,"num":"16.3.2","t":"工具与技术","pg":478,"ch":15,"pp":2},{"lv":3,"num":"16.3.3","t":"输出","pg":480,"ch":15,"pp":3},{"lv":2,"num":"16.4","t":"实施采购","pg":483,"ch":15,"pp":4},{"lv":3,"num":"16.4.1","t":"输入","pg":484,"ch":15,"pp":1},{"lv":3,"num":"16.4.2","t":"工具与技术","pg":485,"ch":15,"pp":1},{"lv":3,"num":"16.4.3","t":"输出","pg":486,"ch":15,"pp":1},{"lv":2,"num":"16.5","t":"控制采购","pg":487,"ch":15,"pp":5},{"lv":3,"num":"16.5.1","t":"输入","pg":488,"ch":15,"pp":2},{"lv":3,"num":"16.5.2","t":"工具与技术","pg":490,"ch":15,"pp":1},{"lv":3,"num":"16.5.3","t":"输出","pg":491,"ch":15,"pp":1},{"lv":2,"num":"16.6","t":"项目合同管理","pg":492,"ch":15,"pp":11},{"lv":3,"num":"16.6.1","t":"合同的类型","pg":493,"ch":15,"pp":3},{"lv":3,"num":"16.6.2","t":"合同的内容","pg":496,"ch":15,"pp":1},{"lv":3,"num":"16.6.3","t":"合同管理过程","pg":497,"ch":15,"pp":6},{"lv":1,"num":"17","t":"项目干系人管理","pg":503,"ch":16,"pp":17},{"lv":2,"num":"17.1","t":"管理基础","pg":503,"ch":16,"pp":1},{"lv":3,"num":"17.1.1","t":"管理的重要性","pg":503,"ch":16,"pp":1},{"lv":3,"num":"17.1.2","t":"管理新实践","pg":503,"ch":16,"pp":1},{"lv":2,"num":"17.2","t":"项目干系人管理过程","pg":504,"ch":16,"pp":1},{"lv":3,"num":"17.2.1","t":"过程概述","pg":504,"ch":16,"pp":1},{"lv":3,"num":"17.2.2","t":"裁剪考虑因素","pg":505,"ch":16,"pp":1},{"lv":3,"num":"17.2.3","t":"敏捷与适应方法","pg":505,"ch":16,"pp":1},{"lv":2,"num":"17.3","t":"识别干系人","pg":505,"ch":16,"pp":4},{"lv":3,"num":"17.3.1","t":"输入","pg":506,"ch":16,"pp":1},{"lv":3,"num":"17.3.2","t":"工具与技术","pg":507,"ch":16,"pp":1},{"lv":3,"num":"17.3.3","t":"输出","pg":508,"ch":16,"pp":1},{"lv":2,"num":"17.4","t":"规划干系人参与","pg":509,"ch":16,"pp":3},{"lv":3,"num":"17.4.1","t":"输入","pg":510,"ch":16,"pp":1},{"lv":3,"num":"17.4.2","t":"工具与技术","pg":511,"ch":16,"pp":1},{"lv":3,"num":"17.4.3","t":"输出","pg":512,"ch":16,"pp":1},{"lv":2,"num":"17.5","t":"管理干系人参与","pg":512,"ch":16,"pp":3},{"lv":3,"num":"17.5.1","t":"输入","pg":513,"ch":16,"pp":1},{"lv":3,"num":"17.5.2","t":"工具与技术","pg":514,"ch":16,"pp":1},{"lv":3,"num":"17.5.3","t":"输出","pg":515,"ch":16,"pp":1},{"lv":2,"num":"17.6","t":"监督干系人参与","pg":515,"ch":16,"pp":5},{"lv":3,"num":"17.6.1","t":"输入","pg":516,"ch":16,"pp":1},{"lv":3,"num":"17.6.2","t":"工具与技术","pg":516,"ch":16,"pp":1},{"lv":3,"num":"17.6.3","t":"输出","pg":517,"ch":16,"pp":3},{"lv":1,"num":"18","t":"项目绩效域","pg":520,"ch":17,"pp":35},{"lv":2,"num":"18.1","t":"干系人绩效域","pg":520,"ch":17,"pp":2},{"lv":3,"num":"18.1.1","t":"绩效要点","pg":520,"ch":17,"pp":1},{"lv":3,"num":"18.1.2","t":"与其他绩效域的相互作用","pg":521,"ch":17,"pp":1},{"lv":3,"num":"18.1.3","t":"执行效果检查","pg":522,"ch":17,"pp":1},{"lv":2,"num":"18.2","t":"团队绩效域","pg":522,"ch":17,"pp":4},{"lv":3,"num":"18.2.1","t":"绩效要点","pg":522,"ch":17,"pp":4},{"lv":3,"num":"18.2.2","t":"与其他绩效域的相互作用","pg":526,"ch":17,"pp":1},{"lv":3,"num":"18.2.3","t":"执行效果检查","pg":526,"ch":17,"pp":1},{"lv":2,"num":"18.3","t":"开发方法和生命周期绩效域","pg":526,"ch":17,"pp":6},{"lv":3,"num":"18.3.1","t":"绩效要点","pg":526,"ch":17,"pp":5},{"lv":3,"num":"18.3.2","t":"与其他绩效域的相互作用","pg":531,"ch":17,"pp":1},{"lv":3,"num":"18.3.3","t":"执行效果检查","pg":532,"ch":17,"pp":1},{"lv":2,"num":"18.4","t":"规划绩效域","pg":532,"ch":17,"pp":4},{"lv":3,"num":"18.4.1","t":"绩效要点","pg":532,"ch":17,"pp":3},{"lv":3,"num":"18.4.2","t":"与其他绩效域的相互作用","pg":535,"ch":17,"pp":1},{"lv":3,"num":"18.4.3","t":"执行效果检查","pg":536,"ch":17,"pp":1},{"lv":2,"num":"18.5","t":"项目工作绩效域","pg":536,"ch":17,"pp":3},{"lv":3,"num":"18.5.1","t":"绩效要点","pg":537,"ch":17,"pp":2},{"lv":3,"num":"18.5.2","t":"与其他绩效域的相互作用","pg":539,"ch":17,"pp":1},{"lv":3,"num":"18.5.3","t":"执行效果检查","pg":539,"ch":17,"pp":1},{"lv":2,"num":"18.6","t":"交付绩效域","pg":539,"ch":17,"pp":3},{"lv":3,"num":"18.6.1","t":"绩效要点","pg":540,"ch":17,"pp":1},{"lv":3,"num":"18.6.2","t":"与其他绩效域的相互作用","pg":541,"ch":17,"pp":1},{"lv":3,"num":"18.6.3","t":"执行效果检查","pg":541,"ch":17,"pp":1},{"lv":2,"num":"18.7","t":"度量绩效域","pg":542,"ch":17,"pp":8},{"lv":3,"num":"18.7.1","t":"绩效要点","pg":542,"ch":17,"pp":7},{"lv":3,"num":"18.7.2","t":"与其他绩效域的相互作用","pg":549,"ch":17,"pp":1},{"lv":3,"num":"18.7.3","t":"执行效果检查","pg":550,"ch":17,"pp":1},{"lv":2,"num":"18.8","t":"不确定性绩效域","pg":550,"ch":17,"pp":5},{"lv":3,"num":"18.8.1","t":"绩效要点","pg":550,"ch":17,"pp":2},{"lv":3,"num":"18.8.2","t":"与其他绩效域的相互作用","pg":552,"ch":17,"pp":1},{"lv":3,"num":"18.8.3","t":"执行效果检查","pg":552,"ch":17,"pp":3},{"lv":1,"num":"19","t":"配置与变更管理","pg":555,"ch":18,"pp":17},{"lv":2,"num":"19.1","t":"配置管理","pg":555,"ch":18,"pp":9},{"lv":3,"num":"19.1.1","t":"管理基础","pg":555,"ch":18,"pp":3},{"lv":3,"num":"19.1.2","t":"角色与职责","pg":558,"ch":18,"pp":1},{"lv":3,"num":"19.1.3","t":"目标与方针","pg":559,"ch":18,"pp":1},{"lv":3,"num":"19.1.4","t":"管理活动","pg":560,"ch":18,"pp":4},{"lv":2,"num":"19.2","t":"变更管理","pg":564,"ch":18,"pp":5},{"lv":3,"num":"19.2.1","t":"管理基础","pg":564,"ch":18,"pp":1},{"lv":3,"num":"19.2.2","t":"管理原则","pg":565,"ch":18,"pp":1},{"lv":3,"num":"19.2.3","t":"角色与职责","pg":565,"ch":18,"pp":1},{"lv":3,"num":"19.2.4","t":"工作程序","pg":566,"ch":18,"pp":1},{"lv":3,"num":"19.2.5","t":"变更控制","pg":567,"ch":18,"pp":1},{"lv":3,"num":"19.2.6","t":"版本发布和回退计划","pg":568,"ch":18,"pp":1},{"lv":2,"num":"19.3","t":"项目文档管理","pg":569,"ch":18,"pp":3},{"lv":3,"num":"19.3.1","t":"管理基础","pg":569,"ch":18,"pp":1},{"lv":3,"num":"19.3.2","t":"规则和方法","pg":569,"ch":18,"pp":3},{"lv":1,"num":"20","t":"高级项目管理","pg":572,"ch":19,"pp":35},{"lv":2,"num":"20.1","t":"项目集管理","pg":572,"ch":19,"pp":5},{"lv":3,"num":"20.1.1","t":"项目集管理标准","pg":572,"ch":19,"pp":1},{"lv":3,"num":"20.1.2","t":"项目集管理角色和职责","pg":572,"ch":19,"pp":2},{"lv":3,"num":"20.1.3","t":"项目集管理绩效域","pg":574,"ch":19,"pp":3},{"lv":2,"num":"20.2","t":"项目组合管理","pg":577,"ch":19,"pp":6},{"lv":3,"num":"20.2.1","t":"项目组合管理标准","pg":577,"ch":19,"pp":1},{"lv":3,"num":"20.2.2","t":"项目组合管理角色和职责","pg":577,"ch":19,"pp":1},{"lv":3,"num":"20.2.3","t":"项目组合管理绩效域","pg":578,"ch":19,"pp":5},{"lv":2,"num":"20.3","t":"组织级项目管理","pg":583,"ch":19,"pp":4},{"lv":3,"num":"20.3.1","t":"组织级项目管理标准","pg":584,"ch":19,"pp":1},{"lv":3,"num":"20.3.2","t":"业务价值与业务评估","pg":584,"ch":19,"pp":1},{"lv":3,"num":"20.3.3","t":"OPM框架要素","pg":584,"ch":19,"pp":2},{"lv":3,"num":"20.3.4","t":"OPM成熟度模型","pg":586,"ch":19,"pp":1},{"lv":2,"num":"20.4","t":"量化项目管理","pg":587,"ch":19,"pp":11},{"lv":3,"num":"20.4.1","t":"量化管理理论及应用","pg":587,"ch":19,"pp":3},{"lv":3,"num":"20.4.2","t":"组织级量化管理","pg":590,"ch":19,"pp":7},{"lv":3,"num":"20.4.3","t":"项目级量化管理","pg":597,"ch":19,"pp":1},{"lv":2,"num":"20.5","t":"项目管理实践模型","pg":598,"ch":19,"pp":9},{"lv":3,"num":"20.5.1","t":"CMMI模型","pg":598,"ch":19,"pp":4},{"lv":3,"num":"20.5.2","t":"PRINCE2模型","pg":602,"ch":19,"pp":5},{"lv":1,"num":"21","t":"项目管理科学基础","pg":607,"ch":20,"pp":34},{"lv":2,"num":"21.1","t":"工程经济学","pg":607,"ch":20,"pp":10},{"lv":3,"num":"21.1.1","t":"资金的时间价值与等值计算","pg":607,"ch":20,"pp":3},{"lv":3,"num":"21.1.2","t":"项目经济评价","pg":610,"ch":20,"pp":7},{"lv":2,"num":"21.2","t":"运筹学","pg":617,"ch":20,"pp":24},{"lv":3,"num":"21.2.1","t":"线性规划","pg":617,"ch":20,"pp":2},{"lv":3,"num":"21.2.2","t":"运输问题","pg":619,"ch":20,"pp":2},{"lv":3,"num":"21.2.3","t":"指派问题","pg":621,"ch":20,"pp":3},{"lv":3,"num":"21.2.4","t":"动态规划","pg":624,"ch":20,"pp":4},{"lv":3,"num":"21.2.5","t":"图与网络","pg":628,"ch":20,"pp":3},{"lv":3,"num":"21.2.6","t":"博弈论","pg":631,"ch":20,"pp":3},{"lv":3,"num":"21.2.7","t":"决策分析","pg":634,"ch":20,"pp":7},{"lv":1,"num":"22","t":"组织通用治理","pg":641,"ch":21,"pp":22},{"lv":2,"num":"22.1","t":"组织战略","pg":641,"ch":21,"pp":4},{"lv":3,"num":"22.1.1","t":"组织战略要点","pg":641,"ch":21,"pp":1},{"lv":3,"num":"22.1.2","t":"组织定位","pg":642,"ch":21,"pp":1},{"lv":3,"num":"22.1.3","t":"组织环境分析","pg":643,"ch":21,"pp":1},{"lv":3,"num":"22.1.4","t":"组织能力确认","pg":644,"ch":21,"pp":1},{"lv":3,"num":"22.1.5","t":"创新和改进","pg":645,"ch":21,"pp":1},{"lv":2,"num":"22.2","t":"绩效考核","pg":645,"ch":21,"pp":9},{"lv":3,"num":"22.2.1","t":"绩效计划","pg":645,"ch":21,"pp":3},{"lv":3,"num":"22.2.2","t":"绩效实施","pg":648,"ch":21,"pp":1},{"lv":3,"num":"22.2.3","t":"绩效治理","pg":649,"ch":21,"pp":1},{"lv":3,"num":"22.2.4","t":"绩效评估","pg":650,"ch":21,"pp":3},{"lv":3,"num":"22.2.5","t":"绩效评价结果反馈","pg":653,"ch":21,"pp":1},{"lv":3,"num":"22.2.6","t":"绩效评价结果应用","pg":653,"ch":21,"pp":1},{"lv":2,"num":"22.3","t":"转型升级","pg":654,"ch":21,"pp":9},{"lv":3,"num":"22.3.1","t":"战略转型升级","pg":654,"ch":21,"pp":2},{"lv":3,"num":"22.3.2","t":"数字化转型实施","pg":656,"ch":21,"pp":7},{"lv":1,"num":"23","t":"组织通用管理","pg":663,"ch":22,"pp":54},{"lv":2,"num":"23.1","t":"人力资源管理","pg":663,"ch":22,"pp":17},{"lv":3,"num":"23.1.1","t":"人力资源管理基础","pg":663,"ch":22,"pp":1},{"lv":3,"num":"23.1.2","t":"工作分析与岗位设","pg":664,"ch":22,"pp":3},{"lv":3,"num":"23.1.3","t":"人力资源战略与计划","pg":667,"ch":22,"pp":3},{"lv":3,"num":"23.1.4","t":"人员招聘与录用","pg":670,"ch":22,"pp":3},{"lv":3,"num":"23.1.5","t":"人员培训","pg":673,"ch":22,"pp":3},{"lv":3,"num":"23.1.6","t":"组织薪酬管理","pg":676,"ch":22,"pp":4},{"lv":3,"num":"23.1.7","t":"人员职业规划与管理","pg":680,"ch":22,"pp":1},{"lv":2,"num":"23.2","t":"流程管理","pg":680,"ch":22,"pp":13},{"lv":3,"num":"23.2.1","t":"流程基础","pg":681,"ch":22,"pp":2},{"lv":3,"num":"23.2.2","t":"流程规划","pg":683,"ch":22,"pp":4},{"lv":3,"num":"23.2.3","t":"流程执行","pg":687,"ch":22,"pp":1},{"lv":3,"num":"23.2.4","t":"流程评价","pg":688,"ch":22,"pp":4},{"lv":3,"num":"23.2.5","t":"流程持续改进","pg":692,"ch":22,"pp":1},{"lv":2,"num":"23.3","t":"知识管理","pg":693,"ch":22,"pp":12},{"lv":3,"num":"23.3.1","t":"知识管理基础","pg":693,"ch":22,"pp":1},{"lv":3,"num":"23.3.2","t":"知识价值链","pg":694,"ch":22,"pp":1},{"lv":3,"num":"23.3.3","t":"显性知识与隐性知识","pg":695,"ch":22,"pp":2},{"lv":3,"num":"23.3.4","t":"知识管理过程","pg":697,"ch":22,"pp":5},{"lv":3,"num":"23.3.5","t":"知识协同与创新","pg":702,"ch":22,"pp":1},{"lv":3,"num":"23.3.6","t":"知识传播与服务","pg":703,"ch":22,"pp":2},{"lv":2,"num":"23.4","t":"市场营销","pg":705,"ch":22,"pp":12},{"lv":3,"num":"23.4.1","t":"营销基础","pg":705,"ch":22,"pp":3},{"lv":3,"num":"23.4.2","t":"营销环境","pg":708,"ch":22,"pp":1},{"lv":3,"num":"23.4.3","t":"营销分析","pg":709,"ch":22,"pp":4},{"lv":3,"num":"23.4.4","t":"营销管控","pg":713,"ch":22,"pp":4},{"lv":1,"num":"24","t":"法律法规与标准规范","pg":717,"ch":23,"pp":13},{"lv":2,"num":"24.1","t":"法律法规","pg":717,"ch":23,"pp":2},{"lv":3,"num":"24.1.1","t":"民法典(合同编)","pg":717,"ch":23,"pp":1},{"lv":3,"num":"24.1.2","t":"招标投标法","pg":717,"ch":23,"pp":1},{"lv":3,"num":"24.1.3","t":"政府采购法","pg":717,"ch":23,"pp":1},{"lv":3,"num":"24.1.4","t":"专利法","pg":718,"ch":23,"pp":1},{"lv":3,"num":"24.1.5","t":"著作权法","pg":718,"ch":23,"pp":1},{"lv":3,"num":"24.1.6","t":"商标法","pg":718,"ch":23,"pp":1},{"lv":3,"num":"24.1.7","t":"网络安全法","pg":718,"ch":23,"pp":1},{"lv":3,"num":"24.1.8","t":"数据安全法","pg":719,"ch":23,"pp":1},{"lv":2,"num":"24.2","t":"标准规范","pg":719,"ch":23,"pp":11},{"lv":3,"num":"24.2.1","t":"系统与软件工程标准","pg":719,"ch":23,"pp":4},{"lv":3,"num":"24.2.2","t":"新一代信息技术标准","pg":723,"ch":23,"pp":5},{"lv":3,"num":"24.2.3","t":"信息技术服务标准","pg":728,"ch":23,"pp":2}];
+
+/* ========== 基础 ========== */
+const CK = 'study-plan-2026-v4';
+const S_Y = 2026, S_M = 10, S_D = 9;
+const E_Y = 2026, E_M = 11, E_D = 31;
+const WD = ['日','一','二','三','四','五','六'];
+const LVN = ['','章','节','目'];
+
+/* 没有三级目录、但需计入学习点（可打勾）的节 */
+const LEAF_EXTRAS = { '6.1': 1, '7.1': 1, '7.3': 1, '15.10': 1 };
+/* 可打勾（计入总知识点数）：所有目(lv3) + 上述特殊节 */
+function isLeaf(i) {
+  const c = CAT[i];
+  return c && (c.lv === 3 || LEAF_EXTRAS[c.num] === 1);
+}
+const LEAF_TOTAL = CAT.filter((c, i) => isLeaf(i)).length;
+
+/* 固定活动：按星期(0=周日..6=周六) */
+const FIXED = {
+  2: ['羽毛球训练 20:30–22:00'],
+  4: ['康复训练 18:00–21:00'],
+  5: ['练拳 20:00–22:00'],
+  6: ['练拳 13:00–14:30'],
+  0: ['练拳 10:00–11:30']
+};
+
+/* 默认计划时长：周一/二/三/五 2h，周四 1.5h，周六/日 4h */
+function defaultH(dow) {
+  if (dow === 4) return 1.5;
+  if (dow === 0 || dow === 6) return 4;
+  return 2;
+}
+
+/* 特定日期的时长覆盖 + 额外安排 */
+const SPECIAL_DAYS = {
+  '2026-11-28': { h: 3, ex: ['话剧《乌台》 19:30–21:00'] },
+  '2026-11-29': { h: 3, ex: ['马克西姆演奏会 19:00–21:00'] }
+};
+function dayExtras(k, dow) {
+  const base = (FIXED[dow] || []).slice();
+  const sp = SPECIAL_DAYS[k];
+  if (sp && sp.ex) sp.ex.forEach(function (e) { if (base.indexOf(e) < 0) base.push(e); });
+  return base;
+}
+
+const p2 = n => (n < 10 ? '0' : '') + n;
+const dk = d => d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate());
+const md = k => k.slice(5).replace('-', '/');
+const esc = s => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const fmtH = h => {
+  const n = Math.round(h * 10) / 10;
+  return (n % 1 === 0 ? n : n.toFixed(1)).toString();
+};
+
+const DAYS = [];
+(function(){
+  const d = new Date(S_Y, S_M, S_D);
+  const end = new Date(E_Y, E_M, E_D);
+  while (d <= end) {
+    DAYS.push({ k: dk(d), dow: d.getDay(), work: d.getDay() !== 0 && d.getDay() !== 6 });
+    d.setDate(d.getDate() + 1);
+  }
+})();
+const DAYMAP = {};
+DAYS.forEach(d => { DAYMAP[d.k] = d; });
+const STARTK = DAYS[0].k, ENDK = DAYS[DAYS.length - 1].k;
+
+const WEEKS = [];
+for (let i = 0; i < DAYS.length; i += 7) WEEKS.push(DAYS.slice(i, i + 7));
+
+/* ========== 状态 ========== */
+let state = newState();
+let A2D = {};
+let selIdx = -1;
+let openKey = null;
+let collapsed = {};
+
+function newState() {
+  const days = {};
+  DAYS.forEach(d => {
+    const sp = SPECIAL_DAYS[d.k];
+    days[d.k] = {
+      h: sp && sp.h != null ? sp.h : defaultH(d.dow),
+      c: [], note: '',
+      ex: dayExtras(d.k, d.dow)
+    };
+  });
+  return { v: 4, days: days, done: {}, snaps: [], mpp: 8, defW: 2, defThu: 1.5, defE: 4 };
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(CK);
+    if (!raw) return;
+    const o = JSON.parse(raw);
+    if (!o || o.v !== 4) return;
+    state.days = o.days || {};
+    state.done = o.done || {};
+    state.snaps = o.snaps || [];
+    state.mpp = o.mpp || 8;
+    state.defW = o.defW == null ? 2 : o.defW;
+    state.defThu = o.defThu == null ? 1.5 : o.defThu;
+    state.defE = o.defE == null ? 4 : o.defE;
+    DAYS.forEach(d => {
+      const sp = SPECIAL_DAYS[d.k];
+      if (!state.days[d.k]) state.days[d.k] = { h: sp && sp.h != null ? sp.h : defaultH(d.dow), c: [], note: '', ex: dayExtras(d.k, d.dow) };
+      const x = state.days[d.k];
+      x.c = (x.c || []).filter(i => typeof i === 'number' && i >= 0 && i < CAT.length);
+      x.note = x.note || '';
+      x.h = Number(x.h) || 0;
+      if (!Array.isArray(x.ex)) x.ex = dayExtras(d.k, d.dow);
+      // 特定日期：确保固定活动存在 + 时长覆盖为指定值
+      if (sp) {
+        if (sp.h != null) x.h = sp.h;
+        if (sp.ex) sp.ex.forEach(function (e) { if (x.ex.indexOf(e) < 0) x.ex.push(e); });
+      }
+    });
+  } catch (e) {}
+}
+let stTimer = null;
+function save() {
+  clearTimeout(stTimer);
+  stTimer = setTimeout(() => {
+    try { localStorage.setItem(CK, JSON.stringify(state)); } catch (e) {}
+  }, 100);
+}
+function dayOf(k) {
+  if (!state.days[k]) {
+    const dow = DAYMAP[k].dow;
+    const sp = SPECIAL_DAYS[k];
+    state.days[k] = { h: sp && sp.h != null ? sp.h : defaultH(dow), c: [], note: '', ex: dayExtras(k, dow) };
+  }
+  return state.days[k];
+}
+function rebuildMap() {
+  A2D = {};
+  DAYS.forEach(d => {
+    const x = state.days[d.k];
+    if (!x || !x.c) return;
+    x.c.forEach(i => { A2D[i] = d.k; });
+  });
+}
+function isDone(i) { return !!state.done[i]; }
+function doneCount() { let n = 0; for (const k in state.done) if (state.done[k]) n++; return n; }
+
+function pagesOf(k) {
+  const x = state.days[k];
+  if (!x || !x.c) return 0;
+  let s = 0;
+  x.c.forEach(i => { s += (CAT[i] && CAT[i].pp) || 0; });
+  return s;
+}
+
+/* ========== 日历 ========== */
+function todayKey() { return dk(new Date()); }
+
+function cellHTML(k) {
+  const d = DAYMAP[k];
+  if (!d) {
+    return '<div class="cell out"><div class="c-h"><span class="c-d">' + Number(k.slice(8)) + '</span></div></div>';
+  }
+  const x = state.days[k] || { h: 0, c: [], note: '', ex: [] };
+  const tk = x.c || [];
+  const dn = tk.filter(i => isDone(i)).length;
+  const allDone = tk.length > 0 && dn === tk.length;
+  // 过期未完成：日期已过（或今天已过 8 点）且有分配任务但未全部勾选
+  const now = new Date();
+  const passed = k < todayKey() || (k === todayKey() && now.getHours() >= 8);
+  const undone = passed && tk.length > 0 && dn < tk.length;
+  let h = '<div class="cell' + (k === todayKey() ? ' today' : '') + (allDone ? ' doneall' : '') + (undone ? ' undone' : '') + '" data-k="' + k + '">';
+  h += '<div class="c-h"><span class="c-d">' + Number(k.slice(8)) + '</span><span class="c-w">' + WD[d.dow] + '</span>';
+  h += '<span class="c-hh">';
+  if (x.h > 0) h += '<b>' + fmtH(x.h) + 'h</b>';
+  if (tk.length) h += '<span class="ok" style="margin-left:3px">' + dn + '/' + tk.length + '</span>';
+  h += '</span></div>';
+
+  // 学习计划区（全部展示，不折叠）
+  if (tk.length) {
+    h += '<div class="c-sec">学习计划</div>';
+    h += '<div class="c-tks">';
+    tk.forEach(i => {
+      const c = CAT[i];
+      if (!c) return;
+      h += '<div class="tk' + (isDone(i) ? ' on' : '') + '" data-i="' + i + '" title="' + esc(c.num + ' ' + c.t + '（' + c.pp + '页）') + '">';
+      h += '<span class="chk' + (isDone(i) ? ' on' : '') + '"></span>';
+      h += '<span class="tkn">' + esc(c.num) + '</span><span class="tkt">' + esc(c.t) + '</span></div>';
+    });
+    h += '</div>';
+  } else {
+    h += '<div class="c-sec">学习计划</div><div class="c-empty">拖入任务</div>';
+  }
+
+  // 其他安排区
+  const ex = x.ex || [];
+  if (ex.length) {
+    h += '<div class="c-sec">其他安排</div>';
+    h += '<div class="c-extras">';
+    ex.slice(0, 2).forEach(e => {
+      h += '<div class="ex" title="' + esc(e) + '"><span class="exdot"></span><span class="ext">' + esc(e) + '</span></div>';
+    });
+    if (ex.length > 2) h += '<div class="more">还有 ' + (ex.length - 2) + ' 项</div>';
+    h += '</div>';
+  }
+
+  if (x.note) h += '<div class="c-note">' + esc(x.note) + '</div>';
+  h += '</div>';
+  return h;
+}
+
+function renderCal() {
+  const months = [[S_Y, S_M], [E_Y, E_M]];
+  let h = '';
+  months.forEach(function (mm) {
+    const y = mm[0], m = mm[1];
+    const dim = new Date(y, m + 1, 0).getDate();
+    // 该月渲染起始日：不早于计划起始日 STARTK（11 月从 9 号起，12 月从 1 号起）
+    let startDay = 1;
+    const monthStartK = y + '-' + p2(m + 1) + '-01';
+    if (STARTK > monthStartK) startDay = Number(STARTK.slice(8));
+    const firstD = new Date(y, m, startDay);
+    const off = (firstD.getDay() + 6) % 7;
+    let inR = 0;
+    for (let i = startDay; i <= dim; i++) {
+      const k = y + '-' + p2(m + 1) + '-' + p2(i);
+      if (k >= STARTK && k <= ENDK) inR++;
+    }
+    h += '<div class="month"><div class="month-h"><h2>' + y + ' 年 ' + (m + 1) + ' 月</h2>';
+    h += '<span class="m-sub">计划覆盖 ' + inR + ' 天</span></div><div class="cal">';
+    ['一','二','三','四','五','六','日'].forEach(function (w, i) {
+      h += '<div class="cal-dow' + (i >= 5 ? ' we' : '') + '">' + w + '</div>';
+    });
+    for (let i = 0; i < off; i++) h += '<div class="cell out" style="opacity:.15"></div>';
+    for (let i = startDay; i <= dim; i++) {
+      const k = y + '-' + p2(m + 1) + '-' + p2(i);
+      if (k >= STARTK && k <= ENDK) h += cellHTML(k);
+      else h += '<div class="cell out"><div class="c-h"><span class="c-d">' + i + '</span></div></div>';
+    }
+    h += '</div></div>';
+  });
+  document.getElementById('calwrap').innerHTML = h;
+}
+
+/* ========== 统计 ========== */
+function renderStats() {
+  const total = LEAF_TOTAL;
+  const dn = doneCount();
+  document.getElementById('s-prog').innerHTML = dn + ' / ' + total + ' <em>已完成</em>';
+  document.getElementById('s-bar-done').style.width = (total ? dn / total * 100 : 0) + '%';
+
+  let th = 0, wd = 0, we = 0, asg = 0;
+  DAYS.forEach(function (d) {
+    const x = state.days[d.k];
+    if (!x) return;
+    const h = Number(x.h) || 0;
+    th += h;
+    if (d.work) wd += h; else we += h;
+    asg += (x.c || []).length;
+  });
+  document.getElementById('s-h').innerHTML = fmtH(th) + '<em>h</em>';
+  document.getElementById('s-wd').innerHTML = fmtH(wd) + '<em>h</em>';
+  document.getElementById('s-we').innerHTML = fmtH(we) + '<em>h</em>';
+  document.getElementById('s-asg').innerHTML = asg + '<em>条</em>';
+
+  let totPg = 0;
+  CAT.forEach(function (c, i) { if (isLeaf(i)) totPg += c.pp; });
+  document.getElementById('s-pg').innerHTML = totPg + '<em>页</em>';
+}
+
+function renderWeeks() {
+  let rows = '', tH = 0, tW = 0, tE = 0, tTask = 0, tDone = 0, tAsg = 0;
+  WEEKS.forEach(function (w, wi) {
+    let wh = 0, eh = 0, task = 0, done = 0, asg = 0;
+    w.forEach(function (d) {
+      const x = state.days[d.k];
+      if (!x) return;
+      const h = Number(x.h) || 0;
+      if (d.work) wh += h; else eh += h;
+      const c = x.c || [];
+      asg += c.length;
+      task += c.length;
+      done += c.filter(i => isDone(i)).length;
+    });
+    const tot = wh + eh;
+    tH += tot; tW += wh; tE += eh; tTask += task; tDone += done; tAsg += asg;
+    const tagCls = w.length < 5 ? ' rest' : '';
+    const isNow = w.some(d => d.k === todayKey());
+    rows += '<tr' + (isNow ? ' class="nowrow"' : '') + '>';
+    rows += '<td><span class="wtag' + tagCls + '">第 ' + (wi + 1) + ' 周</span></td>';
+    rows += '<td>' + md(w[0].k) + ' – ' + md(w[w.length - 1].k) + '</td>';
+    rows += '<td>' + w.length + '</td>';
+    rows += '<td>' + (wh > 0 ? fmtH(wh) + ' h' : '—') + '</td>';
+    rows += '<td>' + (eh > 0 ? fmtH(eh) + ' h' : '—') + '</td>';
+    rows += '<td><b>' + (tot > 0 ? fmtH(tot) + ' h' : '—') + '</b></td>';
+    rows += '<td>' + (task ? done + ' / ' + task : '—') + '</td>';
+    rows += '<td>' + (asg || '—') + '</td>';
+    rows += '</tr>';
+  });
+  rows += '<tr class="total"><td>合计</td><td>' + md(STARTK) + ' – ' + md(ENDK) + '</td><td>' + DAYS.length + '</td>';
+  rows += '<td>' + fmtH(tW) + ' h</td><td>' + fmtH(tE) + ' h</td><td>' + fmtH(tH) + ' h</td>';
+  rows += '<td>' + tDone + ' / ' + tTask + '</td><td>' + tAsg + '</td></tr>';
+  document.getElementById('wtbody').innerHTML = rows;
+}
+
+/* ========== 目录 ========== */
+function renderCatalog() {
+  const q = (document.getElementById('q').value || '').trim().toLowerCase();
+  const onlyUndone = document.getElementById('onlyUndone').checked;
+  let html = '', shown = 0;
+  CAT.forEach(function (c, i) {
+    if (c.lv > 1 && collapsed[c.ch]) return;
+    const hit = !q || c.num.toLowerCase().indexOf(q) >= 0 || c.t.toLowerCase().indexOf(q) >= 0;
+    if (!hit) return;
+    if (onlyUndone && isDone(i)) return;
+    shown++;
+    const done = isDone(i);
+    const leaf = isLeaf(i);
+    const dayK = A2D[i];
+    let cls = 'cat-item lv' + c.lv + (done ? ' done' : '') + (selIdx === i ? ' pick' : '');
+    let h = '<div class="' + cls + '" data-i="' + i + '" draggable="true">';
+    h += '<span class="caret">' + (c.lv === 1 ? (collapsed[c.ch] ? '▸' : '▾') : '') + '</span>';
+    h += (leaf ? '<span class="chk' + (done ? ' on' : '') + '" data-t="' + i + '"></span>' : '<span class="chk none"></span>');
+    h += '<span class="num">' + (c.lv === 1 ? '第' + c.num + '章' : esc(c.num)) + '</span>';
+    h += '<span class="tt" title="' + esc(c.t) + '（P' + c.pg + ' · ' + c.pp + '页）">' + esc(c.t) + '</span>';
+    h += '<span class="pg">' + (c.lv === 1 ? c.pp + '页' : c.pp + 'p') + '</span>';
+    if (dayK) h += '<span class="daytag">' + md(dayK) + '</span>';
+    h += '</div>';
+    html += h;
+  });
+  if (!shown) html = '<div class="dp-empty">没有匹配的条目</div>';
+  document.getElementById('catalog').innerHTML = html;
+  document.getElementById('cat-cnt').textContent = '共 ' + LEAF_TOTAL + ' 个知识点';
+}
+
+function renderAll() {
+  rebuildMap();
+  renderCal();
+  renderStats();
+  renderWeeks();
+  renderCatalog();
+}
+
+/* ========== 目录交互 ========== */
+const catBox = document.getElementById('catalog');
+
+catBox.addEventListener('click', function (e) {
+  const chi = e.target.closest('.chk');
+  if (chi) { toggleDone(+chi.dataset.t); return; }
+  const item = e.target.closest('.cat-item');
+  if (!item) return;
+  const i = +item.dataset.i;
+  const c = CAT[i];
+  if (e.target.closest('.caret') && c.lv === 1) {
+    collapsed[c.ch] = !collapsed[c.ch];
+    renderCatalog();
+    return;
+  }
+  selIdx = (selIdx === i) ? -1 : i;
+  renderCatalog();
+  renderSelbar();
+});
+
+catBox.addEventListener('dragstart', function (e) {
+  const item = e.target.closest('.cat-item');
+  if (!item) return;
+  selIdx = +item.dataset.i;
+  item.classList.add('drag');
+  try {
+    e.dataTransfer.setData('text/plain', String(selIdx));
+    e.dataTransfer.effectAllowed = 'copyMove';
+  } catch (err) {}
+  renderSelbar();
+});
+catBox.addEventListener('dragend', function (e) {
+  const item = e.target.closest('.cat-item');
+  if (item) item.classList.remove('drag');
+  document.querySelectorAll('.cell.over').forEach(c => c.classList.remove('over'));
+});
+
+/* ========== 日历交互 ========== */
+const calwrap = document.getElementById('calwrap');
+
+calwrap.addEventListener('click', function (e) {
+  const chip = e.target.closest('.tk');
+  const cell = e.target.closest('.cell');
+  if (!cell || cell.classList.contains('out')) return;
+  const k = cell.dataset.k;
+  if (!k) return;
+  if (chip) { toggleDone(+chip.dataset.i); return; }
+  if (selIdx >= 0) { assign(selIdx, k); return; }
+  openDay(k);
+});
+
+calwrap.addEventListener('dragover', function (e) {
+  const cell = e.target.closest('.cell');
+  if (!cell || cell.classList.contains('out')) return;
+  e.preventDefault();
+  try { e.dataTransfer.dropEffect = 'copy'; } catch (err) {}
+  document.querySelectorAll('.cell.over').forEach(c => { if (c !== cell) c.classList.remove('over'); });
+  cell.classList.add('over');
+});
+calwrap.addEventListener('dragleave', function (e) {
+  const cell = e.target.closest('.cell');
+  if (cell) cell.classList.remove('over');
+});
+calwrap.addEventListener('drop', function (e) {
+  e.preventDefault();
+  const cell = e.target.closest('.cell');
+  if (!cell) return;
+  cell.classList.remove('over');
+  const k = cell.dataset.k;
+  if (!k || cell.classList.contains('out')) return;
+  let i = -1;
+  try { i = +e.dataTransfer.getData('text/plain'); } catch (err) {}
+  if (isNaN(i) || i < 0) i = selIdx;
+  if (i >= 0) assign(i, k);
+});
+
+function toggleDone(i) {
+  if (state.done[i]) delete state.done[i];
+  else state.done[i] = 1;
+  save();
+  renderAll();
+  const c = CAT[i];
+  toast(state.done[i] ? ('已打勾：' + c.num + ' ' + c.t) : ('已取消打勾：' + c.num + ' ' + c.t));
+}
+
+function assign(i, k) {
+  const prev = A2D[i];
+  if (prev === k) {
+    toast('已在 ' + md(k) + '，无需重复');
+    selIdx = -1; renderSelbar(); renderCatalog();
+    return;
+  }
+  if (prev) {
+    const pd = dayOf(prev);
+    pd.c = pd.c.filter(x => x !== i);
+  }
+  const d = dayOf(k);
+  if (d.c.indexOf(i) < 0) d.c.push(i);
+  d.c.sort((a, b) => a - b);
+  selIdx = -1;
+  save();
+  renderAll();
+  renderSelbar();
+  toast((prev ? '已从 ' + md(prev) + ' 移到 ' : '已排入 ') + md(k) + ' · 计划 ' + fmtH(d.h) + 'h');
+}
+
+/* ========== 选中条 ========== */
+function renderSelbar() {
+  const bar = document.getElementById('selbar');
+  if (selIdx < 0) { bar.classList.remove('on'); return; }
+  const c = CAT[selIdx];
+  bar.querySelector('.sbn').textContent = LVN[c.lv] + ' 已选';
+  document.getElementById('sel-txt').textContent = c.num + ' ' + c.t;
+  bar.classList.add('on');
+}
+document.getElementById('sel-cancel').addEventListener('click', function () {
+  selIdx = -1; renderSelbar(); renderCatalog();
+});
+
+/* ========== 当日面板 ========== */
+function openDay(k) {
+  openKey = k;
+  const d = DAYMAP[k];
+  const x = dayOf(k);
+  document.getElementById('dp-title').textContent = Number(k.slice(5, 7)) + '月' + Number(k.slice(8)) + '日 · 周' + WD[d.dow];
+  const tg = document.getElementById('dp-type');
+  tg.textContent = d.work ? '工作日' : '周末';
+  tg.className = 'tag' + (d.work ? '' : ' we');
+  document.getElementById('dp-h').value = x.h || 0;
+  document.getElementById('dp-pginfo').textContent = pagesOf(k) ? ('共 ' + pagesOf(k) + ' 页') : '未排任务';
+  document.getElementById('dp-note').value = x.note || '';
+  renderDpList();
+  renderDpExtras();
+  document.getElementById('daypanel').classList.add('on');
+}
+function renderDpList() {
+  const k = openKey;
+  if (!k) return;
+  const x = dayOf(k);
+  const c = x.c || [];
+  const box = document.getElementById('dp-list');
+  if (!c.length) {
+    box.innerHTML = '<div class="dp-empty">当天还没有学习任务，把右侧目录拖进来</div>';
+  } else {
+    box.innerHTML = c.map(function (i) {
+      const it = CAT[i];
+      return '<div class="dp-item' + (isDone(i) ? ' on' : '') + '">' +
+        '<span class="chk' + (isDone(i) ? ' on' : '') + '" data-tw="' + i + '"></span>' +
+        '<span class="n">' + esc(it.num) + '</span>' +
+        '<span class="t" title="' + esc(it.t) + '">' + esc(it.t) + '</span>' +
+        '<span class="n" style="min-width:auto;color:#B3ADA2">' + it.pp + 'p</span>' +
+        '<button class="del" data-rm="' + i + '">×</button></div>';
+    }).join('');
+  }
+  const dn = c.filter(i => isDone(i)).length;
+  document.getElementById('dp-cnt').textContent = c.length ? (dn + ' / ' + c.length + ' 已完成') : '';
+}
+function renderDpExtras() {
+  const k = openKey;
+  if (!k) return;
+  const x = dayOf(k);
+  const ex = x.ex || [];
+  const box = document.getElementById('dp-extras');
+  if (!ex.length) {
+    box.innerHTML = '<div class="dp-empty">暂无其他安排</div>';
+  } else {
+    box.innerHTML = ex.map(function (e, i) {
+      return '<div class="ex-row"><span class="exdot"></span>' +
+        '<input class="et" value="' + esc(e) + '" data-exi="' + i + '">' +
+        '<button class="del" data-exdel="' + i + '">×</button></div>';
+    }).join('');
+  }
+}
+document.getElementById('dp-list').addEventListener('click', function (e) {
+  const ch = e.target.closest('[data-tw]');
+  if (ch) { toggleDone(+ch.dataset.tw); renderDpList(); renderCal(); return; }
+  const del = e.target.closest('[data-rm]');
+  if (del) {
+    const i = +del.dataset.rm;
+    const x = dayOf(openKey);
+    x.c = x.c.filter(y => y !== i);
+    save(); renderAll(); renderDpList();
+    document.getElementById('dp-pginfo').textContent = pagesOf(openKey) ? ('共 ' + pagesOf(openKey) + ' 页') : '未排任务';
+    toast('已移出当天');
+  }
+});
+/* 其他安排：编辑、删除、添加 */
+document.getElementById('dp-extras').addEventListener('input', function (e) {
+  const inp = e.target.closest('[data-exi]');
+  if (!inp) return;
+  const x = dayOf(openKey);
+  const i = +inp.dataset.exi;
+  x.ex[i] = inp.value;
+  save(); renderCal();
+});
+document.getElementById('dp-extras').addEventListener('click', function (e) {
+  const del = e.target.closest('[data-exdel]');
+  if (!del) return;
+  const x = dayOf(openKey);
+  x.ex.splice(+del.dataset.exdel, 1);
+  save(); renderDpExtras(); renderCal();
+});
+document.getElementById('ex-addbtn').addEventListener('click', function () {
+  const inp = document.getElementById('ex-new');
+  const v = inp.value.trim();
+  if (!v) return;
+  const x = dayOf(openKey);
+  x.ex.push(v);
+  inp.value = '';
+  save(); renderDpExtras(); renderCal();
+  toast('已添加其他安排');
+});
+document.getElementById('ex-new').addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') document.getElementById('ex-addbtn').click();
+});
+document.getElementById('dp-h').addEventListener('input', function (e) {
+  const v = Math.max(0, Math.min(16, Number(e.target.value) || 0));
+  dayOf(openKey).h = v;
+  save();
+  renderStats(); renderWeeks(); renderCal();
+});
+document.getElementById('dp-note').addEventListener('input', function (e) {
+  dayOf(openKey).note = e.target.value;
+  save();
+  renderCal();
+});
+document.getElementById('dp-close').addEventListener('click', closeDay);
+document.getElementById('dp-mask').addEventListener('click', closeDay);
+function closeDay() {
+  document.getElementById('daypanel').classList.remove('on');
+  openKey = null;
+}
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') {
+    if (document.getElementById('daypanel').classList.contains('on')) closeDay();
+    if (document.getElementById('snapmodal').classList.contains('on')) document.getElementById('snapmodal').classList.remove('on');
+    if (selIdx >= 0) { selIdx = -1; renderSelbar(); renderCatalog(); }
+  }
+});
+
+document.getElementById('btn-expand').addEventListener('click', function () {
+  collapsed = {}; renderCatalog();
+});
+document.getElementById('btn-collapse').addEventListener('click', function () {
+  collapsed = {}; for (let i = 0; i < 24; i++) collapsed[i] = 1;
+  renderCatalog();
+});
+document.getElementById('q').addEventListener('input', function () {
+  if (document.getElementById('q').value.trim()) collapsed = {};
+  renderCatalog();
+});
+document.getElementById('onlyUndone').addEventListener('change', renderCatalog);
+
+/* ========== 保存 / 历史 ========== */
+function snapshot() {
+  const t = new Date();
+  const label = t.getFullYear() + '-' + p2(t.getMonth() + 1) + '-' + p2(t.getDate()) + ' ' + p2(t.getHours()) + ':' + p2(t.getMinutes());
+  return {
+    t: label,
+    done: JSON.parse(JSON.stringify(state.done)),
+    days: JSON.parse(JSON.stringify(state.days)),
+    mpp: state.mpp, defW: state.defW, defThu: state.defThu, defE: state.defE
+  };
+}
+document.getElementById('btn-save').addEventListener('click', function () {
+  state.snaps.unshift(snapshot());
+  if (state.snaps.length > 30) state.snaps.length = 30;
+  try { localStorage.setItem(CK, JSON.stringify(state)); } catch (e) {}
+  let asg = 0;
+  DAYS.forEach(function (d) { const x = state.days[d.k]; if (x && x.c) asg += x.c.length; });
+  toast('已保存：' + asg + ' 条任务分配 + 1 份快照（共 ' + state.snaps.length + ' 份）');
+  if (document.getElementById('snapmodal').classList.contains('on')) renderSnaps();
+});
+
+document.getElementById('btn-hist').addEventListener('click', function () {
+  renderSnaps();
+  document.getElementById('snapmodal').classList.add('on');
+});
+document.getElementById('sm-close').addEventListener('click', function () { document.getElementById('snapmodal').classList.remove('on'); });
+document.getElementById('sm-mask').addEventListener('click', function () { document.getElementById('snapmodal').classList.remove('on'); });
+
+function renderSnaps() {
+  const box = document.getElementById('snap-list');
+  document.getElementById('snap-cnt').textContent = '共 ' + state.snaps.length + ' 份';
+  if (!state.snaps.length) {
+    box.innerHTML = '<div class="dp-empty">还没有保存过。点顶部「保存进度」会存一份当前副本，最多保留 30 份。</div>';
+    return;
+  }
+  box.innerHTML = state.snaps.map(function (s, i) {
+    let h = 0, dn = 0;
+    for (const k in s.days) h += Number(s.days[k].h) || 0;
+    for (const k in s.done) if (s.done[k]) dn++;
+    return '<div class="snap"><span class="tm">' + esc(s.t) + '</span>' +
+      '<span class="meta">完成 ' + dn + ' 条 · 计划 ' + fmtH(h) + 'h</span>' +
+      '<button data-rst="' + i + '">恢复</button><button class="d" data-del="' + i + '">删除</button></div>';
+  }).join('');
+}
+document.getElementById('snap-list').addEventListener('click', function (e) {
+  const r = e.target.closest('[data-rst]');
+  if (r) {
+    const i = +r.dataset.rst;
+    if (!confirm('用 ' + state.snaps[i].t + ' 的快照覆盖当前进度？当前未保存的改动会丢失。')) return;
+    const s = state.snaps[i];
+    state.done = JSON.parse(JSON.stringify(s.done));
+    state.days = JSON.parse(JSON.stringify(s.days));
+    if (s.mpp) state.mpp = s.mpp;
+    if (s.defThu != null) state.defThu = s.defThu;
+    DAYS.forEach(function (d) { if (!state.days[d.k]) state.days[d.k] = { h: defaultH(d.dow), c: [], note: '', ex: [] }; });
+    save(); renderAll();
+    toast('已恢复到 ' + s.t);
+    return;
+  }
+  const d = e.target.closest('[data-del]');
+  if (d) {
+    state.snaps.splice(+d.dataset.del, 1);
+    save(); renderSnaps();
+  }
+});
+
+/* ========== 备份 ========== */
+document.getElementById('btn-json').addEventListener('click', function () {
+  const data = JSON.stringify({
+    v: 4, exportAt: new Date().toISOString(),
+    days: state.days, done: state.done,
+    mpp: state.mpp, defW: state.defW, defThu: state.defThu, defE: state.defE
+  }, null, 1);
+  download(new Blob([data], { type: 'application/json' }), '学习计划备份-' + dk(new Date()) + '.json');
+});
+document.getElementById('btn-restore').addEventListener('click', function () {
+  document.getElementById('fileinput').click();
+});
+document.getElementById('fileinput').addEventListener('change', function (e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  const fr = new FileReader();
+  fr.onload = function () {
+    try {
+      const o = JSON.parse(fr.result);
+      if (!o.days) throw new Error('缺少 days 字段');
+      state.days = o.days; state.done = o.done || {};
+      state.mpp = o.mpp || 8;
+      state.defW = o.defW == null ? 2 : o.defW;
+      state.defThu = o.defThu == null ? 1.5 : o.defThu;
+      state.defE = o.defE == null ? 4 : o.defE;
+      DAYS.forEach(function (d) {
+        const sp = SPECIAL_DAYS[d.k];
+        if (!state.days[d.k]) state.days[d.k] = { h: sp && sp.h != null ? sp.h : defaultH(d.dow), c: [], note: '', ex: dayExtras(d.k, d.dow) };
+        const x = state.days[d.k];
+        x.c = (x.c || []).filter(i => typeof i === 'number' && i >= 0 && i < CAT.length);
+        x.note = x.note || ''; x.h = Number(x.h) || 0;
+        if (!Array.isArray(x.ex)) x.ex = dayExtras(d.k, d.dow);
+        if (sp) {
+          if (sp.h != null) x.h = sp.h;
+          if (sp.ex) sp.ex.forEach(function (e) { if (x.ex.indexOf(e) < 0) x.ex.push(e); });
+        }
+      });
+      save(); renderAll();
+      toast('已恢复备份');
+    } catch (err) { alert('备份文件解析失败：' + err.message); }
+  };
+  fr.readAsText(f);
+  e.target.value = '';
+});
+
+/* ========== toast ========== */
+let toastTimer = null;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { t.classList.remove('on'); }, 1900);
+}
+
+/* ========== 下载 ========== */
+function download(blob, name) {
+  const a = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(function () {
+    if (a.parentNode) document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 1200);
+}
+
+/* ========== 导出 Excel（手写 OOXML + ZIP，零外部依赖） ========== */
+const CRCT = (function () {
+  const t = new Uint32Array(256);
+  for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+function crc32(u8) {
+  let c = 0xFFFFFFFF;
+  for (let i = 0; i < u8.length; i++) c = CRCT[(c ^ u8[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+function zipStore(entries) {
+  const parts = [], central = [];
+  let offset = 0;
+  entries.forEach(function (e) {
+    const nameB = e.nameB, data = e.data, crc = crc32(data), size = data.length;
+    const lh = new Uint8Array(30 + nameB.length);
+    const dv = new DataView(lh.buffer);
+    dv.setUint32(0, 0x04034b50, true);
+    dv.setUint16(4, 20, true);
+    dv.setUint16(6, 0x0800, true);
+    dv.setUint16(8, 0, true);
+    dv.setUint16(10, 0, true);
+    dv.setUint16(12, 0x2100, true);
+    dv.setUint32(14, crc, true);
+    dv.setUint32(18, size, true);
+    dv.setUint32(22, size, true);
+    dv.setUint16(26, nameB.length, true);
+    dv.setUint16(28, 0, true);
+    lh.set(nameB, 30);
+    parts.push(lh, data);
+    const cd = new Uint8Array(46 + nameB.length);
+    const cv = new DataView(cd.buffer);
+    cv.setUint32(0, 0x02014b50, true);
+    cv.setUint16(4, 20, true);
+    cv.setUint16(6, 20, true);
+    cv.setUint16(8, 0x0800, true);
+    cv.setUint16(10, 0, true);
+    cv.setUint16(12, 0x2100, true);
+    cv.setUint16(14, 0x2100, true);
+    cv.setUint32(16, crc, true);
+    cv.setUint32(20, size, true);
+    cv.setUint32(24, size, true);
+    cv.setUint16(28, nameB.length, true);
+    cv.setUint16(30, 0, true);
+    cv.setUint16(32, 0, true);
+    cv.setUint16(34, 0, true);
+    cv.setUint16(36, 0, true);
+    cv.setUint32(38, 0, true);
+    cv.setUint32(42, offset, true);
+    cd.set(nameB, 46);
+    central.push(cd);
+    offset += lh.length + size;
+  });
+  let cdSize = 0;
+  central.forEach(function (c) { cdSize += c.length; });
+  const eocd = new Uint8Array(22);
+  const ev = new DataView(eocd.buffer);
+  ev.setUint32(0, 0x06054b50, true);
+  ev.setUint16(4, 0, true);
+  ev.setUint16(6, 0, true);
+  ev.setUint16(8, entries.length, true);
+  ev.setUint16(10, entries.length, true);
+  ev.setUint32(12, cdSize, true);
+  ev.setUint32(16, offset, true);
+  ev.setUint16(20, 0, true);
+  return new Blob([...parts, ...central, eocd], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+}
+function xe(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
+}
+function colName(n) {
+  let s = '';
+  while (n > 0) { const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); }
+  return s;
+}
+function sheetXml(widths, rows) {
+  let x = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  x += '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">';
+  x += '<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>';
+  x += '<cols>' + widths.map(function (w, i) {
+    return '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>';
+  }).join('') + '</cols>';
+  x += '<sheetData>';
+  rows.forEach(function (row, ri) {
+    x += '<row r="' + (ri + 1) + '">';
+    row.forEach(function (c, ci) {
+      if (c === null || c === undefined || c === '') return;
+      const ref = colName(ci + 1) + (ri + 1);
+      const st = ri === 0 ? ' s="1"' : '';
+      if (typeof c === 'number' && isFinite(c)) {
+        x += '<c r="' + ref + '"' + st + '><v>' + c + '</v></c>';
+      } else {
+        x += '<c r="' + ref + '"' + st + ' t="inlineStr"><is><t xml:space="preserve">' + xe(c) + '</t></is></c>';
+      }
+    });
+    x += '</row>';
+  });
+  x += '</sheetData></worksheet>';
+  return x;
+}
+function sheetXmlStyled(widths, rows, styleIdOf) {
+  // styleIdOf(ri,ci) -> style index (0-7)；表头行(ri=0)用样式1
+  let x = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  x += '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">';
+  x += '<sheetViews><sheetView workbookViewId="0"/></sheetViews>';
+  x += '<cols>' + widths.map(function (w, i) {
+    return '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>';
+  }).join('') + '</cols>';
+  x += '<sheetData>';
+  rows.forEach(function (row, ri) {
+    x += '<row r="' + (ri + 1) + '">';
+    row.forEach(function (c, ci) {
+      if (c === null || c === undefined || c === '') return;
+      const ref = colName(ci + 1) + (ri + 1);
+      const sid = styleIdOf ? styleIdOf(ri, ci) : (ri === 0 ? 1 : 0);
+      const st = ' s="' + sid + '"';
+      if (typeof c === 'number' && isFinite(c)) {
+        x += '<c r="' + ref + '"' + st + '><v>' + c + '</v></c>';
+      } else {
+        x += '<c r="' + ref + '"' + st + ' t="inlineStr"><is><t xml:space="preserve">' + xe(c) + '</t></is></c>';
+      }
+    });
+    x += '</row>';
+  });
+  x += '</sheetData></worksheet>';
+  return x;
+}
+function buildXlsx() {
+  const enc = new TextEncoder();
+  const sheets = [];
+
+  /* ---- 日历视图（与 HTML 视觉一致） ---- */
+  const now = new Date();
+  const calCols = ['星期一','星期二','星期三','星期四','星期五','星期六','星期日'];
+  const months = [[S_Y, S_M], [E_Y, E_M]];
+  const calRows = [];
+  const calStyles = [];
+  // 标题行
+  calRows.push(['虎力全开 · 高项学习计划//一期（' + STARTK + ' ～ ' + ENDK + '）'].concat(new Array(6).fill('')));
+  calStyles.push([1,1,1,1,1,1,1]);
+  calRows.push(calCols.slice());
+  calStyles.push([2,2,2,2,2,2,2]);
+
+  months.forEach(function (mm) {
+    const y = mm[0], m = mm[1];
+    const dim = new Date(y, m + 1, 0).getDate();
+    let startDay = 1;
+    const monthStartK = y + '-' + p2(m + 1) + '-01';
+    if (STARTK > monthStartK) startDay = Number(STARTK.slice(8));
+    const firstD = new Date(y, m, startDay);
+    const off = (firstD.getDay() + 6) % 7;
+    // 月份标题行
+    calRows.push([(y + ' 年 ' + (m + 1) + ' 月')].concat(new Array(6).fill('')));
+    calStyles.push([1,1,1,1,1,1,1]);
+    // 星期表头行
+    calRows.push(calCols.slice());
+    calStyles.push([2,2,2,2,2,2,2]);
+    // 按周填充
+    let week = new Array(7).fill('');
+    let weekSty = new Array(7).fill(0);
+    for (let i = 0; i < off; i++) { week[i] = ''; weekSty[i] = 0; }
+    for (let i = startDay; i <= dim; i++) {
+      const k = y + '-' + p2(m + 1) + '-' + p2(i);
+      const col = (new Date(y, m, i).getDay() + 6) % 7;
+      if (k >= STARTK && k <= ENDK) {
+        const d = DAYMAP[k];
+        const x = state.days[k] || { h: 0, c: [], note: '', ex: [] };
+        const tk = x.c || [];
+        const dn = tk.filter(i2 => isDone(i2)).length;
+        const allDone = tk.length > 0 && dn === tk.length;
+        const passed = k < todayKey() || (k === todayKey() && now.getHours() >= 8);
+        const undone = passed && tk.length > 0 && dn < tk.length;
+        const isToday = k === todayKey();
+        let lines = [];
+        lines.push(Number(k.slice(8)) + ' ' + WD[d.dow] + (x.h > 0 ? ' · ' + fmtH(x.h) + 'h' : '') + (tk.length ? ' · ' + dn + '/' + tk.length : ''));
+        tk.forEach(function (i2) {
+          const c = CAT[i2];
+          if (!c) return;
+          lines.push((isDone(i2) ? '☑ ' : '▢ ') + c.num + ' ' + c.t);
+        });
+        (x.ex || []).forEach(function (e) {
+          lines.push('· ' + e);
+        });
+        if (x.note) lines.push('『' + x.note + '』');
+        week[col] = lines.join('\n');
+        // 样式：过期未完成红(3/7)、全部完成绿(4)、今天蓝(6)、默认白(带边框3)
+        if (undone) weekSty[col] = 7;
+        else if (allDone) weekSty[col] = 4;
+        else if (isToday) weekSty[col] = 6;
+        else weekSty[col] = 3;
+      } else {
+        week[col] = '';
+        weekSty[col] = 5;
+      }
+      if (col === 6) {
+        calRows.push(week.slice());
+        calStyles.push(weekSty.slice());
+        week = new Array(7).fill('');
+        weekSty = new Array(7).fill(0);
+      }
+    }
+    // 月末不足一周的补空
+    if (week.some(function (c) { return c !== ''; }) || weekSty.some(function (s) { return s !== 0; })) {
+      calRows.push(week.slice());
+      calStyles.push(weekSty.slice());
+    }
+  });
+
+  sheets.push({
+    name: '日历视图', widths: [24, 24, 24, 24, 24, 24, 24],
+    rows: calRows, styled: true, styles: calStyles
+  });
+
+  const d1 = [['日期','星期','类型','计划时长(h)','任务数','已完成','完成率','学习任务清单','其他安排','自定义内容']];
+  DAYS.forEach(function (d) {
+    const x = state.days[d.k] || { h: 0, c: [], note: '', ex: [] };
+    const c = x.c || [];
+    const dn = c.filter(i => isDone(i)).length;
+    d1.push([
+      d.k, '周' + WD[d.dow], d.work ? '工作日' : '周末',
+      Number(x.h) || 0, c.length, dn,
+      c.length ? Math.round(dn / c.length * 100) + '%' : '',
+      c.map(i => CAT[i].num + ' ' + CAT[i].t).join('；'),
+      (x.ex || []).join('；'),
+      x.note || ''
+    ]);
+  });
+  sheets.push({ name: '每日明细', widths: [12, 7, 10, 12, 8, 8, 9, 72, 30, 40], rows: d1 });
+
+  const d2 = [['周次','起始','结束','天数','工作日时长(h)','周末时长(h)','合计(h)','完成任务','任务总数','累计完成']];
+  let cum = 0;
+  WEEKS.forEach(function (w, wi) {
+    let wh = 0, eh = 0, task = 0, dn = 0;
+    w.forEach(function (d) {
+      const x = state.days[d.k] || { h: 0, c: [] };
+      const h = Number(x.h) || 0;
+      if (d.work) wh += h; else eh += h;
+      const c = x.c || [];
+      task += c.length;
+      dn += c.filter(i => isDone(i)).length;
+    });
+    cum += dn;
+    d2.push(['第' + (wi + 1) + '周', w[0].k, w[w.length - 1].k, w.length, wh, eh, wh + eh, dn, task, cum]);
+  });
+  const sumW = d2.slice(1).reduce(function (a, r) { return a + r[4]; }, 0);
+  const sumE = d2.slice(1).reduce(function (a, r) { return a + r[5]; }, 0);
+  d2.push(['合计', STARTK, ENDK, DAYS.length, sumW, sumE, sumW + sumE, cum, '', '']);
+  sheets.push({ name: '周汇总', widths: [10, 12, 12, 8, 15, 14, 11, 10, 10, 10], rows: d2 });
+
+  const chName = {};
+  CAT.forEach(function (c) { if (c.lv === 1) chName[c.ch] = c.t; });
+  const d3 = [['层级','编号','所属章','名称','起始页','页数','是否排入','排入日期','是否完成']];
+  CAT.forEach(function (c, i) {
+    d3.push([
+      LVN[c.lv],
+      c.lv === 1 ? '第' + c.num + '章' : c.num,
+      '第' + (c.ch + 1) + '章 ' + (chName[c.ch] || ''),
+      c.t, c.pg, c.pp,
+      A2D[i] ? '已排入' : '未排入',
+      A2D[i] ? md(A2D[i]) : '',
+      isDone(i) ? '已完成' : ''
+    ]);
+  });
+  sheets.push({ name: '任务进度', widths: [7, 12, 24, 34, 8, 7, 10, 11, 9], rows: d3 });
+
+  const d4 = [['章','章名','知识点数','已完成','完成率','已排入数','章页数']];
+  for (let ch = 0; ch < 24; ch++) {
+    const idxs = [];
+    CAT.forEach(function (c, i) { if (c.ch === ch && isLeaf(i)) idxs.push(i); });
+    if (!idxs.length) continue;
+    const dn = idxs.filter(i => isDone(i)).length;
+    const asg = idxs.filter(i => A2D[i]).length;
+    let pgs = 0;
+    idxs.forEach(function (i) { pgs += CAT[i].pp; });
+    d4.push(['第' + (ch + 1) + '章', chName[ch] || '', idxs.length, dn,
+      Math.round(dn / idxs.length * 100) + '%', asg, pgs]);
+  }
+  sheets.push({ name: '章进度', widths: [9, 26, 12, 9, 9, 11, 9], rows: d4 });
+
+  const files = [];
+  const push = function (name, str) {
+    files.push({ nameB: enc.encode(name), data: enc.encode(str) });
+  };
+
+  let ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  ct += '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">';
+  ct += '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>';
+  ct += '<Default Extension="xml" ContentType="application/xml"/>';
+  ct += '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>';
+  ct += '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>';
+  sheets.forEach(function (s, i) {
+    ct += '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>';
+  });
+  ct += '</Types>';
+  push('[Content_Types].xml', ct);
+
+  let rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  rels += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
+  rels += '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>';
+  rels += '</Relationships>';
+  push('_rels/.rels', rels);
+
+  let wb = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  wb += '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>';
+  sheets.forEach(function (s, i) {
+    wb += '<sheet name="' + xe(s.name) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>';
+  });
+  wb += '</sheets></workbook>';
+  push('xl/workbook.xml', wb);
+
+  let wbr = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  wbr += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
+  sheets.forEach(function (s, i) {
+    wbr += '<Relationship Id="rId' + (i + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>';
+  });
+  wbr += '<Relationship Id="rId' + (sheets.length + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>';
+  wbr += '</Relationships>';
+  push('xl/_rels/workbook.xml.rels', wbr);
+
+  let st = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  st += '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">';
+  st += '<fonts count="4">';
+  st += '<font><sz val="11"/><color theme="1"/><name val="等线"/></font>';
+  st += '<font><b/><sz val="11"/><color theme="1"/><name val="等线"/></font>';
+  st += '<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="等线"/></font>';
+  st += '<font><b/><sz val="11"/><color rgb="FFC85000"/><name val="等线"/></font>';
+  st += '</fonts>';
+  st += '<fills count="7"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>';
+  st += '<fill><patternFill patternType="solid"><fgColor rgb="FF185FA5"/><bgColor indexed="64"/></patternFill></fill>';
+  st += '<fill><patternFill patternType="solid"><fgColor rgb="FFFDF0EE"/><bgColor indexed="64"/></patternFill></fill>';
+  st += '<fill><patternFill patternType="solid"><fgColor rgb="FFFAFEFC"/><bgColor indexed="64"/></patternFill></fill>';
+  st += '<fill><patternFill patternType="solid"><fgColor rgb="FFFFF9EA"/><bgColor indexed="64"/></patternFill></fill>';
+  st += '<fill><patternFill patternType="solid"><fgColor rgb="FFEAF3FB"/><bgColor indexed="64"/></patternFill></fill>';
+  st += '</fills>';
+  st += '<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>';
+  st += '<border><left style="thin"><color rgb="FFE8E5DD"/></left><right style="thin"><color rgb="FFE8E5DD"/></right><top style="thin"><color rgb="FFE8E5DD"/></top><bottom style="thin"><color rgb="FFE8E5DD"/></bottom><diagonal/></border></borders>';
+  st += '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>';
+  st += '<cellXfs count="8">';
+  st += '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>';
+  st += '<xf numFmtId="0" fontId="2" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment vertical="center"/></xf>';
+  st += '<xf numFmtId="0" fontId="1" fillId="1" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1" applyBorder="1"><alignment vertical="center" wrapText="1"/></xf>';
+  st += '<xf numFmtId="0" fontId="0" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyAlignment="1" applyBorder="1"><alignment vertical="top" wrapText="1"/></xf>';
+  st += '<xf numFmtId="0" fontId="0" fillId="4" borderId="1" xfId="0" applyFont="1" applyFill="1" applyAlignment="1" applyBorder="1"><alignment vertical="top" wrapText="1"/></xf>';
+  st += '<xf numFmtId="0" fontId="0" fillId="5" borderId="1" xfId="0" applyFont="1" applyFill="1" applyAlignment="1" applyBorder="1"><alignment vertical="top" wrapText="1"/></xf>';
+  st += '<xf numFmtId="0" fontId="0" fillId="6" borderId="1" xfId="0" applyFont="1" applyFill="1" applyAlignment="1" applyBorder="1"><alignment vertical="top" wrapText="1"/></xf>';
+  st += '<xf numFmtId="0" fontId="3" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyAlignment="1" applyBorder="1"><alignment vertical="top" wrapText="1"/></xf>';
+  st += '</cellXfs>';
+  st += '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>';
+  st += '</styleSheet>';
+  push('xl/styles.xml', st);
+
+  sheets.forEach(function (s, i) {
+    if (s.styled) {
+      push('xl/worksheets/sheet' + (i + 1) + '.xml', sheetXmlStyled(s.widths, s.rows, function (ri, ci) {
+        return (s.styles[ri] && s.styles[ri][ci]) || 0;
+      }));
+    } else {
+      push('xl/worksheets/sheet' + (i + 1) + '.xml', sheetXml(s.widths, s.rows));
+    }
+  });
+
+  return zipStore(files);
+}
+
+document.getElementById('btn-xlsx').addEventListener('click', function () {
+  try {
+    download(buildXlsx(), '学习计划-' + dk(new Date()) + '.xlsx');
+    toast('Excel 已导出（5 个工作表）');
+  } catch (e) {
+    alert('导出失败：' + e.message);
+  }
+});
+
+/* ========== 启动 ========== */
+load();
+rebuildMap();
+renderAll();
+renderSelbar();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./sw.js').catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
