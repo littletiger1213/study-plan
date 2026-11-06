@@ -4,14 +4,11 @@
 <meta charset="UTF-8" data-page-node-id="CgVbFnN4XOXmD9FBWxKNXH">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" data-page-node-id="nRpE8uRjdeVbvnCgmF3GHj">
 <meta name="format-detection" content="telephone=no" data-page-node-id="z9jEYJ2ZGpdnT0kd2Y3vI4">
-<meta name="theme-color" content="#185FA5">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="虎力全开">
-<link rel="manifest" href="./manifest.json">
-<link rel="apple-touch-icon" href="./icon-192.png">
 <title>虎力全开·高项学习计划//一期 2026</title>
+<meta name="theme-color" content="#185FA5">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
@@ -238,6 +235,41 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 .snap button{border:1px solid var(--line);background:#fff;border-radius:7px;padding:3px 9px;font-size:11px}
 .snap button.d:hover{border-color:var(--coral);color:var(--coral)}
 
+/* ---------- 周视图（手机） ---------- */
+.weeknav{display:none;flex-direction:column;gap:10px}
+.wn-bar{display:flex;align-items:center;gap:8px}
+.wn-bar .wn-nav{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 12px;font-size:13px;flex:none}
+.wn-bar .wn-head{flex:1;text-align:center;font-size:14px;font-weight:650;min-width:0}
+.wn-bar .wn-head small{display:block;font-weight:400;color:var(--muted);font-size:10.5px}
+.wn-bar .wn-today{border:1px solid var(--blue);color:var(--blue);background:#fff;border-radius:8px;padding:7px 10px;font-size:12px;flex:none}
+.wn-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.wn-cell{min-height:120px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:4px;display:flex;flex-direction:column;gap:2px;overflow:hidden;cursor:pointer;position:relative}
+.wn-cell .wn-d{font-weight:700;font-size:12px;text-align:center;font-variant-numeric:tabular-nums}
+.wn-cell .wn-w{color:var(--muted);font-size:9.5px;text-align:center}
+.wn-cell.today{box-shadow:inset 0 0 0 1.5px var(--blue)}
+.wn-cell.today .wn-d{color:var(--blue)}
+.wn-cell.undone{background:#FDF0EE;border-color:#E0A69C}
+.wn-cell.undone .wn-d{color:var(--coral)}
+.wn-cell.doneall{background:#FAFEFC}
+.wn-cell .wn-hh{text-align:center;font-size:9px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.wn-cell .wn-hh b{color:var(--blue);font-weight:650}
+.wn-cell .wn-hh .ok{color:var(--teal);font-weight:650}
+.wn-cell .wn-task{display:flex;align-items:center;gap:2px;font-size:9px;line-height:1.25;background:var(--blue-l);color:#15548F;border-radius:4px;padding:1px 3px;overflow:hidden;white-space:nowrap}
+.wn-cell .wn-task.on{background:var(--teal-l);color:#12674E}
+.wn-cell .wn-task .chk{width:11px;height:11px;border-radius:3px}
+.wn-cell .wn-task .chk.on::after{left:3px;top:0;width:3px;height:6px}
+.wn-cell .wn-task .wn-tt{overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.wn-cell .wn-empty{font-size:9px;color:#D6D1C7;text-align:center;margin-top:2px}
+.wn-cell .wn-more{font-size:8.5px;color:var(--muted);text-align:center}
+.wn-cell .wn-ex{font-size:8.5px;color:#8A5F1E;background:var(--amber-l);border-radius:4px;padding:1px 3px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.wn-hint{text-align:center;font-size:10.5px;color:var(--muted);line-height:1.5}
+
+/* ---------- 目录抽屉（手机） ---------- */
+.side-mask{display:none}
+.side-handle{display:none;width:40px;height:4px;border-radius:2px;background:#DDD8CC;margin:7px auto 0}
+.fab{display:none;position:fixed;right:16px;bottom:18px;z-index:63;align-items:center;gap:6px;background:var(--blue);color:#fff;border:none;border-radius:24px;padding:12px 18px;font-size:14px;font-weight:650;box-shadow:0 6px 18px rgba(24,95,165,.32);cursor:pointer}
+.fab:active{transform:scale(.97)}
+
 /* ---------- toast ---------- */
 #toast{position:fixed;left:50%;top:16px;transform:translate(-50%,-14px);opacity:0;background:#23211C;color:#fff;border-radius:8px;padding:8px 14px;font-size:12px;z-index:90;transition:.2s;pointer-events:none;box-shadow:0 6px 20px rgba(0,0,0,.2)}
 #toast.on{opacity:1;transform:translate(-50%,0)}
@@ -246,17 +278,15 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 @media (max-width:1000px){
   body{height:auto;overflow:auto}
   .layout{height:auto;flex-direction:column}
-  .calarea{overflow:visible;padding:10px 10px 20px}
-  .side{width:auto;border-left:none;border-top:1px solid var(--line);max-height:none}
-  #catalog{max-height:58vh}
-  .cal{min-width:620px}
-  .month{overflow-x:auto}
-  .cell{min-height:96px}
+  .calarea{overflow:visible;padding:10px 10px 120px}
   .topbar{padding:8px 10px;gap:8px}
-  .brand{font-size:14px}
+  .brand{font-size:15px}
+  .brand small{display:none}
+  .ts{order:2;width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;-webkit-overflow-scrolling:touch}
+  .ts .stat{flex:none}
   .acts{width:100%;order:9;margin-left:0;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px}
   .acts .btn{flex:none}
-  .dp-card{width:100%;border-radius:14px 14px 0 0;top:auto;height:auto;max-height:88vh}
+  .dp-card{width:100%;border-radius:14px 14px 0 0;top:auto;bottom:0;height:auto;max-height:88vh}
   .dp-h{padding:13px 14px}
   .dp-b{padding:12px 14px 24px}
   .ih input[type=number]{width:92px;padding:9px;font-size:16px}
@@ -268,12 +298,24 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
   table.wt{min-width:540px}
   #selbar{bottom:-90px}
   #selbar.on{bottom:12px}
+
+  /* --- 手机端：月历隐藏，改用周视图 --- */
+  #calwrap .month{display:none}
+  .weeknav{display:flex}
+  .side{position:fixed;left:0;right:0;bottom:0;top:auto;height:78vh;width:100%;max-width:none;border-left:none;border-top:1px solid var(--line);border-radius:16px 16px 0 0;z-index:65;transform:translateY(105%);transition:transform .24s ease;box-shadow:0 -8px 30px rgba(0,0,0,.16);background:#FCFBF8}
+  .side.on{transform:translateY(0)}
+  #catalog{max-height:none;flex:1;padding-bottom:24px}
+  .side-mask{display:none;position:fixed;inset:0;background:rgba(28,26,22,.32);z-index:64}
+  .side-mask.on{display:block}
+  .side-handle{display:block}
+  .fab{display:flex}
 }
 @media (max-width:560px){
   .stat{padding:3px 7px}
   .stat.small{display:none}
   table.wt{font-size:11px}
   table.wt th,table.wt td{padding:5px 4px}
+  .weeknav .wn-head{font-size:13px}
 }
 </style>
 </head>
@@ -307,6 +349,7 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 <div class="layout" data-page-node-id="pKiCQ5VWckHaffgzI6OVoV">
   <div class="calarea" id="calarea" data-page-node-id="Xr1rFPC48KrotAmyi78wxK">
     <div id="calwrap" data-page-node-id="Q0qxbxMdc15DB0eNQDqZPI"></div>
+    <div class="weeknav" id="weeknav" data-page-node-id="weeknav0001"></div>
     <div class="wsec" data-page-node-id="FPNTagjwrrOgJlxJg3Ve3V">
       <h3 data-page-node-id="hp2v2DYSmnbAYmgf3mepqI">周汇总 <span data-page-node-id="0znji7KnNSBExT76IFGkCV">工作日 / 周末分列，只统计计划时长</span></h3>
       <div class="wscroll" data-page-node-id="qjictGdKqdF6qBfD5e6h0q">
@@ -325,6 +368,7 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
   </div>
 
   <aside class="side" data-page-node-id="Ah1Uc0EoTLYOcJyPIuiF3G">
+    <div class="side-handle" data-page-node-id="sidehandle01"></div>
     <div class="side-h" data-page-node-id="GSW4LeD74DRv4qupPZb4Uq">
       <span data-page-node-id="9BaamUW1SEP8wnvK7sjZB3">学习目录</span><span class="cnt" id="cat-cnt" data-page-node-id="xoLyDzGICJJ71EVkB0zGfR"></span>
       <div class="mini" data-page-node-id="8M4DmMsnbJo02QAajtCmnA">
@@ -339,6 +383,9 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
     <div id="catalog" data-page-node-id="DRYKydAIvCTAlgxEEq1yt1"></div>
   </aside>
 </div>
+
+<div class="side-mask" id="side-mask" data-page-node-id="sidemask001"></div>
+<button class="fab" id="fab" data-page-node-id="fab0001">☰ 学习目录</button>
 
 <div id="selbar" data-page-node-id="wqBcvZPvt2Bp1HnN12Syvy">
   <span class="sbn" data-page-node-id="KJ1Yf1nYYTsxMWxdMFEtic">已选</span><span class="sbt" id="sel-txt" data-page-node-id="piLl0zbLHl4GIxFKgeOJgy"></span>
@@ -786,6 +833,66 @@ function renderCal() {
   document.getElementById('calwrap').innerHTML = h;
 }
 
+/* ========== 周视图（手机端） ========== */
+let curWeek = 0;
+function weekIndexFor(k) {
+  for (let i = 0; i < WEEKS.length; i++) {
+    if (WEEKS[i].some(d => d.k === k)) return i;
+  }
+  return 0;
+}
+function renderWeekNav() {
+  const wi = Math.max(0, Math.min(curWeek, WEEKS.length - 1));
+  curWeek = wi;
+  const w = WEEKS[wi];
+  if (!w) return;
+  const first = w[0], last = w[w.length - 1];
+  const isFirst = wi === 0, isLast = wi === WEEKS.length - 1;
+  let h = '<div class="wn-bar">';
+  h += '<button class="wn-nav" id="wn-prev"' + (isFirst ? ' disabled style="opacity:.35"' : '') + '>‹</button>';
+  h += '<div class="wn-head">第 ' + (wi + 1) + ' 周<small>' + md(first.k) + ' – ' + md(last.k) + '</small></div>';
+  h += '<button class="wn-today" id="wn-today">今天</button>';
+  h += '<button class="wn-nav" id="wn-next"' + (isLast ? ' disabled style="opacity:.35"' : '') + '>›</button>';
+  h += '</div>';
+  h += '<div class="wn-grid">';
+  w.forEach(function (d) {
+    const k = d.k;
+    const x = state.days[k] || { h: 0, c: [], note: '', ex: [] };
+    const tk = x.c || [];
+    const dn = tk.filter(i => isDone(i)).length;
+    const allDone = tk.length > 0 && dn === tk.length;
+    const now = new Date();
+    const passed = k < todayKey() || (k === todayKey() && now.getHours() >= 8);
+    const undone = passed && tk.length > 0 && dn < tk.length;
+    let cls = 'wn-cell' + (k === todayKey() ? ' today' : '') + (allDone ? ' doneall' : '') + (undone ? ' undone' : '');
+    h += '<div class="' + cls + '" data-k="' + k + '">';
+    h += '<span class="wn-d">' + Number(k.slice(8)) + '</span>';
+    h += '<span class="wn-w">' + WD[d.dow] + '</span>';
+    h += '<span class="wn-hh">';
+    if (x.h > 0) h += '<b>' + fmtH(x.h) + 'h</b>';
+    if (tk.length) h += '<span class="ok">' + dn + '/' + tk.length + '</span>';
+    h += '</span>';
+    if (tk.length) {
+      tk.slice(0, 3).forEach(function (i) {
+        const c = CAT[i];
+        if (!c) return;
+        h += '<div class="wn-task' + (isDone(i) ? ' on' : '') + '" data-i="' + i + '">';
+        h += '<span class="chk' + (isDone(i) ? ' on' : '') + '"></span>';
+        h += '<span class="wn-tt" title="' + esc(c.num + ' ' + c.t) + '">' + esc(c.t) + '</span></div>';
+      });
+      if (tk.length > 3) h += '<div class="wn-more">+' + (tk.length - 3) + '</div>';
+    } else {
+      h += '<div class="wn-empty">无任务</div>';
+    }
+    const ex = x.ex || [];
+    if (ex.length) h += '<div class="wn-ex" title="' + esc(ex.join('、')) + '">' + esc(ex[0]) + '</div>';
+    h += '</div>';
+  });
+  h += '</div>';
+  h += '<div class="wn-hint">点某天查看/编辑 · 点下方目录按钮拖任务</div>';
+  document.getElementById('weeknav').innerHTML = h;
+}
+
 /* ========== 统计 ========== */
 function renderStats() {
   const total = LEAF_TOTAL;
@@ -880,6 +987,7 @@ function renderCatalog() {
 function renderAll() {
   rebuildMap();
   renderCal();
+  renderWeekNav();
   renderStats();
   renderWeeks();
   renderCatalog();
@@ -903,6 +1011,11 @@ catBox.addEventListener('click', function (e) {
   selIdx = (selIdx === i) ? -1 : i;
   renderCatalog();
   renderSelbar();
+  // 手机端：选中目录条目后关闭抽屉，方便去点日期格
+  if (selIdx >= 0 && window.matchMedia('(max-width:1000px)').matches) {
+    closeDrawer();
+    toast('已选中「' + c.num + ' ' + c.t + '」，点日历某天排入');
+  }
 });
 
 catBox.addEventListener('dragstart', function (e) {
@@ -1690,6 +1803,67 @@ document.getElementById('btn-sync-pull').addEventListener('click', function () {
   gistPull(true);
 });
 
+/* ========== 周视图交互（手机） ========== */
+const weeknav = document.getElementById('weeknav');
+weeknav.addEventListener('click', function (e) {
+  const nav = e.target.closest('#wn-prev');
+  if (nav) { curWeek--; renderWeekNav(); return; }
+  const nxt = e.target.closest('#wn-next');
+  if (nxt) { curWeek++; renderWeekNav(); return; }
+  const tdy = e.target.closest('#wn-today');
+  if (tdy) { curWeek = weekIndexFor(todayKey()); renderWeekNav(); return; }
+  const chip = e.target.closest('.wn-task');
+  const cell = e.target.closest('.wn-cell');
+  if (!cell) return;
+  const k = cell.dataset.k;
+  if (!k) return;
+  if (chip) { toggleDone(+chip.dataset.i); return; }
+  if (selIdx >= 0) { assign(selIdx, k); return; }
+  openDay(k);
+});
+weeknav.addEventListener('dragover', function (e) {
+  const cell = e.target.closest('.wn-cell');
+  if (!cell) return;
+  e.preventDefault();
+  try { e.dataTransfer.dropEffect = 'copy'; } catch (err) {}
+  cell.style.boxShadow = 'inset 0 0 0 1.5px var(--blue)';
+});
+weeknav.addEventListener('dragleave', function (e) {
+  const cell = e.target.closest('.wn-cell');
+  if (cell) cell.style.boxShadow = '';
+});
+weeknav.addEventListener('drop', function (e) {
+  e.preventDefault();
+  const cell = e.target.closest('.wn-cell');
+  if (!cell) return;
+  cell.style.boxShadow = '';
+  const k = cell.dataset.k;
+  if (!k) return;
+  let i = -1;
+  try { i = +e.dataTransfer.getData('text/plain'); } catch (err) {}
+  if (isNaN(i) || i < 0) i = selIdx;
+  if (i >= 0) assign(i, k);
+});
+
+/* ========== 目录抽屉（手机） ========== */
+const sideEl = document.querySelector('.side');
+const sideMask = document.getElementById('side-mask');
+const fabBtn = document.getElementById('fab');
+function openDrawer() {
+  sideEl.classList.add('on');
+  sideMask.classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  sideEl.classList.remove('on');
+  sideMask.classList.remove('on');
+  document.body.style.overflow = '';
+}
+if (fabBtn) fabBtn.addEventListener('click', openDrawer);
+if (sideMask) sideMask.addEventListener('click', closeDrawer);
+const sideHandle = document.querySelector('.side-handle');
+if (sideHandle) sideHandle.addEventListener('click', closeDrawer);
+
 /* ========== 启动 ========== */
 load();
 syncCfgLoad();
@@ -1701,10 +1875,11 @@ if (gistEnabled()) {
   gistPull(false).then(function () {});
 }
 </script>
+
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./sw.js').catch(function () {});
+    navigator.serviceWorker.register('sw.js').catch(function () {});
   });
 }
 </script>
