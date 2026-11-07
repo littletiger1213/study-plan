@@ -683,6 +683,8 @@ let gistId = '';
 let gistToken = '';
 let syncBusy = false;
 let gistTimer = null;
+let lastPushTs = 0;      /* 上次推送时间戳（毫秒），用于自动推送冷却 */
+const PUSH_COOLDOWN = 5 * 60 * 1000;  /* 自动推送最小间隔 5 分钟，避免触发 GitHub 二级限流 */
 
 function syncCfgLoad() {
   try {
@@ -778,6 +780,8 @@ function gistPull(manual) {
 /* 推送到云端：把本地 state 写入 Gist 的 study-plan.json */
 function gistPush(quiet) {
   if (!gistEnabled() || syncBusy) return;
+  /* 自动推送（quiet）受冷却限制：距上次推送不足 5 分钟则跳过，仅保留本地 */
+  if (quiet && lastPushTs && Date.now() - lastPushTs < PUSH_COOLDOWN) return;
   clearTimeout(gistTimer);
   gistTimer = setTimeout(function () {
     syncBusy = true;
@@ -791,8 +795,9 @@ function gistPush(quiet) {
     })
       .then(function (r) {
         if (r.status === 404) throw new Error('Gist 不存在（404），请检查 Gist ID');
-        if (r.status === 403 || r.status === 429) throw new Error('GitHub 限流（HTTP ' + r.status + '）：请求太频繁，请稍后再试，或检查 Token 是否带 gist 权限');
+        if (r.status === 403 || r.status === 429) throw new Error('GitHub 限流（HTTP ' + r.status + '）：请求太频繁，请稍后再试');
         if (!r.ok) throw new Error('推送失败 HTTP ' + r.status);
+        lastPushTs = Date.now();
         syncDot('ok');
         syncStatus('已同步 ' + new Date().toTimeString().slice(0, 8));
         syncErr('');
