@@ -908,7 +908,7 @@ function cellHTML(k) {
   if (tk.length) h += '<span class="ok">' + dn + '/' + tk.length + '</span>';
   const pgs = dayPages(x);
   if (tk.length && pgs > 0) h += '<span class="sep">|</span>';
-  if (pgs > 0) h += '<span class="pgcnt">' + pgs + '页</span>';
+  if (pgs > 0) h += '<span class="pgcnt">' + pgs + '</span>';
   h += '</span></div>';
 
   // 学习计划区（全部展示，不折叠）
@@ -1002,7 +1002,7 @@ function dayCellHtml(d) {
   if (tk.length) h += '<span class="ok">' + dn + '/' + tk.length + '</span>';
   const pgs = dayPages(x);
   if (tk.length && pgs > 0) h += '<span class="sep">|</span>';
-  if (pgs > 0) h += '<span class="pgcnt">' + pgs + '页</span>';
+  if (pgs > 0) h += '<span class="pgcnt">' + pgs + '</span>';
   h += '</span>';
   if (tk.length) {
     tk.forEach(function (i) {
