@@ -731,6 +731,7 @@ function gistPull(manual) {
   return gistApi('/gists/' + encodeURIComponent(gistId))
     .then(function (r) {
       if (r.status === 404) throw new Error('Gist 不存在（404）');
+      if (r.status === 403 || r.status === 429) throw new Error('GitHub 限流（HTTP ' + r.status + '）：请稍后再试');
       if (!r.ok) throw new Error('拉取失败 HTTP ' + r.status);
       return r.json();
     })
@@ -790,6 +791,7 @@ function gistPush(quiet) {
     })
       .then(function (r) {
         if (r.status === 404) throw new Error('Gist 不存在（404），请检查 Gist ID');
+        if (r.status === 403 || r.status === 429) throw new Error('GitHub 限流（HTTP ' + r.status + '）：请求太频繁，请稍后再试，或检查 Token 是否带 gist 权限');
         if (!r.ok) throw new Error('推送失败 HTTP ' + r.status);
         syncDot('ok');
         syncStatus('已同步 ' + new Date().toTimeString().slice(0, 8));
@@ -812,7 +814,7 @@ function save() {
   stTimer = setTimeout(() => {
     try { localStorage.setItem(CK, JSON.stringify(state)); } catch (e) {}
     gistPush(true);
-  }, 100);
+  }, 3000);
 }
 function dayOf(k) {
   if (!state.days[k]) {
