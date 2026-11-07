@@ -245,7 +245,7 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 .wn-bar .wn-head{flex:1;text-align:center;font-size:14px;font-weight:650;min-width:0}
 .wn-bar .wn-head small{display:block;font-weight:400;color:var(--muted);font-size:10.5px}
 .wn-bar .wn-today{border:1px solid var(--blue);color:var(--blue);background:#fff;border-radius:8px;padding:7px 10px;font-size:12px;flex:none}
-.wn-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.wn-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
 .wn-cell{min-height:120px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:4px;display:flex;flex-direction:column;gap:2px;overflow:visible;cursor:pointer;position:relative}
 .wn-cell .wn-d{font-weight:700;font-size:12px;text-align:center;font-variant-numeric:tabular-nums}
 .wn-cell .wn-w{color:var(--muted);font-size:9.5px;text-align:center}
@@ -896,64 +896,64 @@ function renderCal() {
   document.getElementById('calwrap').innerHTML = h;
 }
 
-/* ========== 周视图（手机端） ========== */
-let curWeek = 0;
-function weekIndexFor(k) {
-  for (let i = 0; i < WEEKS.length; i++) {
-    if (WEEKS[i].some(d => d.k === k)) return i;
-  }
+/* ========== 天视图（手机端，3天） ========== */
+let curDay = 0;   /* DAYS 中锚点日期的下标；0 = 首日 */
+function dayIndexOf(k) {
+  for (let i = 0; i < DAYS.length; i++) if (DAYS[i].k === k) return i;
   return 0;
 }
+function dayCellHtml(d) {
+  const k = d.k;
+  const x = state.days[k] || { h: 0, c: [], note: '', ex: [] };
+  const tk = x.c || [];
+  const dn = tk.filter(i => isDone(i)).length;
+  const allDone = tk.length > 0 && dn === tk.length;
+  const now = new Date();
+  const passed = k < todayKey() || (k === todayKey() && now.getHours() >= 8);
+  const undone = passed && tk.length > 0 && dn < tk.length;
+  let cls = 'wn-cell' + (k === todayKey() ? ' today' : '') + (allDone ? ' doneall' : '') + (undone ? ' undone' : '');
+  let h = '<div class="' + cls + '" data-k="' + k + '">';
+  h += '<span class="wn-d">' + (Number(k.slice(5, 7)) + '/' + Number(k.slice(8))) + '</span>';
+  h += '<span class="wn-w">' + WD[d.dow] + '</span>';
+  h += '<span class="wn-hh">';
+  if (x.h > 0) h += '<b>' + fmtH(x.h) + 'h</b>';
+  if (tk.length) h += '<span class="ok">' + dn + '/' + tk.length + '</span>';
+  h += '</span>';
+  if (tk.length) {
+    tk.forEach(function (i) {
+      const c = CAT[i];
+      if (!c) return;
+      h += '<div class="wn-task' + (isDone(i) ? ' on' : '') + '" data-i="' + i + '">';
+      h += '<span class="chk' + (isDone(i) ? ' on' : '') + '"></span>';
+      h += '<span class="wn-tt" title="' + esc(c.num + ' ' + c.t) + '">' + esc(c.t) + '</span></div>';
+    });
+  } else {
+    h += '<div class="wn-empty">无任务</div>';
+  }
+  const ex = x.ex || [];
+  ex.forEach(function (e) {
+    h += '<div class="wn-ex" title="' + esc(e) + '">' + esc(e) + '</div>';
+  });
+  h += '</div>';
+  return h;
+}
 function renderWeekNav() {
-  const wi = Math.max(0, Math.min(curWeek, WEEKS.length - 1));
-  curWeek = wi;
-  const w = WEEKS[wi];
-  if (!w) return;
-  const first = w[0], last = w[w.length - 1];
-  const isFirst = wi === 0, isLast = wi === WEEKS.length - 1;
+  const todayIdx = dayIndexOf(todayKey());
+  const atToday = curDay === todayIdx;
+  const isFirst = curDay <= 0, isLast = curDay >= DAYS.length - 1;
+  const a = DAYS[curDay];
   let h = '<div class="wn-bar">';
   h += '<button class="wn-nav" id="wn-prev"' + (isFirst ? ' disabled style="opacity:.35"' : '') + '>‹</button>';
-  h += '<div class="wn-head">第 ' + (wi + 1) + ' 周<small>' + md(first.k) + ' – ' + md(last.k) + '</small></div>';
+  h += '<div class="wn-head">' + md(a.k) + (atToday ? ' · 今天' : '') + '<small>' + (curDay + 1) + ' / ' + DAYS.length + ' 天</small></div>';
   h += '<button class="wn-today" id="wn-today">今天</button>';
   h += '<button class="wn-nav" id="wn-next"' + (isLast ? ' disabled style="opacity:.35"' : '') + '>›</button>';
   h += '</div>';
   h += '<div class="wn-grid">';
-  w.forEach(function (d) {
-    const k = d.k;
-    const x = state.days[k] || { h: 0, c: [], note: '', ex: [] };
-    const tk = x.c || [];
-    const dn = tk.filter(i => isDone(i)).length;
-    const allDone = tk.length > 0 && dn === tk.length;
-    const now = new Date();
-    const passed = k < todayKey() || (k === todayKey() && now.getHours() >= 8);
-    const undone = passed && tk.length > 0 && dn < tk.length;
-    let cls = 'wn-cell' + (k === todayKey() ? ' today' : '') + (allDone ? ' doneall' : '') + (undone ? ' undone' : '');
-    h += '<div class="' + cls + '" data-k="' + k + '">';
-    h += '<span class="wn-d">' + Number(k.slice(8)) + '</span>';
-    h += '<span class="wn-w">' + WD[d.dow] + '</span>';
-    h += '<span class="wn-hh">';
-    if (x.h > 0) h += '<b>' + fmtH(x.h) + 'h</b>';
-    if (tk.length) h += '<span class="ok">' + dn + '/' + tk.length + '</span>';
-    h += '</span>';
-    if (tk.length) {
-      tk.forEach(function (i) {
-        const c = CAT[i];
-        if (!c) return;
-        h += '<div class="wn-task' + (isDone(i) ? ' on' : '') + '" data-i="' + i + '">';
-        h += '<span class="chk' + (isDone(i) ? ' on' : '') + '"></span>';
-        h += '<span class="wn-tt" title="' + esc(c.num + ' ' + c.t) + '">' + esc(c.t) + '</span></div>';
-      });
-    } else {
-      h += '<div class="wn-empty">无任务</div>';
-    }
-    const ex = x.ex || [];
-    ex.forEach(function (e) {
-      h += '<div class="wn-ex" title="' + esc(e) + '">' + esc(e) + '</div>';
-    });
-    h += '</div>';
-  });
+  for (let i = curDay; i < Math.min(curDay + 3, DAYS.length); i++) {
+    h += dayCellHtml(DAYS[i]);
+  }
   h += '</div>';
-  h += '<div class="wn-hint">点某天查看/编辑 · 点下方目录按钮拖任务</div>';
+  h += '<div class="wn-hint">左右翻页看前后三天 · 点某天查看/编辑 · 点下方目录按钮拖任务</div>';
   document.getElementById('weeknav').innerHTML = h;
 }
 
@@ -971,7 +971,7 @@ function renderStats() {
     const h = Number(x.h) || 0;
     th += h;
     if (d.work) wd += h; else we += h;
-    asg += (x.c || []).length;
+    asg += dayAsg(x);
   });
   document.getElementById('s-h').innerHTML = fmtH(th) + '<em>h</em>';
   document.getElementById('s-wd').innerHTML = fmtH(wd) + '<em>h</em>';
@@ -1331,7 +1331,7 @@ document.getElementById('btn-save').addEventListener('click', function () {
   if (state.snaps.length > 30) state.snaps.length = 30;
   try { localStorage.setItem(CK, JSON.stringify(state)); } catch (e) {}
   let asg = 0;
-  DAYS.forEach(function (d) { const x = state.days[d.k]; if (x && x.c) asg += x.c.length; });
+  DAYS.forEach(function (d) { const x = state.days[d.k]; if (x && x.c) asg += dayAsg(x); });
   toast('已保存：' + asg + ' 条任务分配 + 1 份快照（共 ' + state.snaps.length + ' 份）');
   if (document.getElementById('snapmodal').classList.contains('on')) renderSnaps();
 });
@@ -1871,11 +1871,11 @@ document.getElementById('btn-sync-pull').addEventListener('click', function () {
 const weeknav = document.getElementById('weeknav');
 weeknav.addEventListener('click', function (e) {
   const nav = e.target.closest('#wn-prev');
-  if (nav) { curWeek--; renderWeekNav(); return; }
+  if (nav) { curDay = Math.max(0, curDay - 1); renderWeekNav(); return; }
   const nxt = e.target.closest('#wn-next');
-  if (nxt) { curWeek++; renderWeekNav(); return; }
+  if (nxt) { curDay = Math.min(DAYS.length - 1, curDay + 1); renderWeekNav(); return; }
   const tdy = e.target.closest('#wn-today');
-  if (tdy) { curWeek = weekIndexFor(todayKey()); renderWeekNav(); return; }
+  if (tdy) { curDay = dayIndexOf(todayKey()); renderWeekNav(); return; }
   const chip = e.target.closest('.wn-task');
   const cell = e.target.closest('.wn-cell');
   if (!cell) return;
@@ -1932,6 +1932,7 @@ if (sideHandle) sideHandle.addEventListener('click', closeDrawer);
 load();
 syncCfgLoad();
 rebuildMap();
+curDay = dayIndexOf(todayKey());
 renderAll();
 renderSelbar();
 /* 若已配置同步，启动后自动从云端拉取一次 */
