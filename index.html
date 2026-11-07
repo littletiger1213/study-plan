@@ -372,7 +372,7 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
         <thead data-page-node-id="IL1JE5EzfgreFP61izldH7">
           <tr data-page-node-id="Tt8Q80t1TvLqAHc7H6NBXM">
             <th data-page-node-id="oNu4hgLCewxCuz5f8DeV5q">周次</th><th data-page-node-id="uwxsfnOFZQ2uhEkpDAYsYQ">日期范围</th><th data-page-node-id="hkE1foujoX6cyCNC7ytTqJ">天数</th>
-            <th data-page-node-id="bwmxpg9yRHyOpZ1sTKYeag">工作日时长</th><th data-page-node-id="TLf1BFXsdDSAJl7Bgb6H33">周末时长</th><th data-page-node-id="CnIFJa7kq3xJ9G4A7OYH3I">合计</th>
+            <th data-page-node-id="bwmxpg9yRHyOpZ1sTKYeag">周中时长</th><th data-page-node-id="TLf1BFXsdDSAJl7Bgb6H33">周末时长</th><th data-page-node-id="CnIFJa7kq3xJ9G4A7OYH3I">合计</th>
             <th data-page-node-id="UdiFgiSc26U0TBC6hUA71L">完成任务</th><th data-page-node-id="tUaF3OcB9cVrueGEakGDo3">排入</th>
           </tr>
         </thead>
@@ -1741,7 +1741,7 @@ function buildXlsx() {
   });
   sheets.push({ name: '每日明细', widths: [12, 7, 10, 12, 8, 8, 9, 72, 30, 40], rows: d1 });
 
-  const d2 = [['周次','起始','结束','天数','工作日时长(h)','周末时长(h)','合计(h)','完成任务','任务总数','累计完成']];
+  const d2 = [['周次','起始','结束','天数','周中时长(h)','周末时长(h)','合计(h)','完成任务','任务总数','累计完成']];
   let cum = 0;
   WEEKS.forEach(function (w, wi) {
     let wh = 0, eh = 0, task = 0, dn = 0;
