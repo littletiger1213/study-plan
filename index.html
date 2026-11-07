@@ -89,6 +89,7 @@ input,textarea{font-family:inherit}
 .c-hh b{color:var(--blue);font-weight:650}
 .c-hh .ok{color:var(--teal);font-weight:650}
 .c-hh .pgcnt{color:#6B5BD2;font-weight:650}
+.c-hh .sep{color:var(--line);margin:0 3px;font-weight:400}
 
 /* 分区标题 */
 .c-sec{display:flex;align-items:center;gap:3px;font-size:9px;color:#B0AB9F;letter-spacing:.5px;margin-top:1px}
@@ -265,6 +266,7 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 .wn-cell .wn-hh b{color:var(--blue);font-weight:650}
 .wn-cell .wn-hh .ok{color:var(--teal);font-weight:650}
 .wn-cell .wn-hh .pgcnt{color:#6B5BD2;font-weight:650}
+.wn-cell .wn-hh .sep{color:var(--line);margin:0 2px;font-weight:400}
 .wn-cell .wn-task{display:flex;align-items:flex-start;gap:3px;font-size:9.5px;line-height:1.35;background:var(--blue-l);color:#15548F;border-radius:4px;padding:2px 3px}
 .wn-cell .wn-task.on{background:var(--teal-l);color:#12674E}
 .wn-cell .wn-task .chk{width:11px;height:11px;border-radius:3px;margin-top:1px}
@@ -904,7 +906,8 @@ function cellHTML(k) {
   if (x.h > 0) h += '<b>' + fmtH(x.h) + 'h</b>';
   if (tk.length) h += '<span class="ok" style="margin-left:3px">' + dn + '/' + tk.length + '</span>';
   const pgs = dayPages(x);
-  if (pgs > 0) h += '<span class="pgcnt" style="margin-left:3px">' + pgs + '页</span>';
+  if (tk.length && pgs > 0) h += '<span class="sep">|</span>';
+  if (pgs > 0) h += '<span class="pgcnt">' + pgs + '页</span>';
   h += '</span></div>';
 
   // 学习计划区（全部展示，不折叠）
@@ -996,6 +999,7 @@ function dayCellHtml(d) {
   if (x.h > 0) h += '<b>' + fmtH(x.h) + 'h</b>';
   if (tk.length) h += '<span class="ok">' + dn + '/' + tk.length + '</span>';
   const pgs = dayPages(x);
+  if (tk.length && pgs > 0) h += '<span class="sep">|</span>';
   if (pgs > 0) h += '<span class="pgcnt">' + pgs + '页</span>';
   h += '</span>';
   if (tk.length) {
