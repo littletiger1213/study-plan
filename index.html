@@ -904,7 +904,8 @@ function cellHTML(k) {
   h += '<div class="c-h"><span class="c-d">' + Number(k.slice(8)) + '</span><span class="c-w">' + WD[d.dow] + '</span>';
   h += '<span class="c-hh">';
   if (x.h > 0) h += '<b>' + fmtH(x.h) + 'h</b>';
-  if (tk.length) h += '<span class="ok" style="margin-left:3px">' + dn + '/' + tk.length + '</span>';
+  if (x.h > 0 && tk.length) h += '<span class="sep">|</span>';
+  if (tk.length) h += '<span class="ok">' + dn + '/' + tk.length + '</span>';
   const pgs = dayPages(x);
   if (tk.length && pgs > 0) h += '<span class="sep">|</span>';
   if (pgs > 0) h += '<span class="pgcnt">' + pgs + '页</span>';
@@ -997,6 +998,7 @@ function dayCellHtml(d) {
   h += '<span class="wn-w">' + WD[d.dow] + '</span>';
   h += '<span class="wn-hh">';
   if (x.h > 0) h += '<b>' + fmtH(x.h) + 'h</b>';
+  if (x.h > 0 && tk.length) h += '<span class="sep">|</span>';
   if (tk.length) h += '<span class="ok">' + dn + '/' + tk.length + '</span>';
   const pgs = dayPages(x);
   if (tk.length && pgs > 0) h += '<span class="sep">|</span>';
