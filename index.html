@@ -381,6 +381,7 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
     <div class="side-t" data-page-node-id="cuIyEhrt8pwlVmaVaDc3P3">
       <input type="search" id="q" placeholder="搜索章节 / 编号…" data-page-node-id="iBlFB23dPHNRjqIvwUdoIo">
       <label class="tgl" data-page-node-id="oCNiwJQDOMIVGC8aJCELZM"><input type="checkbox" id="onlyUndone" data-page-node-id="fFHOdqHnHNdVWDSqGXC2gv"> 只看未完成</label>
+      <label class="tgl" data-page-node-id="tglUnasg01"><input type="checkbox" id="onlyUnasg" data-page-node-id="tglUnasg02"> 只看未排入</label>
     </div>
     <div id="catalog" data-page-node-id="DRYKydAIvCTAlgxEEq1yt1"></div>
   </aside>
@@ -1022,16 +1023,34 @@ function renderWeeks() {
 function renderCatalog() {
   const q = (document.getElementById('q').value || '').trim().toLowerCase();
   const onlyUndone = document.getElementById('onlyUndone').checked;
-  let html = '', shown = 0;
+  const onlyUnasg = document.getElementById('onlyUnasg').checked;
+  let html = '', shown = 0, unasgTotal = 0;
   CAT.forEach(function (c, i) {
     if (c.lv > 1 && collapsed[c.ch]) return;
     const hit = !q || c.num.toLowerCase().indexOf(q) >= 0 || c.t.toLowerCase().indexOf(q) >= 0;
     if (!hit) return;
-    if (onlyUndone && isDone(i)) return;
+    const leaf = isLeaf(i);
+    if (onlyUnasg && !onlyUndone && !leaf) {
+      /* 只看未排入：非叶子条目仅当其后代还有未排入叶子时才显示 */
+      const nums = c.lv === 1 ? childSecs(c.num) : childItems(c.num);
+      const anyUnasg = nums.some(function (o) {
+        const j = NUMIDX[o.num];
+        if (j === undefined) return false;
+        if (isLeaf(j)) return !isAsg(j);
+        return childItems(o.num).some(function (oo) {
+          const jj = NUMIDX[oo.num];
+          return jj !== undefined && !isAsg(jj);
+        });
+      });
+      if (!anyUnasg) return;
+    }
+    if (onlyUndone && !onlyUnasg && isDone(i)) return;
+    if (onlyUnasg) {
+      if (leaf) { if (isAsg(i)) return; unasgTotal++; }
+    }
     shown++;
     const done = isDone(i);
-    const leaf = isLeaf(i);
-    const dayK = A2D[i];
+    const dayK = isLeaf(i) ? asgDay(i) : A2D[i];
     let cls = 'cat-item lv' + c.lv + (done ? ' done' : '') + (selIdx === i ? ' pick' : '');
     let h = '<div class="' + cls + '" data-i="' + i + '" draggable="true">';
     h += '<span class="caret">' + (c.lv === 1 ? (collapsed[c.ch] ? '▸' : '▾') : '') + '</span>';
@@ -1043,9 +1062,11 @@ function renderCatalog() {
     h += '</div>';
     html += h;
   });
-  if (!shown) html = '<div class="dp-empty">没有匹配的条目</div>';
+  if (!shown) html = '<div class="dp-empty">' + (onlyUnasg ? '全部知识点都已排入' : '没有匹配的条目') + '</div>';
   document.getElementById('catalog').innerHTML = html;
-  document.getElementById('cat-cnt').textContent = '共 ' + LEAF_TOTAL + ' 个知识点';
+  document.getElementById('cat-cnt').textContent = onlyUnasg
+    ? ('未排入 ' + unasgTotal + ' 个知识点')
+    : ('共 ' + LEAF_TOTAL + ' 个知识点');
 }
 
 function renderAll() {
@@ -1314,6 +1335,10 @@ document.getElementById('q').addEventListener('input', function () {
   renderCatalog();
 });
 document.getElementById('onlyUndone').addEventListener('change', renderCatalog);
+document.getElementById('onlyUnasg').addEventListener('change', function () {
+  if (document.getElementById('onlyUnasg').checked) collapsed = {};
+  renderCatalog();
+});
 
 /* ========== 保存 / 历史 ========== */
 function snapshot() {
