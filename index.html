@@ -366,7 +366,7 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
     <div id="calwrap" data-page-node-id="Q0qxbxMdc15DB0eNQDqZPI"></div>
     <div class="weeknav" id="weeknav" data-page-node-id="weeknav0001"></div>
     <div class="wsec" data-page-node-id="FPNTagjwrrOgJlxJg3Ve3V">
-      <h3 data-page-node-id="hp2v2DYSmnbAYmgf3mepqI">周汇总 <span data-page-node-id="0znji7KnNSBExT76IFGkCV">工作日 / 周末分列，只统计计划时长</span></h3>
+      <h3 data-page-node-id="hp2v2DYSmnbAYmgf3mepqI">周汇总</h3>
       <div class="wscroll" data-page-node-id="qjictGdKqdF6qBfD5e6h0q">
       <table class="wt" id="wtb" data-page-node-id="Id2XFfeQ3CBmnme8vJZxfD">
         <thead data-page-node-id="IL1JE5EzfgreFP61izldH7">
@@ -959,7 +959,7 @@ function dayCellHtml(d) {
       if (!c) return;
       h += '<div class="wn-task' + (isDone(i) ? ' on' : '') + '" data-i="' + i + '">';
       h += '<span class="chk' + (isDone(i) ? ' on' : '') + '"></span>';
-      h += '<span class="wn-tt" title="' + esc(c.num + ' ' + c.t) + '">' + esc(c.t) + '</span></div>';
+      h += '<span class="wn-tt" title="' + esc(c.num + ' ' + c.t) + '">' + esc(c.num) + ' ' + esc(c.t) + '</span></div>';
     });
   } else {
     h += '<div class="wn-empty">无任务</div>';
@@ -987,7 +987,6 @@ function renderWeekNav() {
     h += dayCellHtml(DAYS[i]);
   }
   h += '</div>';
-  h += '<div class="wn-hint">左右翻页看前后三天 · 点某天查看/编辑 · 点下方目录按钮拖任务</div>';
   document.getElementById('weeknav').innerHTML = h;
 }
 
