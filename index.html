@@ -1019,6 +1019,7 @@ function dayCellHtml(d) {
   ex.forEach(function (e) {
     h += '<div class="wn-ex" title="' + esc(e) + '">' + esc(e) + '</div>';
   });
+  if (x.note) h += '<div class="c-note">' + esc(x.note) + '</div>';
   h += '</div>';
   return h;
 }
