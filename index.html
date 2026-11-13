@@ -429,6 +429,35 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 #quiz-tab .mode-opt.active {border-color:var(--blue);background:var(--blue-l)}
 #quiz-tab .mode-opt.active .m-name {color:var(--blue)}
 
+/* 三步向导步骤条 */
+#quiz-tab .wizard-steps {display:flex;gap:6px;margin:14px 0 6px}
+#quiz-tab .ws-step {flex:1;text-align:center;font-size:12px;font-weight:600;padding:8px 4px;border-radius:8px;background:var(--bg);color:var(--muted);border:1px solid var(--line);position:relative;transition:.15s}
+#quiz-tab .ws-step.active {background:var(--blue-l);color:var(--blue);border-color:var(--blue)}
+#quiz-tab .ws-step.done {color:var(--teal);border-color:var(--teal-l);background:var(--teal-l)}
+#quiz-tab .ws-step.done::before {content:'✓ ';font-weight:700}
+
+/* 选择方式（全量/随机） */
+#quiz-tab .method-row {display:flex;gap:10px;margin:12px 0}
+#quiz-tab .method-opt {flex:1;border:2px solid var(--line);border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:.15s;background:#fff}
+#quiz-tab .method-opt .m-name {font-weight:650;font-size:14px}
+#quiz-tab .method-opt .m-desc {font-size:11px;color:var(--muted);margin-top:2px}
+#quiz-tab .method-opt.active {border-color:var(--blue);background:var(--blue-l)}
+#quiz-tab .method-opt.active .m-name {color:var(--blue)}
+
+/* 向导摘要与底部导航 */
+#quiz-tab .wizard-summary {margin-top:12px;padding:10px 12px;background:var(--bg);border-radius:8px;font-size:12px;color:var(--muted);line-height:1.6}
+#quiz-tab .wizard-summary b {color:var(--text)}
+#quiz-tab .wizard-nav {display:flex;gap:10px;margin-top:14px}
+#quiz-tab .wizard-nav .nav-back {flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:14px;font-weight:600;cursor:pointer;color:var(--muted);transition:.15s}
+#quiz-tab .wizard-nav .nav-next {flex:1;padding:12px;border-radius:10px;border:none;background:var(--blue);color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:.15s}
+#quiz-tab .wizard-nav .nav-next:active {opacity:.85}
+
+/* 断点续答条 */
+#quiz-tab .resume-bar {display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:12px;background:var(--amber-l);border:1px solid var(--amber);border-radius:10px}
+#quiz-tab .resume-info {flex:1;font-size:12px;color:var(--text)}
+#quiz-tab .resume-btn {padding:6px 14px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-size:13px;font-weight:600;cursor:pointer}
+#quiz-tab .resume-abandon {padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--coral);font-size:13px;font-weight:600;cursor:pointer}
+
 #quiz-tab .start-btn {width:100%;background:linear-gradient(135deg,#185FA5,#1D9E75);color:#fff;font-size:16px;font-weight:700;padding:14px;border-radius:12px;margin-top:12px;box-shadow:0 3px 10px rgba(24,95,165,.25)}
 #quiz-tab .start-btn:disabled {opacity:.45;box-shadow:none}
 
@@ -540,6 +569,7 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 }
 
 </style>
+
 
 
 
@@ -76239,6 +76269,7 @@ if (quizCloudEnabled()) quizGistPull(false);
 })();
 
 </script>
+
 
 
 
