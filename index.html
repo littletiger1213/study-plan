@@ -2454,12 +2454,12 @@ function renderSelectView() {
       <h2>选择考点范围 <span class="tag" id="sel-count">已选 0</span></h2>
       <div class="toolbar">
         <input type="search" id="q-search" placeholder="搜索考点名称 / 编号…">
-        <button class="tbtn" id="btn-expand">展开</button>
-        <button class="tbtn" id="btn-collapse">收起</button>
-        <button class="tbtn primary" id="btn-all">全选</button>
-        <button class="tbtn" id="btn-clear">清空</button>
+        <button class="tbtn" id="q-btn-expand">展开</button>
+        <button class="tbtn" id="q-btn-collapse">收起</button>
+        <button class="tbtn primary" id="q-btn-all">全选</button>
+        <button class="tbtn" id="q-btn-clear">清空</button>
       </div>
-      <div id="catalog"></div>
+      <div id="q-catalog"></div>
     </div>
     <div class="card">
       <h2>练习模式</h2>
@@ -2479,13 +2479,13 @@ function renderSelectView() {
 
   // 搜索
   $('#q-search').addEventListener('input', renderCatalog);
-  $('#btn-expand').addEventListener('click', () => { expandAll(true); renderCatalog(); });
-  $('#btn-collapse').addEventListener('click', () => { expandAll(false); renderCatalog(); });
-  $('#btn-all').addEventListener('click', () => {
+  $('#q-btn-expand').addEventListener('click', () => { expandAll(true); renderCatalog(); });
+  $('#q-btn-collapse').addEventListener('click', () => { expandAll(false); renderCatalog(); });
+  $('#q-btn-all').addEventListener('click', () => {
     LEAF_TOPICS.forEach(t => selectedTopics.add(t));
     renderCatalog(); updateSelCount();
   });
-  $('#btn-clear').addEventListener('click', () => {
+  $('#q-btn-clear').addEventListener('click', () => {
     selectedTopics.clear();
     renderCatalog(); updateSelCount();
   });
@@ -2508,7 +2508,7 @@ function expandAll(expand) {
 }
 
 function renderCatalog() {
-  const el = $('#catalog');
+  const el = $('#q-catalog');
   if (!el) return;
   const q = ($('#q-search').value || '').trim().toLowerCase();
   let html = '';
