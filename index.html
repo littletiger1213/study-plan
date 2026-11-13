@@ -473,6 +473,8 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 #quiz-tab .quiz-progress {flex:1;height:8px;background:#E7ECF3;border-radius:4px;overflow:hidden}
 #quiz-tab .quiz-progress .bar {height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));transition:width .3s}
 #quiz-tab .quiz-pos {font-size:12px;color:var(--muted);white-space:nowrap}
+#quiz-tab .quiz-exit {flex:none;padding:5px 12px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--coral);cursor:pointer;transition:.15s}
+#quiz-tab .quiz-exit:active {background:var(--bg)}
 
 #quiz-tab .question-card {background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
 #quiz-tab .q-meta {display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
@@ -558,6 +560,7 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 #quiz-tab .modal .m-actions button {flex:1;padding:11px;border-radius:10px;font-size:14px;font-weight:600}
 #quiz-tab .modal .m-actions .cancel {background:#fff;border:1px solid var(--line)}
 #quiz-tab .modal .m-actions .confirm {background:var(--blue);color:#fff}
+#quiz-tab .modal .m-actions .danger {background:var(--coral);color:#fff}
 
 #quiz-tab .empty-tip {text-align:center;color:var(--muted);padding:40px 20px;font-size:14px}
 #quiz-tab .empty-tip .icon {font-size:40px;margin-bottom:10px}
@@ -3076,6 +3079,7 @@ function renderQuiz() {
     <div class="quiz-top">
       <div class="quiz-progress"><div class="bar" id="quiz-progress-bar"></div></div>
       <span class="quiz-pos" id="quiz-pos"></span>
+      <button class="quiz-exit" id="btn-quiz-exit">退出答题</button>
     </div>
     ${html}
   `;
@@ -3104,6 +3108,7 @@ function renderQuiz() {
   $('#btn-prev').addEventListener('click', () => { if (idx > 0) { session.current--; saveSession(); renderQuiz(); } });
   $('#btn-next').addEventListener('click', () => { if (idx < total - 1) { session.current++; saveSession(); renderQuiz(); } });
   $('#btn-submit').addEventListener('click', confirmSubmit);
+  $('#btn-quiz-exit').addEventListener('click', confirmExitQuiz);
   $('#view-quiz').querySelectorAll('.sheet-cell').forEach(c => {
     c.addEventListener('click', () => { session.current = Number(c.dataset.i); saveSession(); renderQuiz(); });
   });
@@ -3116,6 +3121,37 @@ function ensureQuizView() {
     div.id = 'view-quiz';
     document.getElementById('quiz-app').appendChild(div);
   }
+}
+
+/* 退出答题：弹窗让用户选择保存或放弃 */
+function confirmExitQuiz() {
+  const total = session.questions.length;
+  const answered = Object.keys(session.answers).length;
+  showModal(`
+    <h3>退出答题？</h3>
+    <p>本次共 ${total} 题，已作答 <b style="color:var(--teal)">${answered}</b> 题。</p>
+    <div class="m-actions">
+      <button class="cancel" onclick="window.__quizCloseModal()">继续答题</button>
+      <button class="confirm" onclick="window.__quizCloseModal();window.__quizSaveExit()">保存进度并退出</button>
+    </div>
+    <div class="m-actions" style="margin-top:8px">
+      <button class="danger" onclick="window.__quizCloseModal();window.__quizAbandonExit()">放弃本次答题</button>
+    </div>
+  `);
+}
+/* 保存进度并退出：保留断点，返回考点选择页（可续答） */
+function exitQuizSave() {
+  saveSession();
+  toast('已保存进度，可随时继续答题');
+  switchView('select');
+  renderSelectView();
+}
+/* 放弃本次答题：清除断点，返回考点选择页 */
+function exitQuizAbandon() {
+  clearSession();
+  toast('已放弃本次答题');
+  switchView('select');
+  renderSelectView();
 }
 
 function confirmSubmit() {
@@ -3429,6 +3465,8 @@ renderShell();
   window.__quizCloseModal = closeModal;
   window.__quizDoSubmit = doSubmit;
   window.__quizDoRemove = doRemove;
+  window.__quizSaveExit = exitQuizSave;
+  window.__quizAbandonExit = exitQuizAbandon;
 
   // 若已配置云端同步，启动时自动拉取一次刷题数据
   if (quizCloudEnabled()) quizGistPull(false);
