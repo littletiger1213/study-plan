@@ -408,6 +408,12 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 #quiz-tab .chapter-head .ch-name {font-weight:650;font-size:14px;flex:1}
 #quiz-tab .chapter-head .ch-count {font-size:11px;color:var(--muted)}
 #quiz-tab .chapter-head .caret {transition:transform .2s;color:var(--muted);font-size:12px}
+#quiz-tab .chapter-head .ch-quiz-btn {flex:none;font-size:11px;font-weight:600;padding:4px 9px;border-radius:7px;border:1px solid var(--blue);color:var(--blue);background:#fff;transition:.15s;white-space:nowrap}
+#quiz-tab .chapter-head .ch-quiz-btn:active {background:var(--blue);color:#fff}
+#quiz-tab .chapter-head .ch-quiz-btn.test {border-color:var(--teal);color:var(--teal)}
+#quiz-tab .chapter-head .ch-quiz-btn.test:active {background:var(--teal);color:#fff}
+#quiz-tab .chapter-head .ch-quiz-btn.disabled {border-color:var(--line);color:var(--muted);background:transparent;opacity:.5;cursor:not-allowed}
+#quiz-tab .chapter-head .ch-quiz-btn.disabled:active {background:transparent;color:var(--muted)}
 #quiz-tab .chapter-block.collapsed .chapter-body {display:none}
 #quiz-tab .chapter-block.collapsed .caret {transform:rotate(-90deg)}
 
@@ -544,6 +550,10 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
   #quiz-tab .topbar {padding:10px 12px}
   #quiz-tab .topbar .brand {font-size:15px}
   #quiz-tab .topbar .nav-btn {padding:6px 10px;font-size:12px}
+  #quiz-tab .chapter-head {padding:9px 10px;gap:6px}
+  #quiz-tab .chapter-head .ch-count {display:none}
+  #quiz-tab .chapter-head .ch-quiz-btn {padding:4px 7px;font-size:10.5px}
+  #quiz-tab .chapter-head .ch-name {font-size:13px}
 }
 
 </style>
@@ -2352,6 +2362,16 @@ QUESTIONS.forEach(q => {
 /* 题目索引：按ID */
 const Q_BY_ID = {};
 QUESTIONS.forEach(q => { Q_BY_ID[q.question_id] = q; });
+/* 题目索引：按章 */
+const Q_BY_CHAPTER = {};
+QUESTIONS.forEach(q => {
+  const ch = q.chapter;
+  if (ch == null) return;
+  if (!Q_BY_CHAPTER[ch]) Q_BY_CHAPTER[ch] = [];
+  Q_BY_CHAPTER[ch].push(q);
+});
+/* 测试模式单章抽题数（该章不足则全取） */
+const TEST_MODE_SIZE = 10;
 
 /* ============ 状态 ============ */
 const LS_KEY = 'quiz-system-v1';
@@ -2544,6 +2564,8 @@ function renderCatalog() {
       <span class="${chkCls}" data-chk-ch="${chNum}"></span>
       <span class="ch-name">第${chNum}章 ${esc(ch.name)}</span>
       <span class="ch-count">${chQCount}题</span>
+      <button class="ch-quiz-btn ${chQCount ? '' : 'disabled'}" data-ch-all="${chNum}" ${chQCount ? '' : 'disabled'} title="答本章全部考题">全部</button>
+      <button class="ch-quiz-btn test ${chQCount ? '' : 'disabled'}" data-ch-test="${chNum}" ${chQCount ? '' : 'disabled'} title="从本章题库随机抽题测试">测试</button>
       <span class="caret">▾</span>
     </div>`;
     html += `<div class="chapter-body">`;
@@ -2600,11 +2622,18 @@ function renderCatalog() {
   el.querySelectorAll('.chapter-head').forEach(h => {
     h.addEventListener('click', (e) => {
       if (e.target.closest('[data-chk-ch]')) return;
+      if (e.target.closest('[data-ch-all]') || e.target.closest('[data-ch-test]')) return;
       const ch = h.closest('.chapter-block').dataset.ch;
       if (collapsedChapters.has(Number(ch))) collapsedChapters.delete(Number(ch));
       else collapsedChapters.add(Number(ch));
       renderCatalog();
     });
+  });
+  el.querySelectorAll('[data-ch-all]').forEach(b => {
+    b.addEventListener('click', (e) => { e.stopPropagation(); startChapterQuiz(Number(b.dataset.chAll), 'all'); });
+  });
+  el.querySelectorAll('[data-ch-test]').forEach(b => {
+    b.addEventListener('click', (e) => { e.stopPropagation(); startChapterQuiz(Number(b.dataset.chTest), 'test'); });
   });
   el.querySelectorAll('[data-chk-ch]').forEach(c => {
     c.addEventListener('click', () => toggleChapter(Number(c.dataset.chkCh)));
@@ -2713,6 +2742,35 @@ function shuffle(arr) {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+/* 按章开刷：mode='all' 答本章全部考题；mode='test' 从本章题库随机抽题测试 */
+function startChapterQuiz(chNum, mode) {
+  const chQ = Q_BY_CHAPTER[chNum] || [];
+  if (chQ.length === 0) {
+    toast('该章题库尚未出题，敬请期待');
+    return;
+  }
+  let pool = chQ.slice();
+  if (mode === 'test') {
+    // 随机抽取（不足则全取）
+    pool = shuffle(pool).slice(0, Math.min(TEST_MODE_SIZE, pool.length));
+  } else {
+    pool = shuffle(pool);
+  }
+  const chName = CHAPTER_MAP[chNum] ? CHAPTER_MAP[chNum].name : ('第' + chNum + '章');
+  session = {
+    topics: Array.from(selectedTopics),
+    mode: mode === 'test' ? 'chapter-test' : 'chapter-all',
+    sourceLabel: '第' + chNum + '章 ' + chName + (mode === 'test' ? ' · 随机测试' : ' · 全部考题'),
+    questions: pool,
+    answers: {},
+    current: 0,
+    startTime: Date.now(),
+    endTime: null
+  };
+  renderQuiz();
+  switchView('quiz');
 }
 
 /* ============ 答题页 ============ */
