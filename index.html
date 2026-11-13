@@ -337,6 +337,217 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
   .weeknav .wn-head{font-size:13px}
 }
 </style>
+
+<style id="maintab-style">
+.main-tabs{display:flex;gap:0;padding:0 16px;border-bottom:1px solid var(--line);background:#fff}
+.main-tab-btn{border:none;background:none;padding:11px 16px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;transition:.15s;white-space:nowrap}
+.main-tab-btn:hover{color:var(--text)}
+.main-tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+.quiz-scope{height:calc(100vh - 55px - 42px);overflow-y:auto;background:var(--bg)}
+#quiz-app{max-width:860px;margin:0 auto;padding:0 0 80px;min-height:100%}
+</style>
+
+<style id="quiz-style">
+
+.quiz-scope{
+  --blue:#185FA5;--blue-l:#EAF3FB;--blue-d:#0E4378;
+  --teal:#1D9E75;--teal-l:#E6F5EF;
+  --coral:#D85A30;--coral-l:#FBEFEA;
+  --amber:#C98A00;--amber-l:#FDF3E0;
+  --text:#2B3648;--muted:#8A94A6;--line:#E5E9F0;--bg:#F5F7FA;
+  --card:#fff;--shadow:0 1px 3px rgba(20,40,80,.06);
+}
+#quiz-tab * {box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+#quiz-tab html,body {height:100%}
+#quiz-tab body {font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;color:var(--text);background:var(--bg);font-size:14px;line-height:1.6;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+#quiz-tab button {font-family:inherit;cursor:pointer;border:none;background:none;font-size:inherit}
+#quiz-tab input,select,textarea {font-family:inherit;font-size:inherit}
+#quiz-tab ::-webkit-scrollbar {width:8px;height:8px}
+#quiz-tab ::-webkit-scrollbar-thumb {background:#CBD3DF;border-radius:4px}
+
+/* ===== 应用容器 ===== */
+#quiz-tab #quiz-app {max-width:860px;margin:0 auto;padding:0 0 80px;min-height:100%}
+
+/* ===== 顶栏 ===== */
+#quiz-tab .topbar {position:sticky;top:0;z-index:50;background:linear-gradient(135deg,#185FA5,#1D9E75);color:#fff;display:flex;align-items:center;gap:10px;padding:12px 16px;box-shadow:0 2px 8px rgba(20,60,110,.15)}
+#quiz-tab .topbar .brand {font-size:16px;font-weight:700;letter-spacing:.3px;flex:1;min-width:0}
+#quiz-tab .topbar .brand small {display:block;font-weight:400;font-size:11px;opacity:.85}
+#quiz-tab .topbar .nav-btn {background:rgba(255,255,255,.16);color:#fff;border-radius:8px;padding:7px 12px;font-size:13px;white-space:nowrap;transition:background .15s}
+#quiz-tab .topbar .nav-btn:active {background:rgba(255,255,255,.28)}
+#quiz-tab .topbar .nav-btn.active {background:#fff;color:var(--blue);font-weight:650}
+
+/* ===== 页面容器 ===== */
+#quiz-tab .view {display:none;padding:16px 14px}
+#quiz-tab .view.active {display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ===== 统计卡片 ===== */
+#quiz-tab .stat-row {display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+#quiz-tab .stat-card {background:var(--card);border-radius:12px;padding:12px;box-shadow:var(--shadow);text-align:center}
+#quiz-tab .stat-card .v {font-size:22px;font-weight:700;color:var(--blue);line-height:1.2}
+#quiz-tab .stat-card .v.teal {color:var(--teal)}
+#quiz-tab .stat-card .v.coral {color:var(--coral)}
+#quiz-tab .stat-card .k {font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ===== 通用卡片 ===== */
+#quiz-tab .card {background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+#quiz-tab .card h2 {font-size:16px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+#quiz-tab .card h2 .tag {font-size:11px;background:var(--blue-l);color:var(--blue);border-radius:6px;padding:2px 8px;font-weight:600}
+
+/* ===== 考点选择 ===== */
+#quiz-tab .toolbar {display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+#quiz-tab .toolbar input[type=search] {flex:1;min-width:140px;border:1px solid var(--line);border-radius:9px;padding:9px 12px;outline:none;font-size:14px;background:#fff}
+#quiz-tab .toolbar input[type=search]:focus {border-color:var(--blue)}
+#quiz-tab .toolbar .tbtn {border:1px solid var(--line);border-radius:9px;padding:9px 12px;background:#fff;font-size:13px;color:var(--text);transition:.15s}
+#quiz-tab .toolbar .tbtn:active {background:var(--blue-l)}
+#quiz-tab .toolbar .tbtn.primary {background:var(--blue);color:#fff;border-color:var(--blue);font-weight:600}
+
+#quiz-tab .chapter-block {margin-bottom:10px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+#quiz-tab .chapter-head {display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--blue-l);cursor:pointer;user-select:none}
+#quiz-tab .chapter-head .chk {flex:none}
+#quiz-tab .chapter-head .ch-name {font-weight:650;font-size:14px;flex:1}
+#quiz-tab .chapter-head .ch-count {font-size:11px;color:var(--muted)}
+#quiz-tab .chapter-head .caret {transition:transform .2s;color:var(--muted);font-size:12px}
+#quiz-tab .chapter-block.collapsed .chapter-body {display:none}
+#quiz-tab .chapter-block.collapsed .caret {transform:rotate(-90deg)}
+
+#quiz-tab .section-item {padding:8px 12px 8px 28px;border-top:1px solid var(--line);display:flex;align-items:flex-start;gap:8px;cursor:pointer}
+#quiz-tab .section-item:hover {background:var(--bg)}
+#quiz-tab .section-item .chk {flex:none;margin-top:2px}
+#quiz-tab .section-item .s-name {font-size:13px;color:var(--text);flex:1}
+#quiz-tab .section-item .s-name .id {color:var(--blue);font-weight:600;margin-right:4px;font-size:12px}
+#quiz-tab .topic-item {padding:6px 12px 6px 46px;display:flex;align-items:flex-start;gap:8px;cursor:pointer;border-top:1px dashed var(--line)}
+#quiz-tab .topic-item:hover {background:var(--bg)}
+#quiz-tab .topic-item .chk {flex:none;margin-top:2px}
+#quiz-tab .topic-item .t-name {font-size:13px;flex:1}
+#quiz-tab .topic-item .t-name .id {color:var(--muted);margin-right:4px;font-size:12px}
+#quiz-tab .topic-item .t-qcount {font-size:11px;color:var(--teal);flex:none}
+#quiz-tab .topic-item.no-q .t-qcount {color:var(--coral)}
+
+/* 复选框 */
+#quiz-tab .chk {width:18px;height:18px;border:2px solid #C4CDD9;border-radius:5px;display:inline-block;position:relative;background:#fff;transition:.12s}
+#quiz-tab .chk.on {background:var(--blue);border-color:var(--blue)}
+#quiz-tab .chk.on::after {content:'';position:absolute;left:5px;top:2px;width:4px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+#quiz-tab .chk.partial {background:var(--blue);border-color:var(--blue)}
+#quiz-tab .chk.partial::after {content:'';position:absolute;left:4px;top:7px;width:8px;height:2px;background:#fff}
+
+/* 模式选择 */
+#quiz-tab .mode-row {display:flex;gap:10px;margin:12px 0}
+#quiz-tab .mode-opt {flex:1;border:2px solid var(--line);border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:.15s;background:#fff}
+#quiz-tab .mode-opt .m-name {font-weight:650;font-size:14px}
+#quiz-tab .mode-opt .m-desc {font-size:11px;color:var(--muted);margin-top:2px}
+#quiz-tab .mode-opt.active {border-color:var(--blue);background:var(--blue-l)}
+#quiz-tab .mode-opt.active .m-name {color:var(--blue)}
+
+#quiz-tab .start-btn {width:100%;background:linear-gradient(135deg,#185FA5,#1D9E75);color:#fff;font-size:16px;font-weight:700;padding:14px;border-radius:12px;margin-top:12px;box-shadow:0 3px 10px rgba(24,95,165,.25)}
+#quiz-tab .start-btn:disabled {opacity:.45;box-shadow:none}
+
+/* ===== 答题页 ===== */
+#quiz-tab .quiz-top {display:flex;align-items:center;gap:10px;margin-bottom:12px}
+#quiz-tab .quiz-progress {flex:1;height:8px;background:#E7ECF3;border-radius:4px;overflow:hidden}
+#quiz-tab .quiz-progress .bar {height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));transition:width .3s}
+#quiz-tab .quiz-pos {font-size:12px;color:var(--muted);white-space:nowrap}
+
+#quiz-tab .question-card {background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+#quiz-tab .q-meta {display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+#quiz-tab .q-badge {font-size:11px;padding:2px 8px;border-radius:6px;font-weight:600}
+#quiz-tab .q-badge.single {background:var(--blue-l);color:var(--blue)}
+#quiz-tab .q-badge.multiple {background:var(--amber-l);color:var(--amber)}
+#quiz-tab .q-badge.topic {background:var(--teal-l);color:var(--teal)}
+#quiz-tab .q-stem {font-size:15px;font-weight:600;line-height:1.6;margin-bottom:14px}
+#quiz-tab .q-options {display:flex;flex-direction:column;gap:10px}
+#quiz-tab .opt-item {display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--line);border-radius:10px;cursor:pointer;transition:.15s}
+#quiz-tab .opt-item:active {background:var(--blue-l)}
+#quiz-tab .opt-item .opt-key {flex:none;width:26px;height:26px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:650;font-size:13px;color:var(--muted)}
+#quiz-tab .opt-item.selected {border-color:var(--blue);background:var(--blue-l)}
+#quiz-tab .opt-item.selected .opt-key {background:var(--blue);color:#fff}
+#quiz-tab .opt-item .opt-text {font-size:14px;flex:1;line-height:1.55}
+
+#quiz-tab .quiz-nav {display:flex;gap:10px;margin-top:4px}
+#quiz-tab .quiz-nav button {flex:1;padding:12px;border-radius:10px;font-size:14px;font-weight:600;border:1px solid var(--line);background:#fff;transition:.15s}
+#quiz-tab .quiz-nav button:active {background:var(--bg)}
+#quiz-tab .quiz-nav button.primary {background:var(--blue);color:#fff;border-color:var(--blue)}
+#quiz-tab .quiz-nav button.submit {background:var(--teal);color:#fff;border-color:var(--teal)}
+#quiz-tab .quiz-nav button:disabled {opacity:.4}
+
+/* 答题卡 */
+#quiz-tab .answer-sheet {background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:14px;margin-top:14px}
+#quiz-tab .answer-sheet h3 {font-size:14px;margin-bottom:10px}
+#quiz-tab .sheet-grid {display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
+#quiz-tab .sheet-cell {aspect-ratio:1;border:1px solid var(--line);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;cursor:pointer;background:#fff;transition:.12s}
+#quiz-tab .sheet-cell.answered {background:var(--blue);color:#fff;border-color:var(--blue)}
+#quiz-tab .sheet-cell.current {border-color:var(--coral);box-shadow:0 0 0 2px var(--coral-l)}
+#quiz-tab .sheet-cell.skipped {background:var(--coral-l);color:var(--coral);border-color:var(--coral)}
+
+/* ===== 结果页 ===== */
+#quiz-tab .result-summary {display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+#quiz-tab .result-card {background:var(--card);border-radius:12px;padding:14px;text-align:center;box-shadow:var(--shadow)}
+#quiz-tab .result-card .v {font-size:24px;font-weight:700;line-height:1.1}
+#quiz-tab .result-card .k {font-size:11px;color:var(--muted);margin-top:3px}
+#quiz-tab .result-item {background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:14px;margin-bottom:12px;border-left:4px solid var(--line)}
+#quiz-tab .result-item.correct {border-left-color:var(--teal)}
+#quiz-tab .result-item.wrong {border-left-color:var(--coral)}
+#quiz-tab .result-item .r-head {display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;align-items:center}
+#quiz-tab .result-item .r-stem {font-size:14px;font-weight:600;margin-bottom:8px}
+#quiz-tab .result-verdict {font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px}
+#quiz-tab .result-verdict.ok {background:var(--teal-l);color:var(--teal)}
+#quiz-tab .result-verdict.no {background:var(--coral-l);color:var(--coral)}
+#quiz-tab .result-detail {font-size:13px;line-height:1.6}
+#quiz-tab .result-detail .ans-line {margin:4px 0}
+#quiz-tab .result-detail .correct-ans {color:var(--teal);font-weight:600}
+#quiz-tab .result-detail .user-ans {color:var(--coral);font-weight:600}
+#quiz-tab .result-detail .explain {background:var(--bg);border-radius:8px;padding:10px;margin-top:8px;color:#4A5568}
+#quiz-tab .result-detail .bookpage {color:var(--blue);font-size:12px;margin-top:6px}
+
+/* ===== 错题集 ===== */
+#quiz-tab .wrong-filter {display:flex;gap:8px;margin-bottom:12px;align-items:center}
+#quiz-tab .wrong-filter select {flex:1;border:1px solid var(--line);border-radius:9px;padding:9px;background:#fff;outline:none}
+#quiz-tab .wrong-item {background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:14px;margin-bottom:12px;border-left:4px solid var(--coral)}
+#quiz-tab .wrong-item .w-stem {font-size:14px;font-weight:600;margin-bottom:6px}
+#quiz-tab .wrong-item .w-meta {font-size:12px;color:var(--muted);margin-bottom:8px;display:flex;gap:10px;flex-wrap:wrap}
+#quiz-tab .wrong-item .w-actions {display:flex;gap:8px}
+#quiz-tab .wrong-item .w-actions button {padding:7px 12px;border-radius:8px;font-size:13px;border:1px solid var(--line);background:#fff}
+#quiz-tab .wrong-item .w-actions button.danger {color:var(--coral);border-color:var(--coral)}
+#quiz-tab .wrong-item .w-actions button.primary {background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ===== 覆盖统计 ===== */
+#quiz-tab .cov-table {width:100%;border-collapse:collapse;font-size:13px}
+#quiz-tab .cov-table th,.cov-table td {padding:8px 10px;text-align:left;border-bottom:1px solid var(--line)}
+#quiz-tab .cov-table th {background:var(--bg);font-weight:650;color:var(--muted);font-size:12px}
+#quiz-tab .cov-table tr:hover td {background:var(--bg)}
+#quiz-tab .cov-badge {font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px}
+#quiz-tab .cov-badge.ok {background:var(--teal-l);color:var(--teal)}
+#quiz-tab .cov-badge.warn {background:var(--amber-l);color:var(--amber)}
+#quiz-tab .cov-badge.empty {background:var(--coral-l);color:var(--coral)}
+
+/* ===== 弹窗/提示 ===== */
+#quiz-tab .toast {position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(30,40,55,.92);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;z-index:200;max-width:86%;opacity:0;pointer-events:none;transition:opacity .25s}
+#quiz-tab .toast.show {opacity:1}
+#quiz-tab .modal-mask {position:fixed;inset:0;background:rgba(20,30,50,.5);z-index:150;display:none;align-items:center;justify-content:center;padding:20px}
+#quiz-tab .modal-mask.show {display:flex}
+#quiz-tab .modal {background:#fff;border-radius:14px;max-width:420px;width:100%;padding:20px;max-height:80vh;overflow:auto}
+#quiz-tab .modal h3 {font-size:16px;margin-bottom:12px}
+#quiz-tab .modal p {font-size:14px;color:#4A5568;margin-bottom:12px;line-height:1.6}
+#quiz-tab .modal .m-actions {display:flex;gap:10px;margin-top:14px}
+#quiz-tab .modal .m-actions button {flex:1;padding:11px;border-radius:10px;font-size:14px;font-weight:600}
+#quiz-tab .modal .m-actions .cancel {background:#fff;border:1px solid var(--line)}
+#quiz-tab .modal .m-actions .confirm {background:var(--blue);color:#fff}
+
+#quiz-tab .empty-tip {text-align:center;color:var(--muted);padding:40px 20px;font-size:14px}
+#quiz-tab .empty-tip .icon {font-size:40px;margin-bottom:10px}
+
+@media (max-width:560px){
+  #quiz-tab .stat-row,.result-summary {grid-template-columns:repeat(4,1fr);gap:6px}
+  #quiz-tab .stat-card,.result-card {padding:10px 6px}
+  #quiz-tab .stat-card .v,.result-card .v {font-size:18px}
+  #quiz-tab .sheet-grid {grid-template-columns:repeat(6,1fr)}
+  #quiz-tab .topbar {padding:10px 12px}
+  #quiz-tab .topbar .brand {font-size:15px}
+  #quiz-tab .topbar .nav-btn {padding:6px 10px;font-size:12px}
+}
+
+</style>
+
 </head>
 <body data-page-node-id="dGh67tpFleHOGLDtuF96sn">
 
@@ -365,6 +576,12 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
   </div>
 </div>
 
+
+<!-- ===== 主 Tab 导航 ===== -->
+<div class="main-tabs" id="main-tabs">
+  <button class="main-tab-btn active" data-maintab="plan">📅 学习计划</button>
+  <button class="main-tab-btn" data-maintab="quiz">📝 考点刷题</button>
+</div>
 <div class="layout" data-page-node-id="pKiCQ5VWckHaffgzI6OVoV">
   <div class="calarea" id="calarea" data-page-node-id="Xr1rFPC48KrotAmyi78wxK">
     <div id="calwrap" data-page-node-id="Q0qxbxMdc15DB0eNQDqZPI"></div>
@@ -407,6 +624,12 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 <div class="side-mask" id="side-mask" data-page-node-id="sidemask001"></div>
 <button class="fab" id="fab" data-page-node-id="fab0001">☰ 学习目录</button>
 
+
+<div class="quiz-scope" id="quiz-tab" style="display:none">
+  <div id="quiz-app"></div>
+  <div id="quiz-toast" class="toast"></div>
+  <div id="quiz-modal" class="modal-mask"><div class="modal" id="quiz-modal-body"></div></div>
+</div>
 <div id="selbar" data-page-node-id="wqBcvZPvt2Bp1HnN12Syvy">
   <span class="sbn" data-page-node-id="KJ1Yf1nYYTsxMWxdMFEtic">已选</span><span class="sbt" id="sel-txt" data-page-node-id="piLl0zbLHl4GIxFKgeOJgy"></span>
   <button id="sel-cancel" data-page-node-id="EwglVdHwXUAKdcYzG9N7SD">取消</button>
@@ -2101,5 +2324,829 @@ if (gistEnabled()) {
   gistPull(false).then(function () {});
 }
 </script>
+<script id="quiz-script">
+(function () {
+
+/* ============ 数据注入占位 ============ */
+const __DATA__ = {"book":"《信息系统项目管理师教程（第4版）》","chapters":[{"id":"1","name":"信息化发展","ch":1},{"id":"2","name":"信息技术发展","ch":2},{"id":"3","name":"信息系统治理","ch":3},{"id":"4","name":"信息系统管理","ch":4},{"id":"5","name":"信息系统工程","ch":5},{"id":"6","name":"项目管理概论","ch":6},{"id":"7","name":"项目立项管理","ch":7},{"id":"8","name":"项目整合管理","ch":8},{"id":"9","name":"项目范围管理","ch":9},{"id":"10","name":"项目进度管理","ch":10},{"id":"11","name":"项目成本管理","ch":11},{"id":"12","name":"项目质量管理","ch":12},{"id":"13","name":"项目资源管理","ch":13},{"id":"14","name":"项目沟通管理","ch":14},{"id":"15","name":"项目风险管理","ch":15},{"id":"16","name":"项目采购管理","ch":16},{"id":"17","name":"项目干系人管理","ch":17},{"id":"18","name":"项目绩效域","ch":18},{"id":"19","name":"配置与变更管理","ch":19},{"id":"20","name":"高级项目管理","ch":20},{"id":"21","name":"项目管理科学基础","ch":21},{"id":"22","name":"组织通用治理","ch":22},{"id":"23","name":"组织通用管理","ch":23},{"id":"24","name":"法律法规与标准规范","ch":24}],"topics":[{"id":"1.1","name":"信息与信息化","chapter":1,"level":2,"pg":1,"pp":6,"is_leaf":false},{"id":"1.1.1","name":"信息","chapter":1,"level":3,"pg":2,"pp":1,"is_leaf":true},{"id":"1.1.2","name":"信息系统","chapter":1,"level":3,"pg":2,"pp":2,"is_leaf":true},{"id":"1.1.3","name":"信息化","chapter":1,"level":3,"pg":4,"pp":3,"is_leaf":true},{"id":"1.2","name":"现代化基础设施","chapter":1,"level":2,"pg":7,"pp":5,"is_leaf":false},{"id":"1.2.1","name":"新型基础设施建设","chapter":1,"level":3,"pg":7,"pp":1,"is_leaf":true},{"id":"1.2.2","name":"工业互联网","chapter":1,"level":3,"pg":8,"pp":2,"is_leaf":true},{"id":"1.2.3","name":"车联网","chapter":1,"level":3,"pg":10,"pp":2,"is_leaf":true},{"id":"1.3","name":"现代化创新发展","chapter":1,"level":2,"pg":12,"pp":4,"is_leaf":false},{"id":"1.3.1","name":"农业农村现代化","chapter":1,"level":3,"pg":12,"pp":1,"is_leaf":true},{"id":"1.3.2","name":"两化融合与智能制造","chapter":1,"level":3,"pg":13,"pp":2,"is_leaf":true},{"id":"1.3.3","name":"消费互联网","chapter":1,"level":3,"pg":15,"pp":1,"is_leaf":true},{"id":"1.4","name":"数字中国","chapter":1,"level":2,"pg":16,"pp":12,"is_leaf":false},{"id":"1.4.1","name":"数字经济","chapter":1,"level":3,"pg":17,"pp":3,"is_leaf":true},{"id":"1.4.2","name":"数字政府","chapter":1,"level":3,"pg":20,"pp":3,"is_leaf":true},{"id":"1.4.3","name":"数字社会","chapter":1,"level":3,"pg":23,"pp":4,"is_leaf":true},{"id":"1.4.4","name":"数字生态","chapter":1,"level":3,"pg":27,"pp":1,"is_leaf":true},{"id":"1.5","name":"数字化转型与元宇宙","chapter":1,"level":2,"pg":28,"pp":9,"is_leaf":false},{"id":"1.5.1","name":"数字化转型","chapter":1,"level":3,"pg":28,"pp":6,"is_leaf":true},{"id":"1.5.2","name":"元宇宙","chapter":1,"level":3,"pg":34,"pp":3,"is_leaf":true},{"id":"2.1","name":"信息技术及其发展","chapter":2,"level":2,"pg":37,"pp":12,"is_leaf":false},{"id":"2.1.1","name":"计算机软硬件","chapter":2,"level":3,"pg":37,"pp":1,"is_leaf":true},{"id":"2.1.2","name":"计算机网络","chapter":2,"level":3,"pg":38,"pp":3,"is_leaf":true},{"id":"2.1.3","name":"存储和数据库","chapter":2,"level":3,"pg":41,"pp":6,"is_leaf":true},{"id":"2.1.4","name":"信息安全","chapter":2,"level":3,"pg":47,"pp":1,"is_leaf":true},{"id":"2.1.5","name":"信息技术的发展","chapter":2,"level":3,"pg":48,"pp":1,"is_leaf":true},{"id":"2.2","name":"新一代信息技术及应用","chapter":2,"level":2,"pg":49,"pp":18,"is_leaf":false},{"id":"2.2.1","name":"物联网","chapter":2,"level":3,"pg":49,"pp":2,"is_leaf":true},{"id":"2.2.2","name":"云计算","chapter":2,"level":3,"pg":51,"pp":4,"is_leaf":true},{"id":"2.2.3","name":"大数据","chapter":2,"level":3,"pg":55,"pp":2,"is_leaf":true},{"id":"2.2.4","name":"区块链","chapter":2,"level":3,"pg":57,"pp":3,"is_leaf":true},{"id":"2.2.5","name":"人工智能","chapter":2,"level":3,"pg":60,"pp":3,"is_leaf":true},{"id":"2.2.6","name":"虚拟现实","chapter":2,"level":3,"pg":63,"pp":4,"is_leaf":true},{"id":"3.1","name":"IT治理","chapter":3,"level":2,"pg":67,"pp":13,"is_leaf":false},{"id":"3.1.1","name":"IT治理基础","chapter":3,"level":3,"pg":67,"pp":2,"is_leaf":true},{"id":"3.1.2","name":"IT治理体系","chapter":3,"level":3,"pg":69,"pp":4,"is_leaf":true},{"id":"3.1.3","name":"IT治理任务","chapter":3,"level":3,"pg":73,"pp":1,"is_leaf":true},{"id":"3.1.4","name":"IT治理方法与标准","chapter":3,"level":3,"pg":74,"pp":6,"is_leaf":true},{"id":"3.2","name":"IT审计","chapter":3,"level":2,"pg":80,"pp":13,"is_leaf":false},{"id":"3.2.1","name":"IT审计基础","chapter":3,"level":3,"pg":80,"pp":3,"is_leaf":true},{"id":"3.2.2","name":"审计方法与技术","chapter":3,"level":3,"pg":83,"pp":5,"is_leaf":true},{"id":"3.2.3","name":"审计流程","chapter":3,"level":3,"pg":88,"pp":1,"is_leaf":true},{"id":"3.2.4","name":"审计内容","chapter":3,"level":3,"pg":89,"pp":4,"is_leaf":true},{"id":"4.1","name":"管理方法","chapter":4,"level":2,"pg":93,"pp":14,"is_leaf":false},{"id":"4.1.1","name":"管理基础","chapter":4,"level":3,"pg":93,"pp":1,"is_leaf":true},{"id":"4.1.2","name":"规划和组织","chapter":4,"level":3,"pg":94,"pp":4,"is_leaf":true},{"id":"4.1.3","name":"设计和实施","chapter":4,"level":3,"pg":98,"pp":2,"is_leaf":true},{"id":"4.1.4","name":"运维和服务","chapter":4,"level":3,"pg":100,"pp":4,"is_leaf":true},{"id":"4.1.5","name":"优化和持续改进","chapter":4,"level":3,"pg":104,"pp":3,"is_leaf":true},{"id":"4.2","name":"管理要点","chapter":4,"level":2,"pg":107,"pp":22,"is_leaf":false},{"id":"4.2.1","name":"数据管理","chapter":4,"level":3,"pg":107,"pp":12,"is_leaf":true},{"id":"4.2.2","name":"运维管理","chapter":4,"level":3,"pg":119,"pp":6,"is_leaf":true},{"id":"4.2.3","name":"信息安全管理","chapter":4,"level":3,"pg":125,"pp":4,"is_leaf":true},{"id":"5.1","name":"软件工程","chapter":5,"level":2,"pg":129,"pp":17,"is_leaf":false},{"id":"5.1.1","name":"架构设计","chapter":5,"level":3,"pg":129,"pp":2,"is_leaf":true},{"id":"5.1.2","name":"需求分析","chapter":5,"level":3,"pg":131,"pp":7,"is_leaf":true},{"id":"5.1.3","name":"软件设计","chapter":5,"level":3,"pg":138,"pp":2,"is_leaf":true},{"id":"5.1.4","name":"软件实现","chapter":5,"level":3,"pg":140,"pp":2,"is_leaf":true},{"id":"5.1.5","name":"部署交付","chapter":5,"level":3,"pg":142,"pp":2,"is_leaf":true},{"id":"5.1.6","name":"过程管理","chapter":5,"level":3,"pg":144,"pp":2,"is_leaf":true},{"id":"5.2","name":"数据工程","chapter":5,"level":2,"pg":146,"pp":17,"is_leaf":false},{"id":"5.2.1","name":"数据建模","chapter":5,"level":3,"pg":147,"pp":2,"is_leaf":true},{"id":"5.2.2","name":"数据标准化","chapter":5,"level":3,"pg":149,"pp":4,"is_leaf":true},{"id":"5.2.3","name":"数据运维","chapter":5,"level":3,"pg":153,"pp":4,"is_leaf":true},{"id":"5.2.4","name":"数据开发利用","chapter":5,"level":3,"pg":157,"pp":4,"is_leaf":true},{"id":"5.2.5","name":"数据库安全","chapter":5,"level":3,"pg":161,"pp":2,"is_leaf":true},{"id":"5.3","name":"系统集成","chapter":5,"level":2,"pg":163,"pp":7,"is_leaf":false},{"id":"5.3.1","name":"集成基础","chapter":5,"level":3,"pg":163,"pp":1,"is_leaf":true},{"id":"5.3.2","name":"网络集成","chapter":5,"level":3,"pg":164,"pp":1,"is_leaf":true},{"id":"5.3.3","name":"数据集成","chapter":5,"level":3,"pg":165,"pp":2,"is_leaf":true},{"id":"5.3.4","name":"软件集成","chapter":5,"level":3,"pg":167,"pp":2,"is_leaf":true},{"id":"5.3.5","name":"应用集成","chapter":5,"level":3,"pg":169,"pp":1,"is_leaf":true},{"id":"5.4","name":"安全工程","chapter":5,"level":2,"pg":170,"pp":13,"is_leaf":false},{"id":"5.4.1","name":"工程概述","chapter":5,"level":3,"pg":170,"pp":1,"is_leaf":true},{"id":"5.4.2","name":"安全系统","chapter":5,"level":3,"pg":171,"pp":3,"is_leaf":true},{"id":"5.4.3","name":"工程基础","chapter":5,"level":3,"pg":174,"pp":1,"is_leaf":true},{"id":"5.4.4","name":"工程体系架构","chapter":5,"level":3,"pg":174,"pp":9,"is_leaf":true},{"id":"6.1","name":"PMBOK的发展","chapter":6,"level":2,"pg":183,"pp":1,"is_leaf":true},{"id":"6.2","name":"项目基本要素","chapter":6,"level":2,"pg":184,"pp":12,"is_leaf":false},{"id":"6.2.1","name":"项目基础","chapter":6,"level":3,"pg":184,"pp":2,"is_leaf":true},{"id":"6.2.2","name":"项目管理的重要性","chapter":6,"level":3,"pg":186,"pp":1,"is_leaf":true},{"id":"6.2.3","name":"项目成功的标准","chapter":6,"level":3,"pg":187,"pp":1,"is_leaf":true},{"id":"6.2.4","name":"项目、项目集、项目组合和运营管理之间的关系","chapter":6,"level":3,"pg":187,"pp":4,"is_leaf":true},{"id":"6.2.5","name":"项目内外部运行环境","chapter":6,"level":3,"pg":191,"pp":1,"is_leaf":true},{"id":"6.2.6","name":"组织系统","chapter":6,"level":3,"pg":192,"pp":2,"is_leaf":true},{"id":"6.2.7","name":"项目管理和产品管理","chapter":6,"level":3,"pg":194,"pp":2,"is_leaf":true},{"id":"6.3","name":"项目经理的角色","chapter":6,"level":2,"pg":196,"pp":5,"is_leaf":false},{"id":"6.3.1","name":"项目经理的定义","chapter":6,"level":3,"pg":196,"pp":1,"is_leaf":true},{"id":"6.3.2","name":"项目经理的影响力范围","chapter":6,"level":3,"pg":196,"pp":2,"is_leaf":true},{"id":"6.3.3","name":"项目经理的能力","chapter":6,"level":3,"pg":198,"pp":3,"is_leaf":true},{"id":"6.4","name":"价值驱动的项目管理知识体系","chapter":6,"level":2,"pg":201,"pp":24,"is_leaf":false},{"id":"6.4.1","name":"项目管理原则","chapter":6,"level":3,"pg":202,"pp":11,"is_leaf":true},{"id":"6.4.2","name":"项目生命周期和项目阶段","chapter":6,"level":3,"pg":213,"pp":3,"is_leaf":true},{"id":"6.4.3","name":"项目管理过程组","chapter":6,"level":3,"pg":216,"pp":3,"is_leaf":true},{"id":"6.4.4","name":"项目管理知识领域","chapter":6,"level":3,"pg":219,"pp":2,"is_leaf":true},{"id":"6.4.5","name":"项目绩效域","chapter":6,"level":3,"pg":221,"pp":1,"is_leaf":true},{"id":"6.4.6","name":"价值交付系统","chapter":6,"level":3,"pg":221,"pp":4,"is_leaf":true},{"id":"7.1","name":"项目建议与立项申请","chapter":7,"level":2,"pg":225,"pp":1,"is_leaf":true},{"id":"7.2","name":"项目可行性研究","chapter":7,"level":2,"pg":225,"pp":9,"is_leaf":false},{"id":"7.2.1","name":"可行性研究的内容","chapter":7,"level":3,"pg":225,"pp":3,"is_leaf":true},{"id":"7.2.2","name":"初步可行性研究","chapter":7,"level":3,"pg":228,"pp":2,"is_leaf":true},{"id":"7.2.3","name":"详细可行性研究","chapter":7,"level":3,"pg":230,"pp":4,"is_leaf":true},{"id":"7.3","name":"项目评估与决策","chapter":7,"level":2,"pg":234,"pp":3,"is_leaf":true},{"id":"8.1","name":"管理基础","chapter":8,"level":2,"pg":237,"pp":2,"is_leaf":false},{"id":"8.1.1","name":"执行整合","chapter":8,"level":3,"pg":237,"pp":1,"is_leaf":true},{"id":"8.1.2","name":"整合的复杂性","chapter":8,"level":3,"pg":238,"pp":1,"is_leaf":true},{"id":"8.1.3","name":"管理新实践","chapter":8,"level":3,"pg":238,"pp":1,"is_leaf":true},{"id":"8.1.4","name":"项目管理计划和项目文件","chapter":8,"level":3,"pg":239,"pp":1,"is_leaf":true},{"id":"8.2","name":"项目整合管理过程","chapter":8,"level":2,"pg":239,"pp":3,"is_leaf":false},{"id":"8.2.1","name":"过程概述","chapter":8,"level":3,"pg":239,"pp":2,"is_leaf":true},{"id":"8.2.2","name":"裁剪考虑因素","chapter":8,"level":3,"pg":241,"pp":1,"is_leaf":true},{"id":"8.2.3","name":"敏捷与适应方法","chapter":8,"level":3,"pg":241,"pp":1,"is_leaf":true},{"id":"8.3","name":"制定项目章程","chapter":8,"level":2,"pg":242,"pp":3,"is_leaf":false},{"id":"8.3.1","name":"输入","chapter":8,"level":3,"pg":242,"pp":1,"is_leaf":true},{"id":"8.3.2","name":"工具与技术","chapter":8,"level":3,"pg":243,"pp":1,"is_leaf":true},{"id":"8.3.3","name":"输出","chapter":8,"level":3,"pg":244,"pp":1,"is_leaf":true},{"id":"8.4","name":"制订项目管理计划","chapter":8,"level":2,"pg":245,"pp":6,"is_leaf":false},{"id":"8.4.1","name":"输入","chapter":8,"level":3,"pg":246,"pp":1,"is_leaf":true},{"id":"8.4.2","name":"工具与技术","chapter":8,"level":3,"pg":246,"pp":1,"is_leaf":true},{"id":"8.4.3","name":"输出","chapter":8,"level":3,"pg":247,"pp":4,"is_leaf":true},{"id":"8.5","name":"指导与管理项目工作","chapter":8,"level":2,"pg":251,"pp":4,"is_leaf":false},{"id":"8.5.1","name":"输入","chapter":8,"level":3,"pg":252,"pp":1,"is_leaf":true},{"id":"8.5.2","name":"工具与技术","chapter":8,"level":3,"pg":253,"pp":1,"is_leaf":true},{"id":"8.5.3","name":"输出","chapter":8,"level":3,"pg":253,"pp":2,"is_leaf":true},{"id":"8.6","name":"管理项目知识","chapter":8,"level":2,"pg":255,"pp":3,"is_leaf":false},{"id":"8.6.1","name":"输入","chapter":8,"level":3,"pg":255,"pp":1,"is_leaf":true},{"id":"8.6.2","name":"工具与技术","chapter":8,"level":3,"pg":256,"pp":1,"is_leaf":true},{"id":"8.6.3","name":"输出","chapter":8,"level":3,"pg":257,"pp":1,"is_leaf":true},{"id":"8.7","name":"监控项目工作","chapter":8,"level":2,"pg":258,"pp":4,"is_leaf":false},{"id":"8.7.1","name":"输入","chapter":8,"level":3,"pg":259,"pp":1,"is_leaf":true},{"id":"8.7.2","name":"工具与技术","chapter":8,"level":3,"pg":260,"pp":1,"is_leaf":true},{"id":"8.7.3","name":"输出","chapter":8,"level":3,"pg":261,"pp":1,"is_leaf":true},{"id":"8.8","name":"实施整体变更控制","chapter":8,"level":2,"pg":262,"pp":3,"is_leaf":false},{"id":"8.8.1","name":"输入","chapter":8,"level":3,"pg":263,"pp":1,"is_leaf":true},{"id":"8.8.2","name":"工具与技术","chapter":8,"level":3,"pg":264,"pp":1,"is_leaf":true},{"id":"8.8.3","name":"输出","chapter":8,"level":3,"pg":265,"pp":1,"is_leaf":true},{"id":"8.9","name":"结束项目或阶段","chapter":8,"level":2,"pg":265,"pp":7,"is_leaf":false},{"id":"8.9.1","name":"输入","chapter":8,"level":3,"pg":266,"pp":2,"is_leaf":true},{"id":"8.9.2","name":"工具与技术","chapter":8,"level":3,"pg":268,"pp":1,"is_leaf":true},{"id":"8.9.3","name":"输出","chapter":8,"level":3,"pg":268,"pp":4,"is_leaf":true},{"id":"9.1","name":"管理基础","chapter":9,"level":2,"pg":272,"pp":0,"is_leaf":false},{"id":"9.1.1","name":"产品范围和项目范围","chapter":9,"level":3,"pg":272,"pp":1,"is_leaf":true},{"id":"9.1.2","name":"管理新实践","chapter":9,"level":3,"pg":272,"pp":1,"is_leaf":true},{"id":"9.2","name":"项目范围管理过程","chapter":9,"level":2,"pg":272,"pp":3,"is_leaf":false},{"id":"9.2.1","name":"过程概述","chapter":9,"level":3,"pg":272,"pp":2,"is_leaf":true},{"id":"9.2.2","name":"裁剪考虑因素","chapter":9,"level":3,"pg":274,"pp":1,"is_leaf":true},{"id":"9.2.3","name":"敏捷与适应方法","chapter":9,"level":3,"pg":274,"pp":1,"is_leaf":true},{"id":"9.3","name":"规划范围管理","chapter":9,"level":2,"pg":275,"pp":1,"is_leaf":false},{"id":"9.3.1","name":"输入","chapter":9,"level":3,"pg":275,"pp":1,"is_leaf":true},{"id":"9.3.2","name":"工具与技术","chapter":9,"level":3,"pg":276,"pp":1,"is_leaf":true},{"id":"9.3.3","name":"输出","chapter":9,"level":3,"pg":276,"pp":1,"is_leaf":true},{"id":"9.4","name":"收集需求","chapter":9,"level":2,"pg":276,"pp":6,"is_leaf":false},{"id":"9.4.1","name":"输入","chapter":9,"level":3,"pg":277,"pp":1,"is_leaf":true},{"id":"9.4.2","name":"工具与技术","chapter":9,"level":3,"pg":278,"pp":2,"is_leaf":true},{"id":"9.4.3","name":"输出","chapter":9,"level":3,"pg":280,"pp":2,"is_leaf":true},{"id":"9.5","name":"定义范围","chapter":9,"level":2,"pg":282,"pp":2,"is_leaf":false},{"id":"9.5.1","name":"输入","chapter":9,"level":3,"pg":282,"pp":1,"is_leaf":true},{"id":"9.5.2","name":"工具与技术","chapter":9,"level":3,"pg":283,"pp":1,"is_leaf":true},{"id":"9.5.3","name":"输出","chapter":9,"level":3,"pg":283,"pp":1,"is_leaf":true},{"id":"9.6","name":"创建WBS","chapter":9,"level":2,"pg":284,"pp":5,"is_leaf":false},{"id":"9.6.1","name":"输入","chapter":9,"level":3,"pg":285,"pp":1,"is_leaf":true},{"id":"9.6.2","name":"工具与技术","chapter":9,"level":3,"pg":285,"pp":3,"is_leaf":true},{"id":"9.6.3","name":"输出","chapter":9,"level":3,"pg":288,"pp":1,"is_leaf":true},{"id":"9.7","name":"确认范围","chapter":9,"level":2,"pg":289,"pp":3,"is_leaf":false},{"id":"9.7.1","name":"输入","chapter":9,"level":3,"pg":291,"pp":1,"is_leaf":true},{"id":"9.7.2","name":"工具与技术.","chapter":9,"level":3,"pg":292,"pp":1,"is_leaf":true},{"id":"9.7.3","name":"输出","chapter":9,"level":3,"pg":292,"pp":1,"is_leaf":true},{"id":"9.8","name":"控制范围","chapter":9,"level":2,"pg":292,"pp":5,"is_leaf":false},{"id":"9.8.1","name":"输入","chapter":9,"level":3,"pg":293,"pp":1,"is_leaf":true},{"id":"9.8.2","name":"工具与技术","chapter":9,"level":3,"pg":294,"pp":1,"is_leaf":true},{"id":"9.8.3","name":"输出","chapter":9,"level":3,"pg":294,"pp":3,"is_leaf":true},{"id":"10.1","name":"管理基础","chapter":10,"level":2,"pg":297,"pp":1,"is_leaf":false},{"id":"10.1.1","name":"项目进度计划的定义和总要求","chapter":10,"level":3,"pg":297,"pp":1,"is_leaf":true},{"id":"10.1.2","name":"管理新实践","chapter":10,"level":3,"pg":297,"pp":1,"is_leaf":true},{"id":"10.2","name":"项目进度管理过程","chapter":10,"level":2,"pg":298,"pp":2,"is_leaf":false},{"id":"10.2.1","name":"过程概述","chapter":10,"level":3,"pg":298,"pp":1,"is_leaf":true},{"id":"10.2.2","name":"裁剪考虑因素","chapter":10,"level":3,"pg":299,"pp":1,"is_leaf":true},{"id":"10.2.3","name":"敏捷与适应方法","chapter":10,"level":3,"pg":299,"pp":1,"is_leaf":true},{"id":"10.3","name":"规划进度管理","chapter":10,"level":2,"pg":300,"pp":2,"is_leaf":false},{"id":"10.3.1","name":"输入","chapter":10,"level":3,"pg":300,"pp":1,"is_leaf":true},{"id":"10.3.2","name":"工具与技术","chapter":10,"level":3,"pg":301,"pp":1,"is_leaf":true},{"id":"10.3.3","name":"输出","chapter":10,"level":3,"pg":301,"pp":1,"is_leaf":true},{"id":"10.4","name":"定义活动","chapter":10,"level":2,"pg":302,"pp":2,"is_leaf":false},{"id":"10.4.1","name":"输入","chapter":10,"level":3,"pg":302,"pp":1,"is_leaf":true},{"id":"10.4.2","name":"工具与技术","chapter":10,"level":3,"pg":303,"pp":1,"is_leaf":true},{"id":"10.4.3","name":"输出","chapter":10,"level":3,"pg":303,"pp":1,"is_leaf":true},{"id":"10.5","name":"排列活动顺序","chapter":10,"level":2,"pg":304,"pp":6,"is_leaf":false},{"id":"10.5.1","name":"输入","chapter":10,"level":3,"pg":305,"pp":1,"is_leaf":true},{"id":"10.5.2","name":"工具与技术","chapter":10,"level":3,"pg":305,"pp":4,"is_leaf":true},{"id":"10.5.3","name":"输出","chapter":10,"level":3,"pg":309,"pp":1,"is_leaf":true},{"id":"10.6","name":"估算活动持续时间","chapter":10,"level":2,"pg":310,"pp":4,"is_leaf":false},{"id":"10.6.1","name":"输入","chapter":10,"level":3,"pg":311,"pp":1,"is_leaf":true},{"id":"10.6.2","name":"工具与技术","chapter":10,"level":3,"pg":312,"pp":2,"is_leaf":true},{"id":"10.6.3","name":"输出","chapter":10,"level":3,"pg":314,"pp":1,"is_leaf":true},{"id":"10.7","name":"制订进度计划","chapter":10,"level":2,"pg":314,"pp":12,"is_leaf":false},{"id":"10.7.1","name":"输入","chapter":10,"level":3,"pg":314,"pp":3,"is_leaf":true},{"id":"10.7.2","name":"工具与技术","chapter":10,"level":3,"pg":317,"pp":6,"is_leaf":true},{"id":"10.7.3","name":"输出","chapter":10,"level":3,"pg":323,"pp":3,"is_leaf":true},{"id":"10.8","name":"控制进度","chapter":10,"level":2,"pg":326,"pp":8,"is_leaf":false},{"id":"10.8.1","name":"输入","chapter":10,"level":3,"pg":327,"pp":1,"is_leaf":true},{"id":"10.8.2","name":"工具与技术","chapter":10,"level":3,"pg":328,"pp":1,"is_leaf":true},{"id":"10.8.3","name":"输出","chapter":10,"level":3,"pg":329,"pp":5,"is_leaf":true},{"id":"11.1","name":"管理基础","chapter":11,"level":2,"pg":334,"pp":3,"is_leaf":false},{"id":"11.1.1","name":"重要性和意义","chapter":11,"level":3,"pg":334,"pp":1,"is_leaf":true},{"id":"11.1.2","name":"相关术语和定义","chapter":11,"level":3,"pg":335,"pp":1,"is_leaf":true},{"id":"11.1.3","name":"管理新实践","chapter":11,"level":3,"pg":336,"pp":1,"is_leaf":true},{"id":"11.2","name":"项目成本管理过程","chapter":11,"level":2,"pg":337,"pp":1,"is_leaf":false},{"id":"11.2.1","name":"过程概述","chapter":11,"level":3,"pg":337,"pp":1,"is_leaf":true},{"id":"11.2.2","name":"裁剪考虑因素","chapter":11,"level":3,"pg":338,"pp":1,"is_leaf":true},{"id":"11.2.3","name":"敏捷与适应方法","chapter":11,"level":3,"pg":338,"pp":1,"is_leaf":true},{"id":"11.3","name":"规划成本管理","chapter":11,"level":2,"pg":338,"pp":3,"is_leaf":false},{"id":"11.3.1","name":"输入","chapter":11,"level":3,"pg":339,"pp":1,"is_leaf":true},{"id":"11.3.2","name":"工具与技术","chapter":11,"level":3,"pg":340,"pp":1,"is_leaf":true},{"id":"11.3.3","name":"输出","chapter":11,"level":3,"pg":340,"pp":1,"is_leaf":true},{"id":"11.4","name":"估算成本","chapter":11,"level":2,"pg":341,"pp":4,"is_leaf":false},{"id":"11.4.1","name":"输入","chapter":11,"level":3,"pg":342,"pp":1,"is_leaf":true},{"id":"11.4.2","name":"工具与技术","chapter":11,"level":3,"pg":343,"pp":1,"is_leaf":true},{"id":"11.4.3","name":"输出","chapter":11,"level":3,"pg":344,"pp":1,"is_leaf":true},{"id":"11.5","name":"制定预算","chapter":11,"level":2,"pg":345,"pp":4,"is_leaf":false},{"id":"11.5.1","name":"输入","chapter":11,"level":3,"pg":345,"pp":1,"is_leaf":true},{"id":"11.5.2","name":"工具与技术","chapter":11,"level":3,"pg":346,"pp":1,"is_leaf":true},{"id":"11.5.3","name":"输出","chapter":11,"level":3,"pg":347,"pp":2,"is_leaf":true},{"id":"11.6","name":"控制成本","chapter":11,"level":2,"pg":349,"pp":9,"is_leaf":false},{"id":"11.6.1","name":"输入","chapter":11,"level":3,"pg":349,"pp":1,"is_leaf":true},{"id":"11.6.2","name":"工具与技术","chapter":11,"level":3,"pg":350,"pp":5,"is_leaf":true},{"id":"11.6.3","name":"输出","chapter":11,"level":3,"pg":355,"pp":3,"is_leaf":true},{"id":"12.1","name":"管理基础","chapter":12,"level":2,"pg":358,"pp":3,"is_leaf":false},{"id":"12.1.1","name":"质量与项目质量","chapter":12,"level":3,"pg":358,"pp":1,"is_leaf":true},{"id":"12.1.2","name":"质量管理","chapter":12,"level":3,"pg":359,"pp":1,"is_leaf":true},{"id":"12.1.3","name":"质量管理标准体系","chapter":12,"level":3,"pg":360,"pp":1,"is_leaf":true},{"id":"12.1.4","name":"管理新实践","chapter":12,"level":3,"pg":360,"pp":1,"is_leaf":true},{"id":"12.2","name":"项目质量管理过程","chapter":12,"level":2,"pg":361,"pp":2,"is_leaf":false},{"id":"12.2.1","name":"过程概述","chapter":12,"level":3,"pg":361,"pp":1,"is_leaf":true},{"id":"12.2.2","name":"裁剪考虑因素","chapter":12,"level":3,"pg":362,"pp":1,"is_leaf":true},{"id":"12.2.3","name":"敏捷与适应方法","chapter":12,"level":3,"pg":363,"pp":1,"is_leaf":true},{"id":"12.3","name":"规划质量管理","chapter":12,"level":2,"pg":363,"pp":5,"is_leaf":false},{"id":"12.3.1","name":"输入","chapter":12,"level":3,"pg":364,"pp":1,"is_leaf":true},{"id":"12.3.2","name":"工具与技术","chapter":12,"level":3,"pg":365,"pp":2,"is_leaf":true},{"id":"12.3.3","name":"输出","chapter":12,"level":3,"pg":367,"pp":1,"is_leaf":true},{"id":"12.4","name":"管理质量","chapter":12,"level":2,"pg":368,"pp":5,"is_leaf":false},{"id":"12.4.1","name":"输入","chapter":12,"level":3,"pg":369,"pp":1,"is_leaf":true},{"id":"12.4.2","name":"工具与技术","chapter":12,"level":3,"pg":370,"pp":2,"is_leaf":true},{"id":"12.4.3","name":"输出","chapter":12,"level":3,"pg":372,"pp":1,"is_leaf":true},{"id":"12.5","name":"控制质量","chapter":12,"level":2,"pg":373,"pp":7,"is_leaf":false},{"id":"12.5.1","name":"输入","chapter":12,"level":3,"pg":374,"pp":1,"is_leaf":true},{"id":"12.5.2","name":"工具与技术","chapter":12,"level":3,"pg":375,"pp":1,"is_leaf":true},{"id":"12.5.3","name":"输出","chapter":12,"level":3,"pg":376,"pp":4,"is_leaf":true},{"id":"13.1","name":"管理基础","chapter":13,"level":2,"pg":380,"pp":7,"is_leaf":false},{"id":"13.1.1","name":"相关术语和定义","chapter":13,"level":3,"pg":380,"pp":6,"is_leaf":true},{"id":"13.1.2","name":"管理新实践","chapter":13,"level":3,"pg":386,"pp":1,"is_leaf":true},{"id":"13.2","name":"项目资源管理过程","chapter":13,"level":2,"pg":387,"pp":2,"is_leaf":false},{"id":"13.2.1","name":"过程概述","chapter":13,"level":3,"pg":387,"pp":1,"is_leaf":true},{"id":"13.2.2","name":"裁剪考虑因素","chapter":13,"level":3,"pg":388,"pp":1,"is_leaf":true},{"id":"13.2.3","name":"敏捷与适应方法","chapter":13,"level":3,"pg":388,"pp":1,"is_leaf":true},{"id":"13.3","name":"规划资源管理","chapter":13,"level":2,"pg":389,"pp":4,"is_leaf":false},{"id":"13.3.1","name":"输入","chapter":13,"level":3,"pg":389,"pp":1,"is_leaf":true},{"id":"13.3.2","name":"工具与技术","chapter":13,"level":3,"pg":390,"pp":2,"is_leaf":true},{"id":"13.3.3","name":"输出","chapter":13,"level":3,"pg":392,"pp":1,"is_leaf":true},{"id":"13.4","name":"估算活动资源","chapter":13,"level":2,"pg":393,"pp":3,"is_leaf":false},{"id":"13.4.1","name":"输入","chapter":13,"level":3,"pg":393,"pp":1,"is_leaf":true},{"id":"13.4.2","name":"工具与技术","chapter":13,"level":3,"pg":394,"pp":1,"is_leaf":true},{"id":"13.4.3","name":"输出","chapter":13,"level":3,"pg":395,"pp":1,"is_leaf":true},{"id":"13.5","name":"获取资源","chapter":13,"level":2,"pg":396,"pp":4,"is_leaf":false},{"id":"13.5.1","name":"输入","chapter":13,"level":3,"pg":397,"pp":1,"is_leaf":true},{"id":"13.5.2","name":"工具与技术","chapter":13,"level":3,"pg":398,"pp":1,"is_leaf":true},{"id":"13.5.3","name":"输出","chapter":13,"level":3,"pg":399,"pp":1,"is_leaf":true},{"id":"13.6","name":"建设团队","chapter":13,"level":2,"pg":400,"pp":4,"is_leaf":false},{"id":"13.6.1","name":"输入","chapter":13,"level":3,"pg":401,"pp":1,"is_leaf":true},{"id":"13.6.2","name":"工具与技术","chapter":13,"level":3,"pg":402,"pp":1,"is_leaf":true},{"id":"13.6.3","name":"输出","chapter":13,"level":3,"pg":403,"pp":1,"is_leaf":true},{"id":"13.7","name":"管理团队","chapter":13,"level":2,"pg":404,"pp":4,"is_leaf":false},{"id":"13.7.1","name":"输入","chapter":13,"level":3,"pg":405,"pp":1,"is_leaf":true},{"id":"13.7.2","name":"工具与技术","chapter":13,"level":3,"pg":406,"pp":1,"is_leaf":true},{"id":"13.7.3","name":"输出","chapter":13,"level":3,"pg":407,"pp":1,"is_leaf":true},{"id":"13.8","name":"控制资源","chapter":13,"level":2,"pg":408,"pp":6,"is_leaf":false},{"id":"13.8.1","name":"输入","chapter":13,"level":3,"pg":409,"pp":1,"is_leaf":true},{"id":"13.8.2","name":"工具与技术","chapter":13,"level":3,"pg":410,"pp":1,"is_leaf":true},{"id":"13.8.3","name":"输出","chapter":13,"level":3,"pg":410,"pp":4,"is_leaf":true},{"id":"14.1","name":"管理基础","chapter":14,"level":2,"pg":414,"pp":3,"is_leaf":false},{"id":"14.1.1","name":"沟通","chapter":14,"level":3,"pg":414,"pp":1,"is_leaf":true},{"id":"14.1.2","name":"沟通模型","chapter":14,"level":3,"pg":414,"pp":1,"is_leaf":true},{"id":"14.1.3","name":"沟通分类","chapter":14,"level":3,"pg":415,"pp":1,"is_leaf":true},{"id":"14.1.4","name":"沟通技巧","chapter":14,"level":3,"pg":415,"pp":1,"is_leaf":true},{"id":"14.1.5","name":"管理新实践","chapter":14,"level":3,"pg":416,"pp":1,"is_leaf":true},{"id":"14.2","name":"项目沟通管理过程","chapter":14,"level":2,"pg":417,"pp":1,"is_leaf":false},{"id":"14.2.1","name":"过程概述","chapter":14,"level":3,"pg":417,"pp":1,"is_leaf":true},{"id":"14.2.2","name":"裁剪考虑因素","chapter":14,"level":3,"pg":418,"pp":1,"is_leaf":true},{"id":"14.2.3","name":"敏捷与适应方法","chapter":14,"level":3,"pg":418,"pp":1,"is_leaf":true},{"id":"14.3","name":"规划沟通管理","chapter":14,"level":2,"pg":418,"pp":5,"is_leaf":false},{"id":"14.3.1","name":"输入","chapter":14,"level":3,"pg":419,"pp":1,"is_leaf":true},{"id":"14.3.2","name":"工具与技术","chapter":14,"level":3,"pg":420,"pp":2,"is_leaf":true},{"id":"14.3.3","name":"输出","chapter":14,"level":3,"pg":422,"pp":1,"is_leaf":true},{"id":"14.4","name":"管理沟通","chapter":14,"level":2,"pg":423,"pp":4,"is_leaf":false},{"id":"14.4.1","name":"输入","chapter":14,"level":3,"pg":424,"pp":1,"is_leaf":true},{"id":"14.4.2","name":"工具与技术","chapter":14,"level":3,"pg":425,"pp":1,"is_leaf":true},{"id":"14.4.3","name":"输出","chapter":14,"level":3,"pg":426,"pp":1,"is_leaf":true},{"id":"14.5","name":"监督沟通","chapter":14,"level":2,"pg":427,"pp":4,"is_leaf":false},{"id":"14.5.1","name":"输入","chapter":14,"level":3,"pg":428,"pp":1,"is_leaf":true},{"id":"14.5.2","name":"工具与技术","chapter":14,"level":3,"pg":428,"pp":1,"is_leaf":true},{"id":"14.5.3","name":"输出","chapter":14,"level":3,"pg":429,"pp":2,"is_leaf":true},{"id":"15.1","name":"管理基础","chapter":15,"level":2,"pg":431,"pp":5,"is_leaf":false},{"id":"15.1.1","name":"项目风险概述","chapter":15,"level":3,"pg":431,"pp":1,"is_leaf":true},{"id":"15.1.2","name":"风险的属性","chapter":15,"level":3,"pg":431,"pp":2,"is_leaf":true},{"id":"15.1.3","name":"风险的分类","chapter":15,"level":3,"pg":433,"pp":1,"is_leaf":true},{"id":"15.1.4","name":"风险成本及其负担","chapter":15,"level":3,"pg":434,"pp":1,"is_leaf":true},{"id":"15.1.5","name":"管理新实践","chapter":15,"level":3,"pg":435,"pp":1,"is_leaf":true},{"id":"15.2","name":"项目风险管理过程","chapter":15,"level":2,"pg":436,"pp":2,"is_leaf":false},{"id":"15.2.1","name":"过程概述","chapter":15,"level":3,"pg":436,"pp":2,"is_leaf":true},{"id":"15.2.2","name":"裁剪考虑因素","chapter":15,"level":3,"pg":438,"pp":1,"is_leaf":true},{"id":"15.2.3","name":"敏捷与适应方法","chapter":15,"level":3,"pg":438,"pp":1,"is_leaf":true},{"id":"15.3","name":"规划风险管理","chapter":15,"level":2,"pg":438,"pp":5,"is_leaf":false},{"id":"15.3.1","name":"输入","chapter":15,"level":3,"pg":439,"pp":1,"is_leaf":true},{"id":"15.3.2","name":"工具与技术","chapter":15,"level":3,"pg":440,"pp":1,"is_leaf":true},{"id":"15.3.3","name":"输出","chapter":15,"level":3,"pg":440,"pp":3,"is_leaf":true},{"id":"15.4","name":"识别风险","chapter":15,"level":2,"pg":443,"pp":5,"is_leaf":false},{"id":"15.4.1","name":"输入","chapter":15,"level":3,"pg":444,"pp":1,"is_leaf":true},{"id":"15.4.2","name":"工具与技术","chapter":15,"level":3,"pg":445,"pp":2,"is_leaf":true},{"id":"15.4.3","name":"输出","chapter":15,"level":3,"pg":447,"pp":1,"is_leaf":true},{"id":"15.5","name":"实施定性风险分析","chapter":15,"level":2,"pg":448,"pp":4,"is_leaf":false},{"id":"15.5.1","name":"输入","chapter":15,"level":3,"pg":448,"pp":1,"is_leaf":true},{"id":"15.5.2","name":"工具与技术","chapter":15,"level":3,"pg":449,"pp":2,"is_leaf":true},{"id":"15.5.3","name":"输出","chapter":15,"level":3,"pg":451,"pp":1,"is_leaf":true},{"id":"15.6","name":"实施定量风险分析","chapter":15,"level":2,"pg":452,"pp":5,"is_leaf":false},{"id":"15.6.1","name":"输入","chapter":15,"level":3,"pg":453,"pp":1,"is_leaf":true},{"id":"15.6.2","name":"工具与技术","chapter":15,"level":3,"pg":454,"pp":3,"is_leaf":true},{"id":"15.6.3","name":"输出","chapter":15,"level":3,"pg":457,"pp":1,"is_leaf":true},{"id":"15.7","name":"规划风险应对","chapter":15,"level":2,"pg":457,"pp":6,"is_leaf":false},{"id":"15.7.1","name":"输入","chapter":15,"level":3,"pg":458,"pp":1,"is_leaf":true},{"id":"15.7.2","name":"工具与技术","chapter":15,"level":3,"pg":459,"pp":3,"is_leaf":true},{"id":"15.7.3","name":"输出","chapter":15,"level":3,"pg":462,"pp":1,"is_leaf":true},{"id":"15.8","name":"实施风险应对","chapter":15,"level":2,"pg":463,"pp":2,"is_leaf":false},{"id":"15.8.1","name":"输入","chapter":15,"level":3,"pg":464,"pp":1,"is_leaf":true},{"id":"15.8.2","name":"工具与技术","chapter":15,"level":3,"pg":464,"pp":1,"is_leaf":true},{"id":"15.8.3","name":"输出","chapter":15,"level":3,"pg":465,"pp":1,"is_leaf":true},{"id":"15.9","name":"监督风险","chapter":15,"level":2,"pg":465,"pp":3,"is_leaf":false},{"id":"15.9.1","name":"输入","chapter":15,"level":3,"pg":466,"pp":1,"is_leaf":true},{"id":"15.9.2","name":"工具与技术","chapter":15,"level":3,"pg":467,"pp":1,"is_leaf":true},{"id":"15.9.3","name":"输出","chapter":15,"level":3,"pg":467,"pp":1,"is_leaf":true},{"id":"15.10","name":"风险管理示例","chapter":15,"level":2,"pg":468,"pp":4,"is_leaf":true},{"id":"16.1","name":"管理基础","chapter":16,"level":2,"pg":472,"pp":2,"is_leaf":false},{"id":"16.1.1","name":"协议/采购合同","chapter":16,"level":3,"pg":472,"pp":1,"is_leaf":true},{"id":"16.1.2","name":"管理新实践","chapter":16,"level":3,"pg":473,"pp":1,"is_leaf":true},{"id":"16.2","name":"项目采购管理过程","chapter":16,"level":2,"pg":474,"pp":1,"is_leaf":false},{"id":"16.2.1","name":"过程概述","chapter":16,"level":3,"pg":474,"pp":1,"is_leaf":true},{"id":"16.2.2","name":"裁剪考虑因素","chapter":16,"level":3,"pg":475,"pp":1,"is_leaf":true},{"id":"16.2.3","name":"敏捷与适应方法","chapter":16,"level":3,"pg":475,"pp":1,"is_leaf":true},{"id":"16.3","name":"规划采购管理","chapter":16,"level":2,"pg":475,"pp":8,"is_leaf":false},{"id":"16.3.1","name":"输入","chapter":16,"level":3,"pg":476,"pp":2,"is_leaf":true},{"id":"16.3.2","name":"工具与技术","chapter":16,"level":3,"pg":478,"pp":2,"is_leaf":true},{"id":"16.3.3","name":"输出","chapter":16,"level":3,"pg":480,"pp":3,"is_leaf":true},{"id":"16.4","name":"实施采购","chapter":16,"level":2,"pg":483,"pp":4,"is_leaf":false},{"id":"16.4.1","name":"输入","chapter":16,"level":3,"pg":484,"pp":1,"is_leaf":true},{"id":"16.4.2","name":"工具与技术","chapter":16,"level":3,"pg":485,"pp":1,"is_leaf":true},{"id":"16.4.3","name":"输出","chapter":16,"level":3,"pg":486,"pp":1,"is_leaf":true},{"id":"16.5","name":"控制采购","chapter":16,"level":2,"pg":487,"pp":5,"is_leaf":false},{"id":"16.5.1","name":"输入","chapter":16,"level":3,"pg":488,"pp":2,"is_leaf":true},{"id":"16.5.2","name":"工具与技术","chapter":16,"level":3,"pg":490,"pp":1,"is_leaf":true},{"id":"16.5.3","name":"输出","chapter":16,"level":3,"pg":491,"pp":1,"is_leaf":true},{"id":"16.6","name":"项目合同管理","chapter":16,"level":2,"pg":492,"pp":11,"is_leaf":false},{"id":"16.6.1","name":"合同的类型","chapter":16,"level":3,"pg":493,"pp":3,"is_leaf":true},{"id":"16.6.2","name":"合同的内容","chapter":16,"level":3,"pg":496,"pp":1,"is_leaf":true},{"id":"16.6.3","name":"合同管理过程","chapter":16,"level":3,"pg":497,"pp":6,"is_leaf":true},{"id":"17.1","name":"管理基础","chapter":17,"level":2,"pg":503,"pp":1,"is_leaf":false},{"id":"17.1.1","name":"管理的重要性","chapter":17,"level":3,"pg":503,"pp":1,"is_leaf":true},{"id":"17.1.2","name":"管理新实践","chapter":17,"level":3,"pg":503,"pp":1,"is_leaf":true},{"id":"17.2","name":"项目干系人管理过程","chapter":17,"level":2,"pg":504,"pp":1,"is_leaf":false},{"id":"17.2.1","name":"过程概述","chapter":17,"level":3,"pg":504,"pp":1,"is_leaf":true},{"id":"17.2.2","name":"裁剪考虑因素","chapter":17,"level":3,"pg":505,"pp":1,"is_leaf":true},{"id":"17.2.3","name":"敏捷与适应方法","chapter":17,"level":3,"pg":505,"pp":1,"is_leaf":true},{"id":"17.3","name":"识别干系人","chapter":17,"level":2,"pg":505,"pp":4,"is_leaf":false},{"id":"17.3.1","name":"输入","chapter":17,"level":3,"pg":506,"pp":1,"is_leaf":true},{"id":"17.3.2","name":"工具与技术","chapter":17,"level":3,"pg":507,"pp":1,"is_leaf":true},{"id":"17.3.3","name":"输出","chapter":17,"level":3,"pg":508,"pp":1,"is_leaf":true},{"id":"17.4","name":"规划干系人参与","chapter":17,"level":2,"pg":509,"pp":3,"is_leaf":false},{"id":"17.4.1","name":"输入","chapter":17,"level":3,"pg":510,"pp":1,"is_leaf":true},{"id":"17.4.2","name":"工具与技术","chapter":17,"level":3,"pg":511,"pp":1,"is_leaf":true},{"id":"17.4.3","name":"输出","chapter":17,"level":3,"pg":512,"pp":1,"is_leaf":true},{"id":"17.5","name":"管理干系人参与","chapter":17,"level":2,"pg":512,"pp":3,"is_leaf":false},{"id":"17.5.1","name":"输入","chapter":17,"level":3,"pg":513,"pp":1,"is_leaf":true},{"id":"17.5.2","name":"工具与技术","chapter":17,"level":3,"pg":514,"pp":1,"is_leaf":true},{"id":"17.5.3","name":"输出","chapter":17,"level":3,"pg":515,"pp":1,"is_leaf":true},{"id":"17.6","name":"监督干系人参与","chapter":17,"level":2,"pg":515,"pp":5,"is_leaf":false},{"id":"17.6.1","name":"输入","chapter":17,"level":3,"pg":516,"pp":1,"is_leaf":true},{"id":"17.6.2","name":"工具与技术","chapter":17,"level":3,"pg":516,"pp":1,"is_leaf":true},{"id":"17.6.3","name":"输出","chapter":17,"level":3,"pg":517,"pp":3,"is_leaf":true},{"id":"18.1","name":"干系人绩效域","chapter":18,"level":2,"pg":520,"pp":2,"is_leaf":false},{"id":"18.1.1","name":"绩效要点","chapter":18,"level":3,"pg":520,"pp":1,"is_leaf":true},{"id":"18.1.2","name":"与其他绩效域的相互作用","chapter":18,"level":3,"pg":521,"pp":1,"is_leaf":true},{"id":"18.1.3","name":"执行效果检查","chapter":18,"level":3,"pg":522,"pp":1,"is_leaf":true},{"id":"18.2","name":"团队绩效域","chapter":18,"level":2,"pg":522,"pp":4,"is_leaf":false},{"id":"18.2.1","name":"绩效要点","chapter":18,"level":3,"pg":522,"pp":4,"is_leaf":true},{"id":"18.2.2","name":"与其他绩效域的相互作用","chapter":18,"level":3,"pg":526,"pp":1,"is_leaf":true},{"id":"18.2.3","name":"执行效果检查","chapter":18,"level":3,"pg":526,"pp":1,"is_leaf":true},{"id":"18.3","name":"开发方法和生命周期绩效域","chapter":18,"level":2,"pg":526,"pp":6,"is_leaf":false},{"id":"18.3.1","name":"绩效要点","chapter":18,"level":3,"pg":526,"pp":5,"is_leaf":true},{"id":"18.3.2","name":"与其他绩效域的相互作用","chapter":18,"level":3,"pg":531,"pp":1,"is_leaf":true},{"id":"18.3.3","name":"执行效果检查","chapter":18,"level":3,"pg":532,"pp":1,"is_leaf":true},{"id":"18.4","name":"规划绩效域","chapter":18,"level":2,"pg":532,"pp":4,"is_leaf":false},{"id":"18.4.1","name":"绩效要点","chapter":18,"level":3,"pg":532,"pp":3,"is_leaf":true},{"id":"18.4.2","name":"与其他绩效域的相互作用","chapter":18,"level":3,"pg":535,"pp":1,"is_leaf":true},{"id":"18.4.3","name":"执行效果检查","chapter":18,"level":3,"pg":536,"pp":1,"is_leaf":true},{"id":"18.5","name":"项目工作绩效域","chapter":18,"level":2,"pg":536,"pp":3,"is_leaf":false},{"id":"18.5.1","name":"绩效要点","chapter":18,"level":3,"pg":537,"pp":2,"is_leaf":true},{"id":"18.5.2","name":"与其他绩效域的相互作用","chapter":18,"level":3,"pg":539,"pp":1,"is_leaf":true},{"id":"18.5.3","name":"执行效果检查","chapter":18,"level":3,"pg":539,"pp":1,"is_leaf":true},{"id":"18.6","name":"交付绩效域","chapter":18,"level":2,"pg":539,"pp":3,"is_leaf":false},{"id":"18.6.1","name":"绩效要点","chapter":18,"level":3,"pg":540,"pp":1,"is_leaf":true},{"id":"18.6.2","name":"与其他绩效域的相互作用","chapter":18,"level":3,"pg":541,"pp":1,"is_leaf":true},{"id":"18.6.3","name":"执行效果检查","chapter":18,"level":3,"pg":541,"pp":1,"is_leaf":true},{"id":"18.7","name":"度量绩效域","chapter":18,"level":2,"pg":542,"pp":8,"is_leaf":false},{"id":"18.7.1","name":"绩效要点","chapter":18,"level":3,"pg":542,"pp":7,"is_leaf":true},{"id":"18.7.2","name":"与其他绩效域的相互作用","chapter":18,"level":3,"pg":549,"pp":1,"is_leaf":true},{"id":"18.7.3","name":"执行效果检查","chapter":18,"level":3,"pg":550,"pp":1,"is_leaf":true},{"id":"18.8","name":"不确定性绩效域","chapter":18,"level":2,"pg":550,"pp":5,"is_leaf":false},{"id":"18.8.1","name":"绩效要点","chapter":18,"level":3,"pg":550,"pp":2,"is_leaf":true},{"id":"18.8.2","name":"与其他绩效域的相互作用","chapter":18,"level":3,"pg":552,"pp":1,"is_leaf":true},{"id":"18.8.3","name":"执行效果检查","chapter":18,"level":3,"pg":552,"pp":3,"is_leaf":true},{"id":"19.1","name":"配置管理","chapter":19,"level":2,"pg":555,"pp":9,"is_leaf":false},{"id":"19.1.1","name":"管理基础","chapter":19,"level":3,"pg":555,"pp":3,"is_leaf":true},{"id":"19.1.2","name":"角色与职责","chapter":19,"level":3,"pg":558,"pp":1,"is_leaf":true},{"id":"19.1.3","name":"目标与方针","chapter":19,"level":3,"pg":559,"pp":1,"is_leaf":true},{"id":"19.1.4","name":"管理活动","chapter":19,"level":3,"pg":560,"pp":4,"is_leaf":true},{"id":"19.2","name":"变更管理","chapter":19,"level":2,"pg":564,"pp":5,"is_leaf":false},{"id":"19.2.1","name":"管理基础","chapter":19,"level":3,"pg":564,"pp":1,"is_leaf":true},{"id":"19.2.2","name":"管理原则","chapter":19,"level":3,"pg":565,"pp":1,"is_leaf":true},{"id":"19.2.3","name":"角色与职责","chapter":19,"level":3,"pg":565,"pp":1,"is_leaf":true},{"id":"19.2.4","name":"工作程序","chapter":19,"level":3,"pg":566,"pp":1,"is_leaf":true},{"id":"19.2.5","name":"变更控制","chapter":19,"level":3,"pg":567,"pp":1,"is_leaf":true},{"id":"19.2.6","name":"版本发布和回退计划","chapter":19,"level":3,"pg":568,"pp":1,"is_leaf":true},{"id":"19.3","name":"项目文档管理","chapter":19,"level":2,"pg":569,"pp":3,"is_leaf":false},{"id":"19.3.1","name":"管理基础","chapter":19,"level":3,"pg":569,"pp":1,"is_leaf":true},{"id":"19.3.2","name":"规则和方法","chapter":19,"level":3,"pg":569,"pp":3,"is_leaf":true},{"id":"20.1","name":"项目集管理","chapter":20,"level":2,"pg":572,"pp":5,"is_leaf":false},{"id":"20.1.1","name":"项目集管理标准","chapter":20,"level":3,"pg":572,"pp":1,"is_leaf":true},{"id":"20.1.2","name":"项目集管理角色和职责","chapter":20,"level":3,"pg":572,"pp":2,"is_leaf":true},{"id":"20.1.3","name":"项目集管理绩效域","chapter":20,"level":3,"pg":574,"pp":3,"is_leaf":true},{"id":"20.2","name":"项目组合管理","chapter":20,"level":2,"pg":577,"pp":6,"is_leaf":false},{"id":"20.2.1","name":"项目组合管理标准","chapter":20,"level":3,"pg":577,"pp":1,"is_leaf":true},{"id":"20.2.2","name":"项目组合管理角色和职责","chapter":20,"level":3,"pg":577,"pp":1,"is_leaf":true},{"id":"20.2.3","name":"项目组合管理绩效域","chapter":20,"level":3,"pg":578,"pp":5,"is_leaf":true},{"id":"20.3","name":"组织级项目管理","chapter":20,"level":2,"pg":583,"pp":4,"is_leaf":false},{"id":"20.3.1","name":"组织级项目管理标准","chapter":20,"level":3,"pg":584,"pp":1,"is_leaf":true},{"id":"20.3.2","name":"业务价值与业务评估","chapter":20,"level":3,"pg":584,"pp":1,"is_leaf":true},{"id":"20.3.3","name":"OPM框架要素","chapter":20,"level":3,"pg":584,"pp":2,"is_leaf":true},{"id":"20.3.4","name":"OPM成熟度模型","chapter":20,"level":3,"pg":586,"pp":1,"is_leaf":true},{"id":"20.4","name":"量化项目管理","chapter":20,"level":2,"pg":587,"pp":11,"is_leaf":false},{"id":"20.4.1","name":"量化管理理论及应用","chapter":20,"level":3,"pg":587,"pp":3,"is_leaf":true},{"id":"20.4.2","name":"组织级量化管理","chapter":20,"level":3,"pg":590,"pp":7,"is_leaf":true},{"id":"20.4.3","name":"项目级量化管理","chapter":20,"level":3,"pg":597,"pp":1,"is_leaf":true},{"id":"20.5","name":"项目管理实践模型","chapter":20,"level":2,"pg":598,"pp":9,"is_leaf":false},{"id":"20.5.1","name":"CMMI模型","chapter":20,"level":3,"pg":598,"pp":4,"is_leaf":true},{"id":"20.5.2","name":"PRINCE2模型","chapter":20,"level":3,"pg":602,"pp":5,"is_leaf":true},{"id":"21.1","name":"工程经济学","chapter":21,"level":2,"pg":607,"pp":10,"is_leaf":false},{"id":"21.1.1","name":"资金的时间价值与等值计算","chapter":21,"level":3,"pg":607,"pp":3,"is_leaf":true},{"id":"21.1.2","name":"项目经济评价","chapter":21,"level":3,"pg":610,"pp":7,"is_leaf":true},{"id":"21.2","name":"运筹学","chapter":21,"level":2,"pg":617,"pp":24,"is_leaf":false},{"id":"21.2.1","name":"线性规划","chapter":21,"level":3,"pg":617,"pp":2,"is_leaf":true},{"id":"21.2.2","name":"运输问题","chapter":21,"level":3,"pg":619,"pp":2,"is_leaf":true},{"id":"21.2.3","name":"指派问题","chapter":21,"level":3,"pg":621,"pp":3,"is_leaf":true},{"id":"21.2.4","name":"动态规划","chapter":21,"level":3,"pg":624,"pp":4,"is_leaf":true},{"id":"21.2.5","name":"图与网络","chapter":21,"level":3,"pg":628,"pp":3,"is_leaf":true},{"id":"21.2.6","name":"博弈论","chapter":21,"level":3,"pg":631,"pp":3,"is_leaf":true},{"id":"21.2.7","name":"决策分析","chapter":21,"level":3,"pg":634,"pp":7,"is_leaf":true},{"id":"22.1","name":"组织战略","chapter":22,"level":2,"pg":641,"pp":4,"is_leaf":false},{"id":"22.1.1","name":"组织战略要点","chapter":22,"level":3,"pg":641,"pp":1,"is_leaf":true},{"id":"22.1.2","name":"组织定位","chapter":22,"level":3,"pg":642,"pp":1,"is_leaf":true},{"id":"22.1.3","name":"组织环境分析","chapter":22,"level":3,"pg":643,"pp":1,"is_leaf":true},{"id":"22.1.4","name":"组织能力确认","chapter":22,"level":3,"pg":644,"pp":1,"is_leaf":true},{"id":"22.1.5","name":"创新和改进","chapter":22,"level":3,"pg":645,"pp":1,"is_leaf":true},{"id":"22.2","name":"绩效考核","chapter":22,"level":2,"pg":645,"pp":9,"is_leaf":false},{"id":"22.2.1","name":"绩效计划","chapter":22,"level":3,"pg":645,"pp":3,"is_leaf":true},{"id":"22.2.2","name":"绩效实施","chapter":22,"level":3,"pg":648,"pp":1,"is_leaf":true},{"id":"22.2.3","name":"绩效治理","chapter":22,"level":3,"pg":649,"pp":1,"is_leaf":true},{"id":"22.2.4","name":"绩效评估","chapter":22,"level":3,"pg":650,"pp":3,"is_leaf":true},{"id":"22.2.5","name":"绩效评价结果反馈","chapter":22,"level":3,"pg":653,"pp":1,"is_leaf":true},{"id":"22.2.6","name":"绩效评价结果应用","chapter":22,"level":3,"pg":653,"pp":1,"is_leaf":true},{"id":"22.3","name":"转型升级","chapter":22,"level":2,"pg":654,"pp":9,"is_leaf":false},{"id":"22.3.1","name":"战略转型升级","chapter":22,"level":3,"pg":654,"pp":2,"is_leaf":true},{"id":"22.3.2","name":"数字化转型实施","chapter":22,"level":3,"pg":656,"pp":7,"is_leaf":true},{"id":"23.1","name":"人力资源管理","chapter":23,"level":2,"pg":663,"pp":17,"is_leaf":false},{"id":"23.1.1","name":"人力资源管理基础","chapter":23,"level":3,"pg":663,"pp":1,"is_leaf":true},{"id":"23.1.2","name":"工作分析与岗位设","chapter":23,"level":3,"pg":664,"pp":3,"is_leaf":true},{"id":"23.1.3","name":"人力资源战略与计划","chapter":23,"level":3,"pg":667,"pp":3,"is_leaf":true},{"id":"23.1.4","name":"人员招聘与录用","chapter":23,"level":3,"pg":670,"pp":3,"is_leaf":true},{"id":"23.1.5","name":"人员培训","chapter":23,"level":3,"pg":673,"pp":3,"is_leaf":true},{"id":"23.1.6","name":"组织薪酬管理","chapter":23,"level":3,"pg":676,"pp":4,"is_leaf":true},{"id":"23.1.7","name":"人员职业规划与管理","chapter":23,"level":3,"pg":680,"pp":1,"is_leaf":true},{"id":"23.2","name":"流程管理","chapter":23,"level":2,"pg":680,"pp":13,"is_leaf":false},{"id":"23.2.1","name":"流程基础","chapter":23,"level":3,"pg":681,"pp":2,"is_leaf":true},{"id":"23.2.2","name":"流程规划","chapter":23,"level":3,"pg":683,"pp":4,"is_leaf":true},{"id":"23.2.3","name":"流程执行","chapter":23,"level":3,"pg":687,"pp":1,"is_leaf":true},{"id":"23.2.4","name":"流程评价","chapter":23,"level":3,"pg":688,"pp":4,"is_leaf":true},{"id":"23.2.5","name":"流程持续改进","chapter":23,"level":3,"pg":692,"pp":1,"is_leaf":true},{"id":"23.3","name":"知识管理","chapter":23,"level":2,"pg":693,"pp":12,"is_leaf":false},{"id":"23.3.1","name":"知识管理基础","chapter":23,"level":3,"pg":693,"pp":1,"is_leaf":true},{"id":"23.3.2","name":"知识价值链","chapter":23,"level":3,"pg":694,"pp":1,"is_leaf":true},{"id":"23.3.3","name":"显性知识与隐性知识","chapter":23,"level":3,"pg":695,"pp":2,"is_leaf":true},{"id":"23.3.4","name":"知识管理过程","chapter":23,"level":3,"pg":697,"pp":5,"is_leaf":true},{"id":"23.3.5","name":"知识协同与创新","chapter":23,"level":3,"pg":702,"pp":1,"is_leaf":true},{"id":"23.3.6","name":"知识传播与服务","chapter":23,"level":3,"pg":703,"pp":2,"is_leaf":true},{"id":"23.4","name":"市场营销","chapter":23,"level":2,"pg":705,"pp":12,"is_leaf":false},{"id":"23.4.1","name":"营销基础","chapter":23,"level":3,"pg":705,"pp":3,"is_leaf":true},{"id":"23.4.2","name":"营销环境","chapter":23,"level":3,"pg":708,"pp":1,"is_leaf":true},{"id":"23.4.3","name":"营销分析","chapter":23,"level":3,"pg":709,"pp":4,"is_leaf":true},{"id":"23.4.4","name":"营销管控","chapter":23,"level":3,"pg":713,"pp":4,"is_leaf":true},{"id":"24.1","name":"法律法规","chapter":24,"level":2,"pg":717,"pp":2,"is_leaf":false},{"id":"24.1.1","name":"民法典(合同编)","chapter":24,"level":3,"pg":717,"pp":1,"is_leaf":true},{"id":"24.1.2","name":"招标投标法","chapter":24,"level":3,"pg":717,"pp":1,"is_leaf":true},{"id":"24.1.3","name":"政府采购法","chapter":24,"level":3,"pg":717,"pp":1,"is_leaf":true},{"id":"24.1.4","name":"专利法","chapter":24,"level":3,"pg":718,"pp":1,"is_leaf":true},{"id":"24.1.5","name":"著作权法","chapter":24,"level":3,"pg":718,"pp":1,"is_leaf":true},{"id":"24.1.6","name":"商标法","chapter":24,"level":3,"pg":718,"pp":1,"is_leaf":true},{"id":"24.1.7","name":"网络安全法","chapter":24,"level":3,"pg":718,"pp":1,"is_leaf":true},{"id":"24.1.8","name":"数据安全法","chapter":24,"level":3,"pg":719,"pp":1,"is_leaf":true},{"id":"24.2","name":"标准规范","chapter":24,"level":2,"pg":719,"pp":11,"is_leaf":false},{"id":"24.2.1","name":"系统与软件工程标准","chapter":24,"level":3,"pg":719,"pp":4,"is_leaf":true},{"id":"24.2.2","name":"新一代信息技术标准","chapter":24,"level":3,"pg":723,"pp":5,"is_leaf":true},{"id":"24.2.3","name":"信息技术服务标准","chapter":24,"level":3,"pg":728,"pp":2,"is_leaf":true}],"questions":[{"question_id":"q1.1.1-1","type":"single","chapter":1,"topic_ids":["1.1.1"],"stem":"1948年，数学家香农在《通信的数学理论》中指出，信息的本质是（ ）。","options":[{"key":"A","text":"物质和能量的载体"},{"key":"B","text":"用来消除随机不定性的东西"},{"key":"C","text":"系统有序程度的度量"},{"key":"D","text":"人类传播的一切内容"}],"answer":["B"],"explanation":"香农认为“信息是用来消除随机不定性的东西”，并给出了信息的定量描述，确定信息量的单位为比特（bit）。","book_page":"《信息系统项目管理师教程（第4版）》第2页","difficulty":1},{"question_id":"q1.1.1-2","type":"single","chapter":1,"topic_ids":["1.1.1"],"stem":"香农确定的信息量单位是（ ）。","options":[{"key":"A","text":"字节（Byte）"},{"key":"B","text":"赫兹（Hz）"},{"key":"C","text":"比特（bit）"},{"key":"D","text":"波特（Baud）"}],"answer":["C"],"explanation":"香农给出了信息的定量描述，并确定了信息量的单位为比特（bit）。1比特的信息量，在变异度为2的最简单情况下，就是能消除非此即彼的不确定性所需要的信息量。","book_page":"《信息系统项目管理师教程（第4版）》第2页","difficulty":1},{"question_id":"q1.1.1-3","type":"single","chapter":1,"topic_ids":["1.1.1"],"stem":"香农将热力学中的“熵”引入信息论，下列描述正确的是（ ）。","options":[{"key":"A","text":"信息与熵相同，都是系统无序程度的度量"},{"key":"B","text":"信息与熵相反，是系统有序程度的度量，表现为负熵"},{"key":"C","text":"信息与熵都表现为正熵"},{"key":"D","text":"熵与信息量没有关系"}],"answer":["B"],"explanation":"在热力学中，熵是系统无序程度的度量；而信息与熵正好相反，信息是系统有序程度的度量，表现为负熵。","book_page":"《信息系统项目管理师教程（第4版）》第2页","difficulty":2},{"question_id":"q1.1.1-4","type":"multiple","chapter":1,"topic_ids":["1.1.1"],"stem":"信息具有很多特征，主要包括（ ）。","options":[{"key":"A","text":"客观性、普遍性、无限性"},{"key":"B","text":"动态性、相对性、依附性"},{"key":"C","text":"变换性、传递性、层次性"},{"key":"D","text":"系统性、转化性"}],"answer":["A","B","C","D"],"explanation":"信息的主要特征包括客观性、普遍性、无限性、动态性、相对性、依附性、变换性、传递性、层次性、系统性和转化性等，四个选项均属于信息的特征。","book_page":"《信息系统项目管理师教程（第4版）》第2页","difficulty":2},{"question_id":"q1.1.1-5","type":"single","chapter":1,"topic_ids":["1.1.1"],"stem":"对于金融信息而言，其最重要的质量特性是（ ）。","options":[{"key":"A","text":"及时性"},{"key":"B","text":"安全性"},{"key":"C","text":"经济性"},{"key":"D","text":"可验证性"}],"answer":["B"],"explanation":"应用的场合不同，信息的侧重面也不一样。对于金融信息而言，其最重要的特性是安全性；而对于经济与社会信息而言，其最重要的特性是及时性。","book_page":"《信息系统项目管理师教程（第4版）》第2页","difficulty":2},{"question_id":"q1.1.1-6","type":"single","chapter":1,"topic_ids":["1.1.1"],"stem":"信息的质量属性主要包括（ ）。","options":[{"key":"A","text":"精确性、完整性、可靠性"},{"key":"B","text":"及时性、经济性"},{"key":"C","text":"可验证性、安全性"},{"key":"D","text":"以上都是"}],"answer":["D"],"explanation":"信息满足一定的质量属性，主要包括精确性、完整性、可靠性、及时性、经济性、可验证性和安全性等。","book_page":"《信息系统项目管理师教程（第4版）》第2页","difficulty":1},{"question_id":"q1.1.2-1","type":"single","chapter":1,"topic_ids":["1.1.2"],"stem":"简单地说，信息系统就是（ ）。","options":[{"key":"A","text":"通过输入数据，然后进行加工处理，最后产生信息的系统"},{"key":"B","text":"由硬件和软件组成的系统"},{"key":"C","text":"面向管理和支持生产的系统"},{"key":"D","text":"以数据库为核心的系统"}],"answer":["A"],"explanation":"信息系统就是通过输入数据，然后进行加工处理，最后产生信息的系统。","book_page":"《信息系统项目管理师教程（第4版）》第3页","difficulty":1},{"question_id":"q1.1.2-2","type":"multiple","chapter":1,"topic_ids":["1.1.2"],"stem":"信息系统抽象模型由下列哪些部分组成？（ ）","options":[{"key":"A","text":"管理模型"},{"key":"B","text":"信息处理模型"},{"key":"C","text":"系统实现条件"},{"key":"D","text":"数据库模型"}],"answer":["A","B","C"],"explanation":"信息系统是管理模型、信息处理模型和系统实现条件的结合。管理模型是指系统服务对象领域的专门知识；信息处理模型指系统处理信息的结构和方法；系统实现条件指可供应用的计算机技术、通信技术、人员以及资源的控制与融合。","book_page":"《信息系统项目管理师教程（第4版）》第3页","difficulty":2},{"question_id":"q1.1.2-3","type":"multiple","chapter":1,"topic_ids":["1.1.2"],"stem":"信息系统的组成部件包括（ ）。","options":[{"key":"A","text":"硬件、软件、数据库、网络"},{"key":"B","text":"存储设备、感知设备、外设"},{"key":"C","text":"人员"},{"key":"D","text":"把数据处理成信息的规程"}],"answer":["A","B","C","D"],"explanation":"信息系统的组成部件包括硬件、软件、数据库、网络、存储设备、感知设备、外设、人员以及把数据处理成信息的规程等。","book_page":"《信息系统项目管理师教程（第4版）》第3页","difficulty":2},{"question_id":"q1.1.2-4","type":"single","chapter":1,"topic_ids":["1.1.2"],"stem":"从用途类型来划分，下列不属于信息系统的是（ ）。","options":[{"key":"A","text":"电子商务系统"},{"key":"B","text":"管理信息系统"},{"key":"C","text":"决策支持系统"},{"key":"D","text":"操作系统"}],"answer":["D"],"explanation":"从用途类型来划分，信息系统一般包括电子商务系统、事务处理系统、管理信息系统、生产制造系统、电子政务系统、决策支持系统等。操作系统属于系统软件，不属于信息系统的用途类型。","book_page":"《信息系统项目管理师教程（第4版）》第3页","difficulty":2},{"question_id":"q1.1.2-5","type":"single","chapter":1,"topic_ids":["1.1.2"],"stem":"信息系统的生命周期可以简化为（ ）等阶段。","options":[{"key":"A","text":"系统规划、系统分析、系统设计、系统实施、系统运行和维护"},{"key":"B","text":"需求分析、概要设计、详细设计、编码、测试"},{"key":"C","text":"可行性分析、开发计划、需求分析、设计、维护"},{"key":"D","text":"规划、建设、运行、淘汰"}],"answer":["A"],"explanation":"信息系统的生命周期可以简化为：系统规划（可行性分析与项目开发计划）、系统分析（需求分析）、系统设计（概要设计、详细设计）、系统实施（编码、测试）、系统运行和维护等阶段。","book_page":"《信息系统项目管理师教程（第4版）》第4页","difficulty":2},{"question_id":"q1.1.2-6","type":"single","chapter":1,"topic_ids":["1.1.2"],"stem":"软件的生命周期通常包括的阶段的正确顺序是（ ）。","options":[{"key":"A","text":"需求分析→概要设计→详细设计→编码→测试→维护"},{"key":"B","text":"可行性分析与项目开发计划→需求分析→概要设计→详细设计→编码→测试→维护"},{"key":"C","text":"可行性分析→编码→测试→维护"},{"key":"D","text":"需求分析→编码→测试→维护"}],"answer":["B"],"explanation":"软件的生命周期通常包括：可行性分析与项目开发计划、需求分析、概要设计、详细设计、编码、测试、维护等阶段。","book_page":"《信息系统项目管理师教程（第4版）》第3页","difficulty":2},{"question_id":"q1.1.2-7","type":"single","chapter":1,"topic_ids":["1.1.2"],"stem":"关于信息系统，下列说法不正确的是（ ）。","options":[{"key":"A","text":"面向管理和支持生产是信息系统的显著特点"},{"key":"B","text":"信息系统建设周期短、投资小、风险小"},{"key":"C","text":"信息系统需要不断维护和修改"},{"key":"D","text":"当信息系统不再适应的时候就要被淘汰，由新系统代替老系统"}],"answer":["B"],"explanation":"信息系统建设周期长、投资大、风险大，比一般技术工程有更大的难度和复杂性。B选项描述错误。","book_page":"《信息系统项目管理师教程（第4版）》第3页","difficulty":2},{"question_id":"q1.1.3-1","type":"single","chapter":1,"topic_ids":["1.1.3"],"stem":"信息化是指（ ）的历史过程。","options":[{"key":"A","text":"培养、发展以计算机为主的智能化工具为代表的新生产力，并使之造福于社会"},{"key":"B","text":"建设计算机网络系统"},{"key":"C","text":"发展信息产业"},{"key":"D","text":"推广计算机应用"}],"answer":["A"],"explanation":"信息化是指培养、发展以计算机为主的智能化工具为代表的新生产力，并使之造福于社会的历史过程。与智能化工具相适应的生产力，称为信息化生产力。","book_page":"《信息系统项目管理师教程（第4版）》第4页","difficulty":1},{"question_id":"q1.1.3-2","type":"single","chapter":1,"topic_ids":["1.1.3"],"stem":"1997年召开的首届全国信息化工作会议定义的国家信息化体系包括（ ）个要素。","options":[{"key":"A","text":"5"},{"key":"B","text":"6"},{"key":"C","text":"7"},{"key":"D","text":"8"}],"answer":["B"],"explanation":"国家信息化体系包括信息技术应用、信息资源、信息网络、信息技术和产业、信息化人才、信息化政策法规和标准规范6个要素。","book_page":"《信息系统项目管理师教程（第4版）》第5页","difficulty":2},{"question_id":"q1.1.3-3","type":"multiple","chapter":1,"topic_ids":["1.1.3"],"stem":"国家信息化体系的6个要素包括（ ）。","options":[{"key":"A","text":"信息技术应用、信息资源"},{"key":"B","text":"信息网络、信息技术和产业"},{"key":"C","text":"信息化人才"},{"key":"D","text":"信息化政策法规和标准规范"}],"answer":["A","B","C","D"],"explanation":"国家信息化体系包括信息技术应用、信息资源、信息网络、信息技术和产业、信息化人才、信息化政策法规和标准规范6个要素，四个选项全部正确。","book_page":"《信息系统项目管理师教程（第4版）》第5页","difficulty":2},{"question_id":"q1.1.3-4","type":"multiple","chapter":1,"topic_ids":["1.1.3"],"stem":"信息化内涵主要包括（ ）。","options":[{"key":"A","text":"信息网络体系"},{"key":"B","text":"信息产业基础"},{"key":"C","text":"社会运行环境"},{"key":"D","text":"效用积累过程"}],"answer":["A","B","C","D"],"explanation":"信息化内涵主要包括：信息网络体系（信息资源、各种信息系统、公用通信网络平台）、信息产业基础、社会运行环境、效用积累过程。","book_page":"《信息系统项目管理师教程（第4版）》第5页","difficulty":2},{"question_id":"q1.1.3-5","type":"single","chapter":1,"topic_ids":["1.1.3"],"stem":"组织信息化除驱动和加速组织转型升级和生产力建设外，还呈现出的趋势和方向不包括（ ）。","options":[{"key":"A","text":"产品信息化"},{"key":"B","text":"产业信息化"},{"key":"C","text":"社会生活信息化"},{"key":"D","text":"组织私有化"}],"answer":["D"],"explanation":"组织信息化呈现产品信息化、产业信息化、社会生活信息化和国民经济信息化等趋势和方向，“组织私有化”不属于。","book_page":"《信息系统项目管理师教程（第4版）》第6页","difficulty":2},{"question_id":"q1.1.3-6","type":"single","chapter":1,"topic_ids":["1.1.3"],"stem":"2016年8月中共中央办公厅、国务院办公厅颁布的纲领性文件是（ ）。","options":[{"key":"A","text":"《国家信息化发展战略纲要》"},{"key":"B","text":"《数字中国建设整体布局规划》"},{"key":"C","text":"《“十四五”国家信息化规划》"},{"key":"D","text":"《关于加强数字政府建设的指导意见》"}],"answer":["A"],"explanation":"2016年8月中共中央办公厅、国务院办公厅颁布的《国家信息化发展战略纲要》强调国家信息化发展战略总目标是建设网络强国。","book_page":"《信息系统项目管理师教程（第4版）》第6页","difficulty":2},{"question_id":"q1.2.1-1","type":"single","chapter":1,"topic_ids":["1.2.1"],"stem":"“新型基础设施建设”（新基建）的提法产生于（ ）。","options":[{"key":"A","text":"2018年召开的中央经济工作会议"},{"key":"B","text":"2017年党的十九大"},{"key":"C","text":"2019年政府工作报告"},{"key":"D","text":"2020年中央财经委员会"}],"answer":["A"],"explanation":"2018年召开的中央经济工作会议，首次提出“加快5G商用步伐，加强人工智能、工业互联网、物联网等新型基础设施建设”，简称“新基建”。","book_page":"《信息系统项目管理师教程（第4版）》第7页","difficulty":1},{"question_id":"q1.2.1-2","type":"multiple","chapter":1,"topic_ids":["1.2.1"],"stem":"新型基础设施主要包括（ ）。","options":[{"key":"A","text":"信息基础设施"},{"key":"B","text":"融合基础设施"},{"key":"C","text":"创新基础设施"},{"key":"D","text":"传统基础设施"}],"answer":["A","B","C"],"explanation":"新型基础设施主要包括三个方面：信息基础设施、融合基础设施、创新基础设施。传统基础设施不属于新型基础设施。","book_page":"《信息系统项目管理师教程（第4版）》第7页","difficulty":2},{"question_id":"q1.2.1-3","type":"single","chapter":1,"topic_ids":["1.2.1"],"stem":"以5G、物联网、工业互联网、卫星互联网为代表的通信网络基础设施属于（ ）。","options":[{"key":"A","text":"信息基础设施"},{"key":"B","text":"融合基础设施"},{"key":"C","text":"创新基础设施"},{"key":"D","text":"算力基础设施"}],"answer":["A"],"explanation":"信息基础设施包括：以5G、物联网、工业互联网、卫星互联网为代表的通信网络基础设施；以人工智能、云计算、区块链等为代表的新技术基础设施；以数据中心、智能计算中心为代表的算力基础设施。信息基础设施凸显“技术新”。","book_page":"《信息系统项目管理师教程（第4版）》第7页","difficulty":2},{"question_id":"q1.2.1-4","type":"single","chapter":1,"topic_ids":["1.2.1"],"stem":"深度应用互联网、大数据、人工智能等技术，支撑传统基础设施转型升级，进而形成的基础设施属于（ ）。","options":[{"key":"A","text":"信息基础设施"},{"key":"B","text":"融合基础设施"},{"key":"C","text":"创新基础设施"},{"key":"D","text":"网络基础设施"}],"answer":["B"],"explanation":"融合基础设施主要指深度应用互联网、大数据、人工智能等技术，支撑传统基础设施转型升级，进而形成的融合基础设施，包括智能交通基础设施、智慧能源基础设施等。融合基础设施重在“应用新”。","book_page":"《信息系统项目管理师教程（第4版）》第7页","difficulty":2},{"question_id":"q1.2.1-5","type":"single","chapter":1,"topic_ids":["1.2.1"],"stem":"支撑科学研究、技术开发、产品研制的具有公益属性的基础设施属于（ ）。","options":[{"key":"A","text":"信息基础设施"},{"key":"B","text":"融合基础设施"},{"key":"C","text":"创新基础设施"},{"key":"D","text":"网络基础设施"}],"answer":["C"],"explanation":"创新基础设施主要指支撑科学研究、技术开发、产品研制的具有公益属性的基础设施，包括重大科技基础设施、科教基础设施、产业技术创新基础设施等。创新基础设施强调“平台新”。","book_page":"《信息系统项目管理师教程（第4版）》第7页","difficulty":1},{"question_id":"q1.2.1-6","type":"multiple","chapter":1,"topic_ids":["1.2.1"],"stem":"关于新型基础设施的三个方面，下列对应正确的是（ ）。","options":[{"key":"A","text":"信息基础设施凸显“技术新”"},{"key":"B","text":"融合基础设施重在“应用新”"},{"key":"C","text":"创新基础设施强调“平台新”"},{"key":"D","text":"三者都是传统基础设施"}],"answer":["A","B","C"],"explanation":"信息基础设施凸显“技术新”，融合基础设施重在“应用新”，创新基础设施强调“平台新”。D选项错误，三者都是新型基础设施。","book_page":"《信息系统项目管理师教程（第4版）》第7页","difficulty":2},{"question_id":"q1.2.2-1","type":"single","chapter":1,"topic_ids":["1.2.2"],"stem":"工业互联网是（ ）的重要基石。","options":[{"key":"A","text":"第三次工业革命"},{"key":"B","text":"第四次工业革命"},{"key":"C","text":"第二次工业革命"},{"key":"D","text":"信息革命"}],"answer":["B"],"explanation":"工业互联网是新一代信息通信技术与工业经济深度融合的新型基础设施、应用模式和工业生态，是第四次工业革命的重要基石。","book_page":"《信息系统项目管理师教程（第4版）》第8页","difficulty":1},{"question_id":"q1.2.2-2","type":"multiple","chapter":1,"topic_ids":["1.2.2"],"stem":"工业互联网平台体系具有四大层级，包括（ ）。","options":[{"key":"A","text":"网络是基础"},{"key":"B","text":"平台为中枢"},{"key":"C","text":"数据为要素"},{"key":"D","text":"安全为保障"}],"answer":["A","B","C","D"],"explanation":"工业互联网平台体系具有四大层级：它以网络为基础，平台为中枢，数据为要素，安全为保障。","book_page":"《信息系统项目管理师教程（第4版）》第9页","difficulty":2},{"question_id":"q1.2.2-3","type":"single","chapter":1,"topic_ids":["1.2.2"],"stem":"工业互联网网络体系不包括（ ）。","options":[{"key":"A","text":"网络互联"},{"key":"B","text":"数据互通"},{"key":"C","text":"标识解析"},{"key":"D","text":"安全防护"}],"answer":["D"],"explanation":"工业互联网网络体系包括网络互联、数据互通和标识解析三部分。安全防护属于安全体系，不属于网络体系。","book_page":"《信息系统项目管理师教程（第4版）》第9页","difficulty":2},{"question_id":"q1.2.2-4","type":"single","chapter":1,"topic_ids":["1.2.2"],"stem":"工业互联网平台体系包括（ ）四个层级，相当于工业互联网的“操作系统”。","options":[{"key":"A","text":"边缘层、IaaS、PaaS和SaaS"},{"key":"B","text":"硬件层、软件层、网络层、应用层"},{"key":"C","text":"感知层、传输层、平台层、应用层"},{"key":"D","text":"数据层、计算层、服务层、用户层"}],"answer":["A"],"explanation":"工业互联网平台体系包括边缘层、IaaS、PaaS和SaaS四个层级，相当于工业互联网的“操作系统”。","book_page":"《信息系统项目管理师教程（第4版）》第9页","difficulty":2},{"question_id":"q1.2.2-5","type":"multiple","chapter":1,"topic_ids":["1.2.2"],"stem":"工业互联网数据具有的特性包括（ ）。","options":[{"key":"A","text":"重要性"},{"key":"B","text":"专业性"},{"key":"C","text":"复杂性"},{"key":"D","text":"开放性"}],"answer":["A","B","C"],"explanation":"工业互联网数据有三个特性：重要性、专业性、复杂性。“开放性”不属于。","book_page":"《信息系统项目管理师教程（第4版）》第9页","difficulty":2},{"question_id":"q1.2.2-6","type":"single","chapter":1,"topic_ids":["1.2.2"],"stem":"工业互联网融合应用初步形成的六大类典型应用模式中，依托工业互联网平台汇聚设计资源，实现高水平高效率的轻量化设计、并行设计、敏捷设计等，属于（ ）。","options":[{"key":"A","text":"智能化制造"},{"key":"B","text":"平台化设计"},{"key":"C","text":"网络化协同"},{"key":"D","text":"个性化定制"}],"answer":["B"],"explanation":"平台化设计是依托工业互联网平台，汇聚人员、算法、模型、任务等设计资源，实现高水平高效率的轻量化设计、并行设计、敏捷设计、交互设计和基于模型的设计。","book_page":"《信息系统项目管理师教程（第4版）》第10页","difficulty":2},{"question_id":"q1.2.2-7","type":"multiple","chapter":1,"topic_ids":["1.2.2"],"stem":"工业互联网平台有四个主要作用，包括（ ）。","options":[{"key":"A","text":"数据汇聚"},{"key":"B","text":"建模分析"},{"key":"C","text":"知识复用"},{"key":"D","text":"应用创新"}],"answer":["A","B","C","D"],"explanation":"工业互联网平台有四个主要作用：数据汇聚、建模分析、知识复用、应用创新。","book_page":"《信息系统项目管理师教程（第4版）》第9页","difficulty":2},{"question_id":"q1.2.3-1","type":"single","chapter":1,"topic_ids":["1.2.3"],"stem":"车联网（IoV）系统是一个（ ）三层体系。","options":[{"key":"A","text":"“端、管、云”"},{"key":"B","text":"“感、传、知”"},{"key":"C","text":"“车、路、人”"},{"key":"D","text":"“网、云、端”"}],"answer":["A"],"explanation":"车联网（Internet of Vehicles，IoV）系统是一个“端、管、云”三层体系。","book_page":"《信息系统项目管理师教程（第4版）》第11页","difficulty":1},{"question_id":"q1.2.3-2","type":"multiple","chapter":1,"topic_ids":["1.2.3"],"stem":"车联网的“端、管、云”三层体系中，关于各系统的描述正确的是（ ）。","options":[{"key":"A","text":"端系统是汽车的智能传感器，负责采集与获取车辆的智能信息"},{"key":"B","text":"管系统解决车与车、车与路、车与网、车与人等的互联互通"},{"key":"C","text":"云系统是云架构的车辆运行信息平台"},{"key":"D","text":"端系统不负责车内通信"}],"answer":["A","B","C"],"explanation":"端系统负责采集感知；管系统解决互联互通；云系统是云架构的车辆运行信息平台。端系统具有车内通信、车间通信、车网通信能力，D选项错误。","book_page":"《信息系统项目管理师教程（第4版）》第11页","difficulty":2},{"question_id":"q1.2.3-3","type":"multiple","chapter":1,"topic_ids":["1.2.3"],"stem":"车联网的链接方式包括（ ）。","options":[{"key":"A","text":"车与云平台间的通信"},{"key":"B","text":"车与车间的通信、车与路间的通信"},{"key":"C","text":"车与人间的通信"},{"key":"D","text":"车内设备间的通信"}],"answer":["A","B","C","D"],"explanation":"车联网分别是车与云平台、车与车、车与路、车与人、车内设备之间等全方位网络链接，四个选项全部正确。","book_page":"《信息系统项目管理师教程（第4版）》第11页","difficulty":2},{"question_id":"q1.2.3-4","type":"single","chapter":1,"topic_ids":["1.2.3"],"stem":"车辆通过卫星无线通信或移动蜂窝等无线通信技术实现与车联网服务平台的信息传输，这属于（ ）。","options":[{"key":"A","text":"车与云平台间的通信"},{"key":"B","text":"车与车间的通信"},{"key":"C","text":"车与路间的通信"},{"key":"D","text":"车内设备间的通信"}],"answer":["A"],"explanation":"车与云平台间的通信是指车辆通过卫星无线通信或移动蜂窝等无线通信技术实现与车联网服务平台的信息传输，接收平台下达的控制指令，实时共享车辆数据。","book_page":"《信息系统项目管理师教程（第4版）》第11页","difficulty":2},{"question_id":"q1.2.3-5","type":"multiple","chapter":1,"topic_ids":["1.2.3"],"stem":"车联网的场景应用包括（ ）。","options":[{"key":"A","text":"实用类场景应用"},{"key":"B","text":"便捷类场景应用"},{"key":"C","text":"效率类场景应用"},{"key":"D","text":"娱乐类场景应用"}],"answer":["A","B","C"],"explanation":"车联网的场景应用包括实用类、便捷类、效率类三类场景应用。“娱乐类”不属于教材的分类（信息娱乐类归入便捷类场景应用）。","book_page":"《信息系统项目管理师教程（第4版）》第11-12页","difficulty":2},{"question_id":"q1.3.1-1","type":"single","chapter":1,"topic_ids":["1.3.1"],"stem":"农业现代化的重要技术手段是（ ）。","options":[{"key":"A","text":"农业机械化"},{"key":"B","text":"农业信息化"},{"key":"C","text":"农业产业化"},{"key":"D","text":"农业集约化"}],"answer":["B"],"explanation":"农业信息化是农业现代化的重要技术手段。农业信息化是指利用信息技术和信息系统为农业产供销及相关的管理和服务提供有效的信息支持。","book_page":"《信息系统项目管理师教程（第4版）》第12页","difficulty":1},{"question_id":"q1.3.1-2","type":"multiple","chapter":1,"topic_ids":["1.3.1"],"stem":"推进农业农村数字化发展，重点建设包括（ ）。","options":[{"key":"A","text":"建设基础设施"},{"key":"B","text":"发展智慧农业"},{"key":"C","text":"建设数字乡村"},{"key":"D","text":"发展工业互联网"}],"answer":["A","B","C"],"explanation":"聚焦数字赋能农业农村现代化建设，重点建设基础设施、发展智慧农业和建设数字乡村等方面。“发展工业互联网”不属于农业农村数字化重点。","book_page":"《信息系统项目管理师教程（第4版）》第13页","difficulty":2},{"question_id":"q1.3.1-3","type":"single","chapter":1,"topic_ids":["1.3.1"],"stem":"发展智慧农业的主要做法是（ ）。","options":[{"key":"A","text":"建立和推广应用农业农村大数据体系"},{"key":"B","text":"单纯增加化肥农药使用"},{"key":"C","text":"扩大耕地面积"},{"key":"D","text":"减少科技投入"}],"answer":["A"],"explanation":"发展智慧农业要建立和推广应用农业农村大数据体系，推动物联网、大数据、人工智能、区块链等新一代信息技术与农业生产经营深度融合。","book_page":"《信息系统项目管理师教程（第4版）》第13页","difficulty":2},{"question_id":"q1.3.1-4","type":"single","chapter":1,"topic_ids":["1.3.1"],"stem":"建设数字乡村的主要内容包括（ ）。","options":[{"key":"A","text":"构建线上线下相结合的乡村数字惠民便民服务体系"},{"key":"B","text":"推进“互联网+”政务服务向农村基层延伸"},{"key":"C","text":"深化乡村智慧社区建设"},{"key":"D","text":"以上都是"}],"answer":["D"],"explanation":"建设数字乡村：构建线上线下相结合的乡村数字惠民便民服务体系，推进“互联网+”政务服务向农村基层延伸，深化乡村智慧社区建设，促进农村教育、医疗、文化与数字化结合。","book_page":"《信息系统项目管理师教程（第4版）》第13页","difficulty":1},{"question_id":"q1.3.1-5","type":"single","chapter":1,"topic_ids":["1.3.1"],"stem":"实现农业农村现代化是全面建设社会主义现代化国家的（ ）。","options":[{"key":"A","text":"一般任务"},{"key":"B","text":"重大任务"},{"key":"C","text":"次要任务"},{"key":"D","text":"长期任务"}],"answer":["B"],"explanation":"实现农业农村现代化是全面建设社会主义现代化国家的重大任务。","book_page":"《信息系统项目管理师教程（第4版）》第12页","difficulty":1},{"question_id":"q1.3.2-1","type":"single","chapter":1,"topic_ids":["1.3.2"],"stem":"两化融合是指（ ）。","options":[{"key":"A","text":"信息化和工业化的高层次的深度结合"},{"key":"B","text":"机械化和自动化结合"},{"key":"C","text":"工业化和城市化结合"},{"key":"D","text":"网络化和数字化结合"}],"answer":["A"],"explanation":"两化融合是信息化和工业化的高层次的深度结合，是指以信息化带动工业化、以工业化促进信息化，走新型工业化道路。","book_page":"《信息系统项目管理师教程（第4版）》第13页","difficulty":1},{"question_id":"q1.3.2-2","type":"multiple","chapter":1,"topic_ids":["1.3.2"],"stem":"信息化与工业化的融合主要在（ ）方面进行。","options":[{"key":"A","text":"技术融合"},{"key":"B","text":"产品融合"},{"key":"C","text":"业务融合"},{"key":"D","text":"产业衍生"}],"answer":["A","B","C","D"],"explanation":"信息化与工业化主要在技术、产品、业务、产业四个方面进行融合，四个选项全部正确。","book_page":"《信息系统项目管理师教程（第4版）》第13-14页","difficulty":2},{"question_id":"q1.3.2-3","type":"single","chapter":1,"topic_ids":["1.3.2"],"stem":"智能制造（IM）具备的功能不包括（ ）。","options":[{"key":"A","text":"自感知"},{"key":"B","text":"自学习"},{"key":"C","text":"自决策"},{"key":"D","text":"自修复"}],"answer":["D"],"explanation":"智能制造具有自感知、自学习、自决策、自执行、自适应等功能。“自修复”不属于教材列出的功能。","book_page":"《信息系统项目管理师教程（第4版）》第14页","difficulty":2},{"question_id":"q1.3.2-4","type":"single","chapter":1,"topic_ids":["1.3.2"],"stem":"GB/T 39116《智能制造能力成熟度模型》将智能制造能力成熟度分为（ ）个等级。","options":[{"key":"A","text":"3"},{"key":"B","text":"4"},{"key":"C","text":"5"},{"key":"D","text":"6"}],"answer":["C"],"explanation":"成熟度等级分为五个等级，自低向高分别是一级（规划级）、二级（规范级）、三级（集成级）、四级（优化级）和五级（引领级）。","book_page":"《信息系统项目管理师教程（第4版）》第15页","difficulty":2},{"question_id":"q1.3.2-5","type":"single","chapter":1,"topic_ids":["1.3.2"],"stem":"GB/T 39116《智能制造能力成熟度模型》中，企业应对装备、系统等开展集成，实现跨业务活动间的数据共享，属于（ ）水平。","options":[{"key":"A","text":"一级（规划级）"},{"key":"B","text":"二级（规范级）"},{"key":"C","text":"三级（集成级）"},{"key":"D","text":"四级（优化级）"}],"answer":["C"],"explanation":"三级（集成级）：企业应对装备、系统等开展集成，实现跨业务活动间的数据共享。","book_page":"《信息系统项目管理师教程（第4版）》第15页","difficulty":2},{"question_id":"q1.3.2-6","type":"single","chapter":1,"topic_ids":["1.3.2"],"stem":"智能制造能力成熟度模型的能力要素包括（ ）。","options":[{"key":"A","text":"人员、技术、资源和制造"},{"key":"B","text":"人员、设备、数据、制造"},{"key":"C","text":"技术、装备、网络、服务"},{"key":"D","text":"设计、生产、物流、销售"}],"answer":["A"],"explanation":"能力要素提出了智能制造能力成熟度等级提升的关键方面，包括人员、技术、资源和制造。","book_page":"《信息系统项目管理师教程（第4版）》第15页","difficulty":2},{"question_id":"q1.3.2-7","type":"single","chapter":1,"topic_ids":["1.3.2"],"stem":"关于两化融合，下列说法正确的是（ ）。","options":[{"key":"A","text":"两化融合的核心是信息化支撑"},{"key":"B","text":"两化融合追求的是短期利益"},{"key":"C","text":"两化融合只涉及技术层面"},{"key":"D","text":"两化融合与工业化进程无关"}],"answer":["A"],"explanation":"两化融合的核心就是信息化支撑，追求可持续发展模式。信息化和工业化深度融合是信息化和工业化两个历史进程的交汇与创新。","book_page":"《信息系统项目管理师教程（第4版）》第13页","difficulty":2},{"question_id":"q1.3.3-1","type":"single","chapter":1,"topic_ids":["1.3.3"],"stem":"消费互联网的本质是（ ）。","options":[{"key":"A","text":"个人虚拟化，增强个人生活消费体验"},{"key":"B","text":"企业信息化"},{"key":"C","text":"工业生产网络化"},{"key":"D","text":"政务服务电子化"}],"answer":["A"],"explanation":"消费互联网本质是个人虚拟化，增强个人生活消费体验。","book_page":"《信息系统项目管理师教程（第4版）》第15页","difficulty":1},{"question_id":"q1.3.3-2","type":"multiple","chapter":1,"topic_ids":["1.3.3"],"stem":"消费互联网具有的属性包括（ ）。","options":[{"key":"A","text":"媒体属性"},{"key":"B","text":"产业属性"},{"key":"C","text":"生产属性"},{"key":"D","text":"政务属性"}],"answer":["A","B"],"explanation":"消费互联网具有媒体属性（由自媒体、社会媒体以及资讯为主的门户网站）和产业属性（由在线旅行和为消费者提供生活服务的电子商务等）。","book_page":"《信息系统项目管理师教程（第4版）》第16页","difficulty":2},{"question_id":"q1.3.3-3","type":"single","chapter":1,"topic_ids":["1.3.3"],"stem":"社交网络中信息的扩散速度，体现的是社交网络的（ ）。","options":[{"key":"A","text":"聚集性"},{"key":"B","text":"发散性"},{"key":"C","text":"封闭性"},{"key":"D","text":"稳定性"}],"answer":["B"],"explanation":"社交网络本身具有发散性，发散性是指信息的扩散速度。社交圈还体现出一定的聚集性。","book_page":"《信息系统项目管理师教程（第4版）》第16页","difficulty":2},{"question_id":"q1.3.3-4","type":"single","chapter":1,"topic_ids":["1.3.3"],"stem":"消费互联网推动的社会生活深层变革是（ ）的建立。","options":[{"key":"A","text":"“无身份社会”"},{"key":"B","text":"“实名制社会”"},{"key":"C","text":"“等级社会”"},{"key":"D","text":"“封闭社会”"}],"answer":["A"],"explanation":"消费互联网推动了社会生活的深层变革，那就是“无身份社会”的建立。互联网搭建了更高层级的信任校验模式。","book_page":"《信息系统项目管理师教程（第4版）》第16页","difficulty":2},{"question_id":"q1.3.3-5","type":"single","chapter":1,"topic_ids":["1.3.3"],"stem":"我国以网络购物、移动支付、线上线下融合等新业态与新模式为特征的新型消费，其迅速发展的重要节点是（ ）。","options":[{"key":"A","text":"2008年金融危机"},{"key":"B","text":"新冠肺炎疫情发生以来"},{"key":"C","text":"2015年股灾"},{"key":"D","text":"2022年冬奥会"}],"answer":["B"],"explanation":"特别是新冠肺炎疫情发生以来，传统接触式线下消费受到影响，新型消费发挥了重要作用，有效保障了人们的日常生活需要。","book_page":"《信息系统项目管理师教程（第4版）》第16页","difficulty":2},{"question_id":"q1.4.1-1","type":"single","chapter":1,"topic_ids":["1.4.1"],"stem":"数字经济是继（ ）之后的更高级经济形态。","options":[{"key":"A","text":"农业经济、工业经济"},{"key":"B","text":"原始经济、农业经济"},{"key":"C","text":"工业经济、知识经济"},{"key":"D","text":"农业经济、服务经济"}],"answer":["A"],"explanation":"数字经济是继农业经济、工业经济之后的更高级经济形态。","book_page":"《信息系统项目管理师教程（第4版）》第17页","difficulty":1},{"question_id":"q1.4.1-2","type":"multiple","chapter":1,"topic_ids":["1.4.1"],"stem":"从整体构成上看，数字经济包括（ ）四个部分。","options":[{"key":"A","text":"数字产业化"},{"key":"B","text":"产业数字化"},{"key":"C","text":"数字化治理"},{"key":"D","text":"数据价值化"}],"answer":["A","B","C","D"],"explanation":"从整体构成上看，数字经济包括数字产业化、产业数字化、数字化治理和数据价值化四个部分。","book_page":"《信息系统项目管理师教程（第4版）》第18页","difficulty":2},{"question_id":"q1.4.1-3","type":"single","chapter":1,"topic_ids":["1.4.1"],"stem":"数字经济的基础部分是（ ）。","options":[{"key":"A","text":"数字产业化"},{"key":"B","text":"产业数字化"},{"key":"C","text":"数字化治理"},{"key":"D","text":"数据价值化"}],"answer":["A"],"explanation":"数字产业化是指为产业数字化发展提供数字技术、产品、服务、基础设施和解决方案的经济活动。数字产业化是数字经济的基础部分。","book_page":"《信息系统项目管理师教程（第4版）》第18页","difficulty":2},{"question_id":"q1.4.1-4","type":"single","chapter":1,"topic_ids":["1.4.1"],"stem":"《数字经济及其核心产业统计分类（2021）》将数字经济分类中，前4类为数字产业化部分，第5类（数字化效率提升业）属于（ ）。","options":[{"key":"A","text":"数字产业化部分"},{"key":"B","text":"产业数字化部分"},{"key":"C","text":"数字化治理部分"},{"key":"D","text":"数据价值化部分"}],"answer":["B"],"explanation":"数字经济分为数字产品制造业、数字产品服务业、数字技术应用业、数字要素驱动业和数字化效率提升业五类，前4类为数字产业化部分，第5类为产业数字化部分。","book_page":"《信息系统项目管理师教程（第4版）》第17-18页","difficulty":2},{"question_id":"q1.4.1-5","type":"multiple","chapter":1,"topic_ids":["1.4.1"],"stem":"数据价值化的“三化”框架包括（ ）。","options":[{"key":"A","text":"数据资源化"},{"key":"B","text":"数据资产化"},{"key":"C","text":"数据资本化"},{"key":"D","text":"数据标准化"}],"answer":["A","B","C"],"explanation":"数据价值化是以数据资源化为起点，经历数据资产化、数据资本化阶段，构成“三化”框架，即数据资源化、数据资产化、数据资本化。","book_page":"《信息系统项目管理师教程（第4版）》第20页","difficulty":2},{"question_id":"q1.4.1-6","type":"single","chapter":1,"topic_ids":["1.4.1"],"stem":"产业数字化是指在新一代数字科技支撑和引领下，以（ ）为关键要素，以价值释放为核心的过程。","options":[{"key":"A","text":"数据"},{"key":"B","text":"技术"},{"key":"C","text":"资金"},{"key":"D","text":"人才"}],"answer":["A"],"explanation":"产业数字化是指在新一代数字科技支撑和引领下，以数据为关键要素，以价值释放为核心，以数据赋能为主线，对产业链上下游的全要素数字化升级、转型和再造的过程。","book_page":"《信息系统项目管理师教程（第4版）》第18页","difficulty":2},{"question_id":"q1.4.1-7","type":"single","chapter":1,"topic_ids":["1.4.1"],"stem":"实现数据价值的核心是（ ）。","options":[{"key":"A","text":"数据资源化"},{"key":"B","text":"数据资产化"},{"key":"C","text":"数据资本化"},{"key":"D","text":"数据确权"}],"answer":["B"],"explanation":"数据资产化是实现数据价值的核心，其本质是形成数据交换价值。数据资源化是激发数据价值的基础；数据资本化是拓展数据价值的途径。","book_page":"《信息系统项目管理师教程（第4版）》第20页","difficulty":2},{"question_id":"q1.4.2-1","type":"single","chapter":1,"topic_ids":["1.4.2"],"stem":"数字政府的核心目的是（ ）。","options":[{"key":"A","text":"以人为本"},{"key":"B","text":"技术领先"},{"key":"C","text":"降低成本"},{"key":"D","text":"提高效率"}],"answer":["A"],"explanation":"数字政府的核心目的是以人为本，实施路径是共创、共享、共建、共赢的生态体系。","book_page":"《信息系统项目管理师教程（第4版）》第21页","difficulty":1},{"question_id":"q1.4.2-2","type":"multiple","chapter":1,"topic_ids":["1.4.2"],"stem":"数字政府被赋予的新特征包括（ ）。","options":[{"key":"A","text":"协同化、云端化"},{"key":"B","text":"智能化、数据化"},{"key":"C","text":"动态化"},{"key":"D","text":"私有化"}],"answer":["A","B","C"],"explanation":"数字政府被赋予的新特征：协同化、云端化、智能化、数据化、动态化。“私有化”不属于。","book_page":"《信息系统项目管理师教程（第4版）》第21页","difficulty":2},{"question_id":"q1.4.2-3","type":"multiple","chapter":1,"topic_ids":["1.4.2"],"stem":"数字政府建设的关键词主要包括（ ）。","options":[{"key":"A","text":"共享"},{"key":"B","text":"互通"},{"key":"C","text":"便利"},{"key":"D","text":"封闭"}],"answer":["A","B","C"],"explanation":"数字政府建设关键词主要包括共享、互通、便利。“封闭”不属于。","book_page":"《信息系统项目管理师教程（第4版）》第21页","difficulty":2},{"question_id":"q1.4.2-4","type":"single","chapter":1,"topic_ids":["1.4.2"],"stem":"从面向社会大众政务服务视角来看，数字政府主要内容重点体现在（ ）。","options":[{"key":"A","text":"“一网通办”“跨省通办”“一网统管”"},{"key":"B","text":"“一网通办”“一窗受理”“一证通办”"},{"key":"C","text":"“跨省通办”“一网统管”“一码通办”"},{"key":"D","text":"“一网通办”“一次办结”“一网统管”"}],"answer":["A"],"explanation":"数字政府从面向社会大众政务服务视角来看，主要内容重点体现在“一网通办”“跨省通办”“一网统管”。","book_page":"《信息系统项目管理师教程（第4版）》第21页","difficulty":2},{"question_id":"q1.4.2-5","type":"single","chapter":1,"topic_ids":["1.4.2"],"stem":"“跨省通办”的办理模式通常可分为（ ）。","options":[{"key":"A","text":"全程网办、代收代办和多地联办"},{"key":"B","text":"全程网办、窗口办理和邮寄办理"},{"key":"C","text":"代收代办、电话办理和网上办理"},{"key":"D","text":"多地联办、现场办理和预约办理"}],"answer":["A"],"explanation":"“跨省通办”是申请人在办理地之外的省市提出事项申请或在本地提出办理其他省市事项申请，办理模式通常可分为全程网办、代收代办和多地联办等。","book_page":"《信息系统项目管理师教程（第4版）》第22页","difficulty":2},{"question_id":"q1.4.2-6","type":"multiple","chapter":1,"topic_ids":["1.4.2"],"stem":"“一网统管”建设通常强调（ ）。","options":[{"key":"A","text":"一网、一屏"},{"key":"B","text":"联动、预警"},{"key":"C","text":"创新"},{"key":"D","text":"封闭"}],"answer":["A","B","C"],"explanation":"“一网统管”建设通常强调一网、一屏、联动、预警、创新。“封闭”不属于。","book_page":"《信息系统项目管理师教程（第4版）》第22页","difficulty":2},{"question_id":"q1.4.3-1","type":"multiple","chapter":1,"topic_ids":["1.4.3"],"stem":"数字民生建设重点通常强调（ ）。","options":[{"key":"A","text":"普惠"},{"key":"B","text":"赋能"},{"key":"C","text":"利民"},{"key":"D","text":"垄断"}],"answer":["A","B","C"],"explanation":"数字民生建设重点通常强调普惠、赋能、利民。“垄断”不属于。","book_page":"《信息系统项目管理师教程（第4版）》第23页","difficulty":1},{"question_id":"q1.4.3-2","type":"single","chapter":1,"topic_ids":["1.4.3"],"stem":"我国已初步形成的四大智慧城市群不包括（ ）。","options":[{"key":"A","text":"京津冀"},{"key":"B","text":"长三角"},{"key":"C","text":"粤港澳"},{"key":"D","text":"成渝地区"}],"answer":["D"],"explanation":"我国已初步形成京津冀、长三角、粤港澳、中西部四大智慧城市群。“成渝地区”不属于教材列出的四大智慧城市群。","book_page":"《信息系统项目管理师教程（第4版）》第23页","difficulty":2},{"question_id":"q1.4.3-3","type":"multiple","chapter":1,"topic_ids":["1.4.3"],"stem":"智慧城市基本原理表现为（ ）。","options":[{"key":"A","text":"强调“人民城市为人民”，以面向政府、企业、市民等主体提供智慧化服务为主要模式"},{"key":"B","text":"重点强化数据治理、数字孪生、边际决策、多元融合和态势感知五个核心能力要素建设"},{"key":"C","text":"注重规划设计、部署实施、运营管理、评估改进和创新发展在内的全生命周期管理"},{"key":"D","text":"目标旨在推动城市治理、民生服务、生态宜居、产业经济、精神文明五位一体的高质量发展"}],"answer":["A","B","C","D"],"explanation":"智慧城市基本原理表现为四点：人民城市为人民；强化五个核心能力要素；注重全生命周期管理；推动五位一体高质量发展。四个选项全部正确。","book_page":"《信息系统项目管理师教程（第4版）》第24页","difficulty":2},{"question_id":"q1.4.3-4","type":"single","chapter":1,"topic_ids":["1.4.3"],"stem":"智慧城市的五个核心能力要素不包括（ ）。","options":[{"key":"A","text":"数据治理"},{"key":"B","text":"数字孪生"},{"key":"C","text":"边际决策"},{"key":"D","text":"人工智能"}],"answer":["D"],"explanation":"智慧城市的五个核心能力要素是：数据治理、数字孪生、边际决策、多元融合和态势感知。“人工智能”不属于这五个核心能力要素。","book_page":"《信息系统项目管理师教程（第4版）》第24页","difficulty":2},{"question_id":"q1.4.3-5","type":"single","chapter":1,"topic_ids":["1.4.3"],"stem":"智慧城市发展成熟度划分为（ ）个等级。","options":[{"key":"A","text":"4"},{"key":"B","text":"5"},{"key":"C","text":"6"},{"key":"D","text":"7"}],"answer":["B"],"explanation":"可将智慧城市发展成熟度划分为规划级、管理级、协同级、优化级、引领级5个等级。","book_page":"《信息系统项目管理师教程（第4版）》第25页","difficulty":2},{"question_id":"q1.4.3-6","type":"single","chapter":1,"topic_ids":["1.4.3"],"stem":"智慧城市发展过程中，明确智慧城市发展战略、原则、目标和实施计划，推进城市基础设施智能化改造，多领域实现信息系统单项应用，则该智慧城市成熟度处于（ ）水平。","options":[{"key":"A","text":"规划级"},{"key":"B","text":"管理级"},{"key":"C","text":"协同级"},{"key":"D","text":"优化级"}],"answer":["B"],"explanation":"二级（管理级）：应明确智慧城市发展战略、原则、目标和实施计划等，推进城市基础设施智能化改造，多领域实现信息系统单项应用，对智慧城市全生命周期实施管理。","book_page":"《信息系统项目管理师教程（第4版）》第25页","difficulty":2},{"question_id":"q1.4.3-7","type":"single","chapter":1,"topic_ids":["1.4.3"],"stem":"2019年中共中央办公厅、国务院办公厅印发的文件是（ ）。","options":[{"key":"A","text":"《数字乡村发展战略纲要》"},{"key":"B","text":"《乡村振兴战略规划》"},{"key":"C","text":"《数字中国建设整体布局规划》"},{"key":"D","text":"《国家信息化发展战略纲要》"}],"answer":["A"],"explanation":"2019年中共中央办公厅、国务院办公厅印发《数字乡村发展战略纲要》，指出要将数字乡村作为数字中国建设的重要方面。","book_page":"《信息系统项目管理师教程（第4版）》第26页","difficulty":2},{"question_id":"q1.4.3-8","type":"single","chapter":1,"topic_ids":["1.4.3"],"stem":"数字生活的体现不包括（ ）。","options":[{"key":"A","text":"生活工具数字化"},{"key":"B","text":"生活方式数字化"},{"key":"C","text":"生活内容数字化"},{"key":"D","text":"生活空间虚拟化"}],"answer":["D"],"explanation":"数字生活主要体现在生活工具数字化、生活方式数字化、生活内容数字化三个方面。“生活空间虚拟化”不属于。","book_page":"《信息系统项目管理师教程（第4版）》第26页","difficulty":2},{"question_id":"q1.4.4-1","type":"single","chapter":1,"topic_ids":["1.4.4"],"stem":"数据作为新型生产要素，具有（ ）的双重属性。","options":[{"key":"A","text":"劳动工具和劳动对象"},{"key":"B","text":"生产资料和生活资料"},{"key":"C","text":"生产工具和生产关系"},{"key":"D","text":"有形资产和无形资产"}],"answer":["A"],"explanation":"数据作为新型生产要素，具有劳动工具和劳动对象的双重属性。作为劳动对象，通过采集、加工等具备价值；作为劳动工具，通过融合应用提升生产效能。","book_page":"《信息系统项目管理师教程（第4版）》第27页","difficulty":1},{"question_id":"q1.4.4-2","type":"single","chapter":1,"topic_ids":["1.4.4"],"stem":"国家工业信息安全发展研究中心提出的全球数字营商环境评价指标体系包含（ ）个一级指标。","options":[{"key":"A","text":"3"},{"key":"B","text":"4"},{"key":"C","text":"5"},{"key":"D","text":"6"}],"answer":["C"],"explanation":"全球数字营商环境评价指标体系包含5个一级指标：数字支撑体系、数据开发利用与安全、数字市场准入、数字市场规则、数字创新环境。","book_page":"《信息系统项目管理师教程（第4版）》第27页","difficulty":2},{"question_id":"q1.4.4-3","type":"multiple","chapter":1,"topic_ids":["1.4.4"],"stem":"下列属于我国网络安全相关法律法规或标准的有（ ）。","options":[{"key":"A","text":"《中华人民共和国网络安全法》"},{"key":"B","text":"《中华人民共和国数据安全法》"},{"key":"C","text":"《中华人民共和国个人信息保护法》"},{"key":"D","text":"《关键信息基础设施安全保护条例》"}],"answer":["A","B","C","D"],"explanation":"《中华人民共和国网络安全法》《中华人民共和国数据安全法》《中华人民共和国个人信息保护法》《关键信息基础设施安全保护条例》等法律法规的颁布，使我国网络安全法律法规和制度标准更加健全。","book_page":"《信息系统项目管理师教程（第4版）》第27页","difficulty":2},{"question_id":"q1.4.4-4","type":"single","chapter":1,"topic_ids":["1.4.4"],"stem":"保障网络空间安全的根本和基石是（ ）。","options":[{"key":"A","text":"强大的网络安全产业实力"},{"key":"B","text":"完善的网络安全法规"},{"key":"C","text":"先进的加密技术"},{"key":"D","text":"严格的管理制度"}],"answer":["A"],"explanation":"强大的网络安全产业实力是保障网络空间安全的根本和基石。","book_page":"《信息系统项目管理师教程（第4版）》第28页","difficulty":2},{"question_id":"q1.4.4-5","type":"single","chapter":1,"topic_ids":["1.4.4"],"stem":"数据要素市场化配置是建立在明确的数据产权、交易机制、定价机制、分配机制、监管机制、法律范围等保障制度的基础上的，它是一种（ ）。","options":[{"key":"A","text":"结果"},{"key":"B","text":"手段"},{"key":"C","text":"过程"},{"key":"D","text":"目标"}],"answer":["A"],"explanation":"数据要素市场化配置是一种结果，而不是手段。","book_page":"《信息系统项目管理师教程（第4版）》第27页","difficulty":2},{"question_id":"q1.5.1-1","type":"single","chapter":1,"topic_ids":["1.5.1"],"stem":"数字化转型是建立在（ ）基础上的高层次转型。","options":[{"key":"A","text":"数字化转换（Digitization）、数字化升级（Digitalization）"},{"key":"B","text":"信息化、网络化"},{"key":"C","text":"自动化、智能化"},{"key":"D","text":"数字化、标准化"}],"answer":["A"],"explanation":"数字化转型是建立在数字化转换（Digitization）、数字化升级（Digitalization）基础上，进一步触及组织核心业务，以新建一种业务模式为目标的高层次转型。","book_page":"《信息系统项目管理师教程（第4版）》第28页","difficulty":1},{"question_id":"q1.5.1-2","type":"multiple","chapter":1,"topic_ids":["1.5.1"],"stem":"从全球视角看，驱动组织数字化转型的关键要素包括（ ）。","options":[{"key":"A","text":"云计算、大数据"},{"key":"B","text":"人工智能"},{"key":"C","text":"新一代信息技术"},{"key":"D","text":"区块链"}],"answer":["A","B","C"],"explanation":"以云计算、大数据、人工智能等为代表的新一代信息技术发展迅猛，成为驱动组织数字化转型的关键要素。“区块链”并非教材此处的并列表述（教材原文为“云计算、大数据、人工智能等为代表的新一代信息技术”）。","book_page":"《信息系统项目管理师教程（第4版）》第28页","difficulty":2},{"question_id":"q1.5.1-3","type":"multiple","chapter":1,"topic_ids":["1.5.1"],"stem":"第四次科技革命对应第四科学范式（数据密集型研究范式），其特点是（ ）。","options":[{"key":"A","text":"由传统的假设驱动向基于科学数据进行探索的科学方法转变"},{"key":"B","text":"基于计算机生产实践产生的数据"},{"key":"C","text":"完成数据自动化的计算和原理探索"},{"key":"D","text":"以归纳为主的盲目观测和实验"}],"answer":["A","B","C"],"explanation":"第四科学范式（数据密集型研究范式）是由传统的假设驱动向基于科学数据进行探索的科学方法转变，基于计算机生产实践产生的数据，完成数据自动化的计算和原理探索。D选项是第一科学范式（经验范式）的特点。","book_page":"《信息系统项目管理师教程（第4版）》第29页","difficulty":3},{"question_id":"q1.5.1-4","type":"single","chapter":1,"topic_ids":["1.5.1"],"stem":"数据是与（ ）并列的主要生产要素。","options":[{"key":"A","text":"土地、劳动力、资本和技术"},{"key":"B","text":"土地、劳动力、资金和设备"},{"key":"C","text":"资本、技术、管理和人才"},{"key":"D","text":"信息、知识、技术和资本"}],"answer":["A"],"explanation":"数据是与土地、劳动力、资本和技术并列的主要生产要素。","book_page":"《信息系统项目管理师教程（第4版）》第29页","difficulty":1},{"question_id":"q1.5.1-5","type":"multiple","chapter":1,"topic_ids":["1.5.1"],"stem":"社交网络信息传输具有的特征包括（ ）。","options":[{"key":"A","text":"永生性"},{"key":"B","text":"无限性"},{"key":"C","text":"即时性"},{"key":"D","text":"方向性"}],"answer":["A","B","C","D"],"explanation":"社交网络信息传输具有永生性、无限性、即时性以及方向性的特征，四个选项全部正确。","book_page":"《信息系统项目管理师教程（第4版）》第29页","difficulty":2},{"question_id":"q1.5.1-6","type":"single","chapter":1,"topic_ids":["1.5.1"],"stem":"DIKW模型中，D、I、K、W分别代表（ ）。","options":[{"key":"A","text":"数据、信息、知识、智慧"},{"key":"B","text":"数据、知识、信息、智慧"},{"key":"C","text":"信息、数据、知识、智慧"},{"key":"D","text":"知识、信息、数据、智慧"}],"answer":["A"],"explanation":"DIKW模型揭示了数据（Data）、信息（Information）、知识（Knowledge）、智慧（Wisdom）之间的关系。","book_page":"《信息系统项目管理师教程（第4版）》第33页","difficulty":2},{"question_id":"q1.5.1-7","type":"multiple","chapter":1,"topic_ids":["1.5.1"],"stem":"组织每个能力因子数字化“封装”的持续迭代主要包含的活动包括（ ）。","options":[{"key":"A","text":"信息物理世界（CPS）建设"},{"key":"B","text":"决策能力边际化（PtoE）部署"},{"key":"C","text":"科学社会物理赛博机制（CPSS）构筑"},{"key":"D","text":"数字框架与信息调制（DFIM）"}],"answer":["A","B","C","D"],"explanation":"组织能力因子数字化“封装”的持续迭代主要包含四项活动：信息物理世界（CPS）建设、决策能力边际化（PtoE）部署、科学社会物理赛博机制（CPSS）构筑、数字框架与信息调制（DFIM）。","book_page":"《信息系统项目管理师教程（第4版）》第33页","difficulty":3},{"question_id":"q1.5.2-1","type":"single","chapter":1,"topic_ids":["1.5.2"],"stem":"北京大学陈刚教授对元宇宙的定义强调，元宇宙是利用科技手段进行链接与创造的，与现实世界映射与交互的虚拟世界，具备（ ）。","options":[{"key":"A","text":"新型社会体系的数字生活空间"},{"key":"B","text":"单纯的游戏平台"},{"key":"C","text":"社交软件"},{"key":"D","text":"电子商务平台"}],"answer":["A"],"explanation":"陈刚教授对元宇宙的定义：元宇宙是利用科技手段进行链接与创造的，与现实世界映射与交互的虚拟世界，具备新型社会体系的数字生活空间。","book_page":"《信息系统项目管理师教程（第4版）》第34页","difficulty":1},{"question_id":"q1.5.2-2","type":"multiple","chapter":1,"topic_ids":["1.5.2"],"stem":"元宇宙的主要特征包括（ ）。","options":[{"key":"A","text":"沉浸式体验"},{"key":"B","text":"虚拟身份"},{"key":"C","text":"虚拟经济"},{"key":"D","text":"虚拟社会治理"}],"answer":["A","B","C","D"],"explanation":"元宇宙的主要特征包括：沉浸式体验、虚拟身份、虚拟经济、虚拟社会治理，四个选项全部正确。","book_page":"《信息系统项目管理师教程（第4版）》第35页","difficulty":2},{"question_id":"q1.5.2-3","type":"single","chapter":1,"topic_ids":["1.5.2"],"stem":"清华大学沈阳教授认为，元宇宙基于扩展现实技术提供沉浸式体验，以及（ ）技术生成现实世界的镜像。","options":[{"key":"A","text":"数字孪生"},{"key":"B","text":"区块链"},{"key":"C","text":"人工智能"},{"key":"D","text":"云计算"}],"answer":["A"],"explanation":"沈阳教授认为，元宇宙基于扩展现实技术提供沉浸式体验，以及数字孪生技术生成现实世界的镜像，通过区块链技术搭建经济体系。","book_page":"《信息系统项目管理师教程（第4版）》第34页","difficulty":2},{"question_id":"q1.5.2-4","type":"multiple","chapter":1,"topic_ids":["1.5.2"],"stem":"中国社会科学院学者左鹏飞从（ ）方面去交叉定义元宇宙。","options":[{"key":"A","text":"时空性"},{"key":"B","text":"真实性"},{"key":"C","text":"独立性"},{"key":"D","text":"连接性"}],"answer":["A","B","C","D"],"explanation":"左鹏飞从时空性、真实性、独立性、连接性四个方面去交叉定义元宇宙，四个选项全部正确。","book_page":"《信息系统项目管理师教程（第4版）》第34页","difficulty":2},{"question_id":"q1.5.2-5","type":"single","chapter":1,"topic_ids":["1.5.2"],"stem":"从互联网发展规律和数字化转型进程看，元宇宙首先会在（ ）领域发展。","options":[{"key":"A","text":"社交、娱乐和文化"},{"key":"B","text":"工业、农业和制造业"},{"key":"C","text":"政务、医疗和教育"},{"key":"D","text":"金融、保险和证券"}],"answer":["A"],"explanation":"从互联网发展的基本规律和数字化转型进程来看，元宇宙首先会在社交、娱乐和文化领域发展，形成虚拟“数字人”。","book_page":"《信息系统项目管理师教程（第4版）》第35页","difficulty":2},{"question_id":"q1.5.2-6","type":"single","chapter":1,"topic_ids":["1.5.2"],"stem":"元宇宙作为现实世界的孪生空间和虚拟世界，其（ ）将会被强化。","options":[{"key":"A","text":"物理属性"},{"key":"B","text":"社会属性"},{"key":"C","text":"经济属性"},{"key":"D","text":"自然属性"}],"answer":["B"],"explanation":"元宇宙作为现实世界的孪生空间和虚拟世界，其物理属性淡化，但社会属性将会被强化。","book_page":"《信息系统项目管理师教程（第4版）》第35页","difficulty":2}]};
+
+/* ============ 题库数据 ============ */
+const BOOK = __DATA__.book || '';
+const CHAPTERS = __DATA__.chapters || [];
+const TOPICS = __DATA__.topics || [];
+const QUESTIONS = __DATA__.questions || [];
+
+/* 叶子考点集合 */
+const LEAF_TOPICS = new Set(TOPICS.filter(t => t.is_leaf).map(t => t.id));
+/* 章信息映射 */
+const CHAPTER_MAP = {};
+CHAPTERS.forEach(c => { CHAPTER_MAP[c.ch] = c; });
+/* 题目索引：按考点 */
+const Q_BY_TOPIC = {};
+QUESTIONS.forEach(q => {
+  (q.topic_ids || []).forEach(tid => {
+    if (!Q_BY_TOPIC[tid]) Q_BY_TOPIC[tid] = [];
+    Q_BY_TOPIC[tid].push(q);
+  });
+});
+/* 题目索引：按ID */
+const Q_BY_ID = {};
+QUESTIONS.forEach(q => { Q_BY_ID[q.question_id] = q; });
+
+/* ============ 状态 ============ */
+const LS_KEY = 'quiz-system-v1';
+let state = loadState();
+
+function defaultState() {
+  return {
+    wrongBook: {},   // { question_id: { wrongCount, lastWrongAt, topic } }
+    history: []      // 答题会话记录
+  };
+}
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(LS_KEY));
+    if (s && s.wrongBook) return s;
+  } catch(e) {}
+  return defaultState();
+}
+function saveState() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+/* ============ 会话状态 ============ */
+let session = null;  // { topics:[], mode:'normal'|'wrong', questions:[], answers:{}, startTime, endTime, current:0 }
+
+/* ============ 工具 ============ */
+function $(sel, root) { return (root || document).querySelector(sel); }
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function toast(msg) {
+  const el = $('#quiz-toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 2200);
+}
+function showModal(html) {
+  $('#quiz-modal-body').innerHTML = html;
+  $('#quiz-modal').classList.add('show');
+}
+function closeModal() { $('#quiz-modal').classList.remove('show'); }
+$('#quiz-modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+
+/* ============ 导航 ============ */
+let currentView = 'select';
+function switchView(view) {
+  currentView = view;
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const el = document.getElementById('view-' + view);
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.view === view);
+  });
+  window.scrollTo(0, 0);
+}
+
+/* ============ 选择状态 ============ */
+let selectedTopics = new Set();   // 选中的叶子考点
+let quizMode = 'normal';           // normal | wrong
+
+/* ============ 渲染主框架 ============ */
+function renderShell() {
+  $('#quiz-app').innerHTML = `
+    <div class="topbar">
+      <div class="brand">考点选择题刷题系统<small>${BOOK} · ${LEAF_TOPICS.size} 考点</small></div>
+      <button class="nav-btn active" data-view="select">刷题</button>
+      <button class="nav-btn" data-view="wrong">错题集</button>
+      <button class="nav-btn" data-view="coverage">覆盖</button>
+    </div>
+    <div class="view active" id="view-select"></div>
+    <div class="view" id="view-wrong"></div>
+    <div class="view" id="view-coverage"></div>
+  `;
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    b.addEventListener('click', () => switchView(b.dataset.view));
+  });
+  renderSelectView();
+  renderWrongView();
+  renderCoverageView();
+}
+
+/* ============ 考点选择页 ============ */
+function renderSelectView() {
+  const el = $('#view-select');
+  // 统计
+  const totalQ = QUESTIONS.length;
+  const covered = new Set(QUESTIONS.map(q => q.topic_ids).flat()).size;
+  const wrongCount = Object.keys(state.wrongBook).length;
+
+  el.innerHTML = `
+    <div class="stat-row">
+      <div class="stat-card"><div class="v">${LEAF_TOPICS.size}</div><div class="k">总考点</div></div>
+      <div class="stat-card"><div class="v teal">${covered}</div><div class="k">已覆盖考点</div></div>
+      <div class="stat-card"><div class="v">${totalQ}</div><div class="k">题库总数</div></div>
+      <div class="stat-card"><div class="v coral">${wrongCount}</div><div class="k">错题数</div></div>
+    </div>
+    <div class="card">
+      <h2>选择考点范围 <span class="tag" id="sel-count">已选 0</span></h2>
+      <div class="toolbar">
+        <input type="search" id="q-search" placeholder="搜索考点名称 / 编号…">
+        <button class="tbtn" id="btn-expand">展开</button>
+        <button class="tbtn" id="btn-collapse">收起</button>
+        <button class="tbtn primary" id="btn-all">全选</button>
+        <button class="tbtn" id="btn-clear">清空</button>
+      </div>
+      <div id="catalog"></div>
+    </div>
+    <div class="card">
+      <h2>练习模式</h2>
+      <div class="mode-row">
+        <div class="mode-opt ${quizMode === 'normal' ? 'active' : ''}" data-mode="normal">
+          <div class="m-name">正常练习</div>
+          <div class="m-desc">从所选考点中抽题</div>
+        </div>
+        <div class="mode-opt ${quizMode === 'wrong' ? 'active' : ''}" data-mode="wrong">
+          <div class="m-name">只练错题</div>
+          <div class="m-desc">只抽所选范围内的错题</div>
+        </div>
+      </div>
+      <button class="start-btn" id="btn-start">开始答题</button>
+    </div>
+  `;
+
+  // 搜索
+  $('#q-search').addEventListener('input', renderCatalog);
+  $('#btn-expand').addEventListener('click', () => { expandAll(true); renderCatalog(); });
+  $('#btn-collapse').addEventListener('click', () => { expandAll(false); renderCatalog(); });
+  $('#btn-all').addEventListener('click', () => {
+    LEAF_TOPICS.forEach(t => selectedTopics.add(t));
+    renderCatalog(); updateSelCount();
+  });
+  $('#btn-clear').addEventListener('click', () => {
+    selectedTopics.clear();
+    renderCatalog(); updateSelCount();
+  });
+  document.querySelectorAll('.mode-opt').forEach(o => {
+    o.addEventListener('click', () => {
+      quizMode = o.dataset.mode;
+      document.querySelectorAll('.mode-opt').forEach(x => x.classList.remove('active'));
+      o.classList.add('active');
+    });
+  });
+  $('#btn-start').addEventListener('click', startQuiz);
+  renderCatalog();
+  updateSelCount();
+}
+
+let collapsedChapters = new Set();
+function expandAll(expand) {
+  if (expand) collapsedChapters.clear();
+  else CHAPTERS.forEach(c => collapsedChapters.add(c.ch));
+}
+
+function renderCatalog() {
+  const el = $('#catalog');
+  if (!el) return;
+  const q = ($('#q-search').value || '').trim().toLowerCase();
+  let html = '';
+  let shown = 0;
+
+  CHAPTERS.forEach(ch => {
+    const chNum = ch.ch;
+    const chTopics = TOPICS.filter(t => t.chapter === chNum);
+    if (!chTopics.length) return;
+    // 搜索过滤：章内是否有匹配
+    const matchCh = ch.name.toLowerCase().indexOf(q) >= 0 || String(chNum) === q;
+    const filtered = chTopics.filter(t => {
+      if (!q) return true;
+      return t.name.toLowerCase().indexOf(q) >= 0 || t.id.toLowerCase().indexOf(q) >= 0;
+    });
+    if (q && !matchCh && !filtered.length) return;
+
+    const collapsed = collapsedChapters.has(chNum);
+    // 统计本章选中叶子数 & 题量
+    const leafTopics = chTopics.filter(t => t.is_leaf);
+    const selLeaf = leafTopics.filter(t => selectedTopics.has(t.id)).length;
+    const chQCount = leafTopics.reduce((s,t) => s + (Q_BY_TOPIC[t.id] || []).length, 0);
+
+    // 全章勾选状态
+    const allSel = leafTopics.length > 0 && leafTopics.every(t => selectedTopics.has(t.id));
+    const anySel = leafTopics.some(t => selectedTopics.has(t.id));
+    let chkCls = 'chk';
+    if (allSel) chkCls += ' on';
+    else if (anySel) chkCls += ' partial';
+
+    html += `<div class="chapter-block ${collapsed ? 'collapsed' : ''}" data-ch="${chNum}">`;
+    html += `<div class="chapter-head">
+      <span class="${chkCls}" data-chk-ch="${chNum}"></span>
+      <span class="ch-name">第${chNum}章 ${esc(ch.name)}</span>
+      <span class="ch-count">${chQCount}题</span>
+      <span class="caret">▾</span>
+    </div>`;
+    html += `<div class="chapter-body">`;
+
+    // 节与目
+    const secs = chTopics.filter(t => t.level === 2);
+    secs.forEach(sec => {
+      const secTopics = chTopics.filter(t => t.level === 3 && t.id.indexOf(sec.id + '.') === 0);
+      const secAll = sec.is_leaf || (secTopics.length > 0 && secTopics.every(t => selectedTopics.has(t.id)));
+      const secAny = sec.is_leaf ? selectedTopics.has(sec.id) : secTopics.some(t => selectedTopics.has(t.id));
+      let secCls = 'chk';
+      if (sec.is_leaf) {
+        if (selectedTopics.has(sec.id)) secCls += ' on';
+      } else if (secAll) secCls += ' on';
+      else if (secAny) secCls += ' partial';
+
+      const secQCount = secTopics.reduce((s,t) => s + (Q_BY_TOPIC[t.id] || []).length, 0) + (sec.is_leaf ? (Q_BY_TOPIC[sec.id] || []).length : 0);
+
+      if (q && !sec.name.toLowerCase().includes(q) && !sec.id.toLowerCase().includes(q) && !secTopics.length) return;
+
+      html += `<div class="section-item" data-sec="${sec.id}">
+        <span class="${secCls}" data-chk-sec="${sec.id}"></span>
+        <span class="s-name"><span class="id">${esc(sec.id)}</span>${esc(sec.name)}</span>
+      </div>`;
+
+      if (sec.is_leaf) {
+        // 特殊节本身是叶子考点
+        const qc = (Q_BY_TOPIC[sec.id] || []).length;
+        html += `<div class="topic-item ${qc ? '' : 'no-q'}" data-topic="${sec.id}">
+          <span class="chk ${selectedTopics.has(sec.id) ? 'on' : ''}" data-chk-topic="${sec.id}"></span>
+          <span class="t-name"><span class="id">${esc(sec.id)}</span>${esc(sec.name)}（考点）</span>
+          <span class="t-qcount">${qc}题</span>
+        </div>`;
+      } else {
+        secTopics.forEach(t => {
+          const qc = (Q_BY_TOPIC[t.id] || []).length;
+          html += `<div class="topic-item ${qc ? '' : 'no-q'}" data-topic="${t.id}">
+            <span class="chk ${selectedTopics.has(t.id) ? 'on' : ''}" data-chk-topic="${t.id}"></span>
+            <span class="t-name"><span class="id">${esc(t.id)}</span>${esc(t.name)}</span>
+            <span class="t-qcount">${qc}题</span>
+          </div>`;
+        });
+      }
+    });
+
+    html += `</div></div>`;
+    shown++;
+  });
+
+  if (!shown) html = `<div class="empty-tip"><div class="icon">🔍</div>没有匹配的考点</div>`;
+  el.innerHTML = html;
+
+  // 绑定事件
+  el.querySelectorAll('.chapter-head').forEach(h => {
+    h.addEventListener('click', (e) => {
+      if (e.target.closest('[data-chk-ch]')) return;
+      const ch = h.closest('.chapter-block').dataset.ch;
+      if (collapsedChapters.has(Number(ch))) collapsedChapters.delete(Number(ch));
+      else collapsedChapters.add(Number(ch));
+      renderCatalog();
+    });
+  });
+  el.querySelectorAll('[data-chk-ch]').forEach(c => {
+    c.addEventListener('click', () => toggleChapter(Number(c.dataset.chkCh)));
+  });
+  el.querySelectorAll('[data-chk-sec]').forEach(c => {
+    c.addEventListener('click', () => toggleSection(c.dataset.chkSec));
+  });
+  el.querySelectorAll('[data-chk-topic]').forEach(c => {
+    c.addEventListener('click', () => toggleTopic(c.dataset.chkTopic));
+  });
+  el.querySelectorAll('.topic-item .t-name').forEach(n => {
+    n.addEventListener('click', () => {
+      const tid = n.closest('.topic-item').dataset.topic;
+      toggleTopic(tid);
+    });
+  });
+}
+
+function leafTopicsOfChapter(chNum) {
+  return TOPICS.filter(t => t.chapter === chNum && t.is_leaf).map(t => t.id);
+}
+function toggleChapter(chNum) {
+  const leaves = leafTopicsOfChapter(chNum);
+  const allSel = leaves.every(t => selectedTopics.has(t));
+  if (allSel) leaves.forEach(t => selectedTopics.delete(t));
+  else leaves.forEach(t => selectedTopics.add(t));
+  renderCatalog(); updateSelCount();
+}
+function toggleSection(secId) {
+  const sec = TOPICS.find(t => t.id === secId);
+  if (!sec) return;
+  if (sec.is_leaf) {
+    if (selectedTopics.has(secId)) selectedTopics.delete(secId);
+    else selectedTopics.add(secId);
+  } else {
+    const leaves = TOPICS.filter(t => t.level === 3 && t.id.indexOf(secId + '.') === 0).map(t => t.id);
+    const allSel = leaves.length > 0 && leaves.every(t => selectedTopics.has(t));
+    if (allSel) leaves.forEach(t => selectedTopics.delete(t));
+    else leaves.forEach(t => selectedTopics.add(t));
+  }
+  renderCatalog(); updateSelCount();
+}
+function toggleTopic(tid) {
+  if (selectedTopics.has(tid)) selectedTopics.delete(tid);
+  else selectedTopics.add(tid);
+  renderCatalog(); updateSelCount();
+}
+function updateSelCount() {
+  const el = $('#sel-count');
+  if (el) el.textContent = '已选 ' + selectedTopics.size;
+}
+
+/* ============ 开始答题 ============ */
+function startQuiz() {
+  if (selectedTopics.size === 0) {
+    toast('请先选择考点范围');
+    return;
+  }
+  // 收集题目
+  let pool = [];
+  selectedTopics.forEach(tid => {
+    const qs = Q_BY_TOPIC[tid] || [];
+    qs.forEach(q => {
+      if (!pool.find(x => x.question_id === q.question_id)) pool.push(q);
+    });
+  });
+
+  if (quizMode === 'wrong') {
+    // 只练错题：从所选范围内筛错题
+    const wrongIds = Object.keys(state.wrongBook);
+    pool = pool.filter(q => wrongIds.includes(q.question_id));
+    if (pool.length === 0) {
+      showModal(`
+        <h3>当前范围内没有错题</h3>
+        <p>你所选的考点范围内，错题集中还没有错题记录。请先通过「正常练习」做题，答错的题会自动进入错题集。</p>
+        <div class="m-actions"><button class="confirm" onclick="window.__quizCloseModal()">知道了</button></div>
+      `);
+      return;
+    }
+  }
+
+  if (pool.length === 0) {
+    toast('所选考点暂无题目（题库尚未覆盖），请更换考点');
+    return;
+  }
+
+  // 打乱题目顺序
+  pool = shuffle(pool);
+  session = {
+    topics: Array.from(selectedTopics),
+    mode: quizMode,
+    questions: pool,
+    answers: {},
+    current: 0,
+    startTime: Date.now(),
+    endTime: null
+  };
+  switchView('quiz');
+  renderQuiz();
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* ============ 答题页 ============ */
+function renderQuiz() {
+  // 需要动态插入 quiz view（因为初始 shell 没有 quiz view）
+  ensureQuizView();
+  const q = session.questions[session.current];
+  if (!q) return;
+  const idx = session.current;
+  const total = session.questions.length;
+  const answered = Object.keys(session.answers).length;
+
+  $('#quiz-progress-bar').style.width = ((idx + 1) / total * 100) + '%';
+  $('#quiz-pos').textContent = (idx + 1) + ' / ' + total;
+
+  const topicNames = (q.topic_ids || []).map(tid => {
+    const t = TOPICS.find(x => x.id === tid);
+    return t ? t.id + ' ' + t.name : tid;
+  }).join('、');
+
+  let html = `
+    <div class="question-card">
+      <div class="q-meta">
+        <span class="q-badge ${q.type === 'single' ? 'single' : 'multiple'}">${q.type === 'single' ? '单选题' : '多选题'}</span>
+        <span class="q-badge topic">${esc(topicNames)}</span>
+      </div>
+      <div class="q-stem">${idx + 1}. ${esc(q.stem)}</div>
+      <div class="q-options" id="q-options">`;
+  q.options.forEach(opt => {
+    const sel = (session.answers[q.question_id] || []).includes(opt.key);
+    html += `
+      <div class="opt-item ${sel ? 'selected' : ''}" data-key="${opt.key}">
+        <span class="opt-key">${opt.key}</span>
+        <span class="opt-text">${esc(opt.text)}</span>
+      </div>`;
+  });
+  html += `</div></div>`;
+
+  html += `
+    <div class="quiz-nav">
+      <button id="btn-prev" ${idx === 0 ? 'disabled' : ''}>上一题</button>
+      <button class="primary" id="btn-next">${idx === total - 1 ? '最后一题' : '下一题'}</button>
+      <button class="submit" id="btn-submit">交卷</button>
+    </div>`;
+
+  html += `
+    <div class="answer-sheet">
+      <h3>答题卡 <span style="font-weight:400;color:var(--muted);font-size:12px">已答 ${answered} / ${total}</span></h3>
+      <div class="sheet-grid">`;
+  session.questions.forEach((qq, i) => {
+    const hasAns = (session.answers[qq.question_id] || []).length > 0;
+    let cls = 'sheet-cell';
+    if (hasAns) cls += ' answered';
+    if (i === idx) cls += ' current';
+    html += `<div class="${cls}" data-i="${i}">${i + 1}</div>`;
+  });
+  html += `</div></div>`;
+
+  $('#view-quiz').innerHTML = `
+    <div class="quiz-top">
+      <div class="quiz-progress"><div class="bar" id="quiz-progress-bar"></div></div>
+      <span class="quiz-pos" id="quiz-pos"></span>
+    </div>
+    ${html}
+  `;
+
+  // 绑定
+  $('#view-quiz').querySelectorAll('.opt-item').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const key = opt.dataset.key;
+      const qid = q.question_id;
+      if (q.type === 'single') {
+        session.answers[qid] = [key];
+      } else {
+        let cur = session.answers[qid] || [];
+        if (cur.includes(key)) cur = cur.filter(k => k !== key);
+        else cur.push(key);
+        session.answers[qid] = cur.sort();
+      }
+      renderQuiz();
+    });
+  });
+  $('#btn-prev').addEventListener('click', () => { if (idx > 0) { session.current--; renderQuiz(); } });
+  $('#btn-next').addEventListener('click', () => { if (idx < total - 1) { session.current++; renderQuiz(); } });
+  $('#btn-submit').addEventListener('click', confirmSubmit);
+  $('#view-quiz').querySelectorAll('.sheet-cell').forEach(c => {
+    c.addEventListener('click', () => { session.current = Number(c.dataset.i); renderQuiz(); });
+  });
+}
+
+function ensureQuizView() {
+  if (!document.getElementById('view-quiz')) {
+    const div = document.createElement('div');
+    div.className = 'view';
+    div.id = 'view-quiz';
+    document.getElementById('quiz-app').appendChild(div);
+  }
+}
+
+function confirmSubmit() {
+  const total = session.questions.length;
+  const answered = Object.keys(session.answers).length;
+  const unanswered = total - answered;
+  if (unanswered > 0) {
+    showModal(`
+      <h3>确认交卷？</h3>
+      <p>还有 <b style="color:var(--coral)">${unanswered}</b> 题未作答。交卷后未作答的题将按答错处理。</p>
+      <div class="m-actions">
+        <button class="cancel" onclick="window.__quizCloseModal()">继续答题</button>
+        <button class="confirm" onclick="window.__quizCloseModal();window.__quizDoSubmit()">确认交卷</button>
+      </div>
+    `);
+  } else {
+    doSubmit();
+  }
+}
+
+function doSubmit() {
+  session.endTime = Date.now();
+  // 判定
+  let correct = 0, wrong = 0;
+  const results = session.questions.map(q => {
+    const userAns = (session.answers[q.question_id] || []).slice().sort();
+    const stdAns = (q.answer || []).slice().sort();
+    const isCorrect = arraysEqual(userAns, stdAns);
+    if (isCorrect) correct++; else wrong++;
+    return { q, userAns, stdAns, isCorrect };
+  });
+
+  // 错题入集
+  results.forEach(r => {
+    if (!r.isCorrect) addToWrongBook(r.q);
+  });
+
+  // 保存历史
+  state.history.push({
+    startTime: session.startTime,
+    endTime: session.endTime,
+    topics: session.topics,
+    mode: session.mode,
+    total: session.questions.length,
+    correct, wrong,
+    accuracy: total ? Math.round(correct / total * 100) : 0
+  });
+  if (state.history.length > 50) state.history = state.history.slice(-50);
+  saveState();
+
+  // 渲染结果
+  renderResult(results, correct, wrong, session.questions.length);
+}
+
+function arraysEqual(a, b) {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
+}
+
+function addToWrongBook(q) {
+  const id = q.question_id;
+  const now = Date.now();
+  if (state.wrongBook[id]) {
+    state.wrongBook[id].wrongCount++;
+    state.wrongBook[id].lastWrongAt = now;
+  } else {
+    state.wrongBook[id] = {
+      wrongCount: 1,
+      lastWrongAt: now,
+      topic: (q.topic_ids || []).join(','),
+      chapter: q.chapter
+    };
+  }
+  saveState();
+}
+
+/* ============ 结果页 ============ */
+function renderResult(results, correct, wrong, total) {
+  ensureResultView();
+  const accuracy = total ? Math.round(correct / total * 100) : 0;
+
+  let summary = `
+    <div class="result-summary">
+      <div class="result-card"><div class="v">${total}</div><div class="k">总题数</div></div>
+      <div class="result-card"><div class="v" style="color:var(--teal)">${correct}</div><div class="k">答对</div></div>
+      <div class="result-card"><div class="v" style="color:var(--coral)">${wrong}</div><div class="k">答错</div></div>
+      <div class="result-card"><div class="v" style="color:${accuracy >= 80 ? 'var(--teal)' : accuracy >= 60 ? 'var(--amber)' : 'var(--coral)'}">${accuracy}%</div><div class="k">正确率</div></div>
+    </div>`;
+
+  let items = '';
+  results.forEach((r, i) => {
+    const verdict = r.isCorrect ? '<span class="result-verdict ok">正确</span>' : '<span class="result-verdict no">错误</span>';
+    const userAnsText = r.userAns.length ? r.userAns.join(', ') : '（未作答）';
+    const stdAnsText = r.stdAns.join(', ');
+    const topicNames = (r.q.topic_ids || []).map(tid => {
+      const t = TOPICS.find(x => x.id === tid);
+      return t ? t.id + ' ' + t.name : tid;
+    }).join('、');
+
+    items += `
+      <div class="result-item ${r.isCorrect ? 'correct' : 'wrong'}">
+        <div class="r-head">
+          <span class="q-badge ${r.q.type === 'single' ? 'single' : 'multiple'}">${r.q.type === 'single' ? '单选' : '多选'}</span>
+          <span class="q-badge topic">${esc(topicNames)}</span>
+          ${verdict}
+        </div>
+        <div class="r-stem">${i + 1}. ${esc(r.q.stem)}</div>
+        <div class="result-detail">
+          <div class="ans-line">你的答案：<span class="user-ans">${esc(userAnsText)}</span></div>
+          <div class="ans-line">正确答案：<span class="correct-ans">${esc(stdAnsText)}</span></div>
+          <div class="explain">📖 解析：${esc(r.q.explanation || '（暂无解析）')}</div>
+          <div class="bookpage">📚 ${esc(r.q.book_page || '')}</div>
+        </div>
+      </div>`;
+  });
+
+  $('#view-result').innerHTML = `
+    <div class="card"><h2>答题结果</h2>${summary}</div>
+    <div class="card"><h2>逐题详情</h2>${items}</div>
+    <button class="start-btn" id="btn-again">返回考点选择</button>
+  `;
+  $('#btn-again').addEventListener('click', () => { switchView('select'); renderSelectView(); });
+  switchView('result');
+}
+
+function ensureResultView() {
+  if (!document.getElementById('view-result')) {
+    const div = document.createElement('div');
+    div.className = 'view';
+    div.id = 'view-result';
+    document.getElementById('quiz-app').appendChild(div);
+  }
+}
+
+/* ============ 错题集页 ============ */
+let wrongFilterTopic = 'all';
+function renderWrongView() {
+  const el = $('#view-wrong');
+  const wrongIds = Object.keys(state.wrongBook);
+  const wrongQs = wrongIds.map(id => Q_BY_ID[id]).filter(Boolean);
+
+  // 考点筛选选项
+  const topicSet = new Set();
+  wrongQs.forEach(q => (q.topic_ids || []).forEach(t => topicSet.add(t)));
+  const topicOptions = Array.from(topicSet).map(tid => {
+    const t = TOPICS.find(x => x.id === tid);
+    return `<option value="${tid}">${t ? t.id + ' ' + t.name : tid}</option>`;
+  }).join('');
+
+  let filtered = wrongQs;
+  if (wrongFilterTopic !== 'all') {
+    filtered = wrongQs.filter(q => (q.topic_ids || []).includes(wrongFilterTopic));
+  }
+
+  // 按最近错误时间排序
+  filtered.sort((a, b) => (state.wrongBook[b.question_id].lastWrongAt - state.wrongBook[a.question_id].lastWrongAt));
+
+  let html = `
+    <div class="stat-row">
+      <div class="stat-card"><div class="v coral">${wrongQs.length}</div><div class="k">错题总数</div></div>
+      <div class="stat-card"><div class="v">${filtered.length}</div><div class="k">当前筛选</div></div>
+    </div>
+    <div class="card">
+      <h2>错题集</h2>
+      <div class="wrong-filter">
+        <select id="wrong-filter-select">
+          <option value="all" ${wrongFilterTopic === 'all' ? 'selected' : ''}>全部考点</option>
+          ${topicOptions}
+        </select>
+      </div>
+      <div id="wrong-list"></div>
+    </div>
+  `;
+  el.innerHTML = html;
+
+  $('#wrong-filter-select').addEventListener('change', (e) => {
+    wrongFilterTopic = e.target.value;
+    renderWrongView();
+  });
+
+  const list = $('#wrong-list');
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty-tip"><div class="icon">🎉</div>${wrongQs.length === 0 ? '暂无错题，继续加油！' : '当前筛选下没有错题'}</div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(q => {
+    const wb = state.wrongBook[q.question_id];
+    const topicNames = (q.topic_ids || []).map(tid => {
+      const t = TOPICS.find(x => x.id === tid);
+      return t ? t.id + ' ' + t.name : tid;
+    }).join('、');
+    const d = new Date(wb.lastWrongAt);
+    const timeStr = d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+    return `
+      <div class="wrong-item" data-qid="${q.question_id}">
+        <div class="w-stem">${esc(q.stem)}</div>
+        <div class="w-meta">
+          <span>📌 ${esc(topicNames)}</span>
+          <span>❌ 错误 ${wb.wrongCount} 次</span>
+          <span>🕐 ${timeStr}</span>
+        </div>
+        <div class="w-actions">
+          <button class="primary" data-act="view">查看解析</button>
+          <button class="danger" data-act="remove">移出错题集</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  list.querySelectorAll('[data-act="view"]').forEach(b => {
+    b.addEventListener('click', () => {
+      const q = Q_BY_ID[b.closest('.wrong-item').dataset.qid];
+      if (q) showQuestionDetail(q);
+    });
+  });
+  list.querySelectorAll('[data-act="remove"]').forEach(b => {
+    b.addEventListener('click', () => {
+      const qid = b.closest('.wrong-item').dataset.qid;
+      removeFromWrongBook(qid);
+    });
+  });
+}
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function showQuestionDetail(q) {
+  const userAns = '';  // 错题详情只看标准答案
+  const stdAns = (q.answer || []).join(', ');
+  const topicNames = (q.topic_ids || []).map(tid => {
+    const t = TOPICS.find(x => x.id === tid);
+    return t ? t.id + ' ' + t.name : tid;
+  }).join('、');
+  showModal(`
+    <h3>题目详情</h3>
+    <p style="font-weight:600">${esc(q.stem)}</p>
+    <div style="font-size:13px;line-height:1.6;margin-bottom:8px">
+      ${q.options.map(o => `<div>${o.key}. ${esc(o.text)}</div>`).join('')}
+    </div>
+    <p style="color:var(--teal);font-weight:600">正确答案：${esc(stdAns)}</p>
+    <p style="color:var(--muted)">📌 ${esc(topicNames)}</p>
+    <p style="font-size:13px">📖 ${esc(q.explanation || '（暂无解析）')}</p>
+    <p style="color:var(--blue);font-size:12px">📚 ${esc(q.book_page || '')}</p>
+    <div class="m-actions"><button class="confirm" onclick="window.__quizCloseModal()">关闭</button></div>
+  `);
+}
+
+function removeFromWrongBook(qid) {
+  showModal(`
+    <h3>移出错题集？</h3>
+    <p>将这道题移出错题集后，它不再出现在「只练错题」中。此操作不影响题库原题。</p>
+    <div class="m-actions">
+      <button class="cancel" onclick="window.__quizCloseModal()">取消</button>
+      <button class="confirm" onclick="window.__quizCloseModal();window.__quizDoRemove('${qid}')">确认移除</button>
+    </div>
+  `);
+}
+function doRemove(qid) {
+  delete state.wrongBook[qid];
+  saveState();
+  renderWrongView();
+  toast('已移出错题集');
+}
+
+/* ============ 覆盖统计页 ============ */
+function renderCoverageView() {
+  const el = $('#view-coverage');
+  let html = `
+    <div class="card">
+      <h2>402 考点题量覆盖统计</h2>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px">每考点至少应有题目覆盖，未覆盖考点会标红提示。</p>
+      <div id="coverage-list"></div>
+    </div>
+  `;
+  el.innerHTML = html;
+
+  const list = $('#coverage-list');
+  let rows = '';
+  let coveredCount = 0, emptyCount = 0;
+
+  CHAPTERS.forEach(ch => {
+    const leafTopics = TOPICS.filter(t => t.chapter === ch.ch && t.is_leaf);
+    rows += `<tr style="background:var(--blue-l)"><td colspan="3"><b>第${ch.ch}章 ${esc(ch.name)}</b></td></tr>`;
+    leafTopics.forEach(t => {
+      const qc = (Q_BY_TOPIC[t.id] || []).length;
+      if (qc > 0) coveredCount++; else emptyCount++;
+      const badge = qc > 0 ? '<span class="cov-badge ok">已覆盖</span>' : '<span class="cov-badge empty">未覆盖</span>';
+      rows += `<tr>
+        <td>${esc(t.id)}</td>
+        <td>${esc(t.name)}</td>
+        <td style="text-align:right">${qc} 题 ${badge}</td>
+      </tr>`;
+    });
+  });
+
+  list.innerHTML = `
+    <table class="cov-table">
+      <thead><tr><th>编号</th><th>考点</th><th style="text-align:right">题量</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="margin-top:12px;font-size:13px;color:var(--muted)">
+      已覆盖 <b style="color:var(--teal)">${coveredCount}</b> 个考点，未覆盖 <b style="color:var(--coral)">${emptyCount}</b> 个考点（共 ${LEAF_TOPICS.size} 个）
+    </div>`;
+}
+
+/* ============ 启动 ============ */
+renderShell();
+  window.__quizCloseModal = closeModal;
+  window.__quizDoSubmit = doSubmit;
+  window.__quizDoRemove = doRemove;
+
+})();
+
+</script>
+
+<script id="maintab-js">
+(function () {
+  function activate(tab) {
+    var quizEl = document.getElementById('quiz-tab');
+    var planEls = document.querySelectorAll('.topbar, .layout, #selbar, #daypanel, .fab, .side-mask');
+    var tabs = document.querySelectorAll('.main-tab-btn');
+    tabs.forEach(function (b) { b.classList.toggle('active', b.dataset.maintab === tab); });
+    if (tab === 'quiz') {
+      planEls.forEach(function (el) { el.style.display = 'none'; });
+      if (quizEl) quizEl.style.display = 'block';
+    } else {
+      planEls.forEach(function (el) { el.style.display = ''; });
+      if (quizEl) quizEl.style.display = 'none';
+    }
+  }
+  document.getElementById('main-tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('.main-tab-btn');
+    if (b) activate(b.dataset.maintab);
+  });
+})();
+</script>
+
+
 </body>
 </html>
