@@ -2702,8 +2702,8 @@ function startQuiz() {
     startTime: Date.now(),
     endTime: null
   };
-  switchView('quiz');
   renderQuiz();
+  switchView('quiz');
 }
 
 function shuffle(arr) {
@@ -2724,9 +2724,6 @@ function renderQuiz() {
   const idx = session.current;
   const total = session.questions.length;
   const answered = Object.keys(session.answers).length;
-
-  $('#quiz-progress-bar').style.width = ((idx + 1) / total * 100) + '%';
-  $('#quiz-pos').textContent = (idx + 1) + ' / ' + total;
 
   const topicNames = (q.topic_ids || []).map(tid => {
     const t = TOPICS.find(x => x.id === tid);
@@ -2778,6 +2775,10 @@ function renderQuiz() {
     </div>
     ${html}
   `;
+
+  // 进度条与题号（在 innerHTML 之后更新，此时元素已存在）
+  $('#quiz-progress-bar').style.width = ((idx + 1) / total * 100) + '%';
+  $('#quiz-pos').textContent = (idx + 1) + ' / ' + total;
 
   // 绑定
   $('#view-quiz').querySelectorAll('.opt-item').forEach(opt => {
@@ -2855,7 +2856,7 @@ function doSubmit() {
     mode: session.mode,
     total: session.questions.length,
     correct, wrong,
-    accuracy: total ? Math.round(correct / total * 100) : 0
+    accuracy: session.questions.length ? Math.round(correct / session.questions.length * 100) : 0
   });
   if (state.history.length > 50) state.history = state.history.slice(-50);
   saveState();
