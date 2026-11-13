@@ -447,6 +447,26 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 
 #quiz-tab .start-btn {width:100%;background:linear-gradient(135deg,#185FA5,#1D9E75);color:#fff;font-size:16px;font-weight:700;padding:14px;border-radius:12px;margin-top:12px;box-shadow:0 3px 10px rgba(24,95,165,.25)}
 #quiz-tab .start-btn:disabled {opacity:.45;box-shadow:none}
+#quiz-tab .wizard-steps {display:flex;gap:6px;margin:12px 0}
+#quiz-tab .ws-step {flex:1;text-align:center;font-size:12px;padding:8px 4px;border-radius:8px;background:var(--surface);color:var(--muted);border:1px solid var(--line)}
+#quiz-tab .ws-step.active {background:var(--blue-l);color:var(--blue);border-color:var(--blue);font-weight:650}
+#quiz-tab .ws-step.done {color:var(--teal);border-color:var(--teal-l)}
+#quiz-tab .method-row {display:flex;gap:10px;margin:12px 0}
+#quiz-tab .method-opt {flex:1;border:2px solid var(--line);border-radius:10px;padding:14px 12px;text-align:center;cursor:pointer;transition:.15s;background:#fff}
+#quiz-tab .method-opt .m-name {font-weight:650;font-size:14px}
+#quiz-tab .method-opt .m-desc {font-size:11px;color:var(--muted);margin-top:3px}
+#quiz-tab .method-opt.active {border-color:var(--blue);background:var(--blue-l)}
+#quiz-tab .method-opt.active .m-name {color:var(--blue)}
+#quiz-tab .wizard-summary {font-size:12.5px;color:var(--muted);background:var(--surface);border-radius:8px;padding:10px 12px;margin-top:12px;line-height:1.7}
+#quiz-tab .wizard-summary b {color:var(--text)}
+#quiz-tab .wizard-nav {display:flex;gap:10px;margin-top:12px}
+#quiz-tab .wizard-nav button {flex:1;padding:13px;border-radius:12px;font-size:15px;font-weight:650}
+#quiz-tab .wizard-nav .nav-back {background:#fff;border:1px solid var(--line);color:var(--muted)}
+#quiz-tab .wizard-nav .nav-next.primary {background:var(--blue);color:#fff;border:none}
+#quiz-tab .resume-bar {display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#1D9E75,#185FA5);color:#fff;border-radius:12px;padding:12px 14px;margin-bottom:12px;box-shadow:0 3px 10px rgba(24,95,165,.2)}
+#quiz-tab .resume-info {flex:1;font-size:13px;font-weight:600}
+#quiz-tab .resume-btn {background:#fff;color:var(--blue);font-weight:700;padding:8px 14px;border-radius:9px;font-size:13px}
+#quiz-tab .resume-abandon {background:transparent;color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.5);padding:8px 12px;border-radius:9px;font-size:12px}
 
 /* ===== 答题页 ===== */
 #quiz-tab .quiz-top {display:flex;align-items:center;gap:10px;margin-bottom:12px}
@@ -590,7 +610,7 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 <!-- ===== 主 Tab 导航 ===== -->
 <div class="main-tabs" id="main-tabs">
   <button class="main-tab-btn active" data-maintab="plan">📅 学习计划</button>
-  <button class="main-tab-btn" data-maintab="quiz">📝 考点刷题</button>
+  <button class="main-tab-btn" data-maintab="quiz">⚔️ 打怪升级</button>
 </div>
 <div class="layout" data-page-node-id="pKiCQ5VWckHaffgzI6OVoV">
   <div class="calarea" id="calarea" data-page-node-id="Xr1rFPC48KrotAmyi78wxK">
@@ -2392,6 +2412,119 @@ function loadState() {
 }
 function saveState() {
   try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e) {}
+  // 刷题数据变更后，自动推送到云端（若已配置）
+  quizAutoPush();
+}
+
+/* ============ 断点续答（session 持久化） ============ */
+const SESSION_KEY = 'quiz-session-v1';
+function saveSession() {
+  if (!session) return;
+  try { localStorage.setItem(SESSION_KEY, JSON.stringify(session)); } catch(e) {}
+}
+function loadSession() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SESSION_KEY));
+    if (s && Array.isArray(s.questions) && s.questions.length > 0 && !s.endTime) return s;
+  } catch(e) {}
+  return null;
+}
+function clearSession() {
+  try { localStorage.removeItem(SESSION_KEY); } catch(e) {}
+}
+function hasPendingSession() {
+  return !!loadSession();
+}
+
+/* ============ 刷题云端同步（复用学习计划的 Gist，独立文件 quiz-system.json） ============ */
+let quizSyncBusy = false;
+let quizLastPushTs = 0;
+const QUIZ_PUSH_COOLDOWN = 5 * 60 * 1000;  /* 自动推送最小间隔 5 分钟 */
+let quizPushTimer = null;
+const QUIZ_CLOUD_KEY = 'quiz-system.json';
+const QUIZ_CLOUD_VERSION = 1;
+
+function quizCloudEnabled() {
+  return !!(typeof gistEnabled === 'function' && gistEnabled());
+}
+function quizNowStamp() {
+  const d = new Date();
+  const p = n => (n < 10 ? '0' + n : '' + n);
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+}
+/* 打包刷题数据（含断点续答进度） */
+function quizBuildPayload() {
+  return {
+    v: QUIZ_CLOUD_VERSION,
+    wrongBook: state.wrongBook || {},
+    history: state.history || [],
+    pendingSession: loadSession(),
+    updatedAt: quizNowStamp()
+  };
+}
+/* 自动推送：刷题数据变更后防抖推送（受冷却限制） */
+function quizAutoPush() {
+  if (!quizCloudEnabled()) return;
+  clearTimeout(quizPushTimer);
+  quizPushTimer = setTimeout(function () {
+    if (quizLastPushTs && Date.now() - quizLastPushTs < QUIZ_PUSH_COOLDOWN) return;
+    quizGistPush(true);
+  }, 3000);
+}
+/* 推送刷题数据到云端 */
+function quizGistPush(quiet) {
+  if (!quizCloudEnabled() || quizSyncBusy) return;
+  clearTimeout(quizPushTimer);
+  if (quiet && quizLastPushTs && Date.now() - quizLastPushTs < QUIZ_PUSH_COOLDOWN) return;
+  quizSyncBusy = true;
+  const payload = quizBuildPayload();
+  gistApi('/gists/' + encodeURIComponent(gistId), {
+    method: 'PATCH',
+    body: JSON.stringify({ files: { [QUIZ_CLOUD_KEY]: { content: JSON.stringify(payload) } } })
+  })
+    .then(function (r) {
+      if (r.status === 404) throw new Error('Gist 不存在（404）');
+      if (r.status === 403 || r.status === 429) throw new Error('GitHub 限流（HTTP ' + r.status + '）');
+      if (!r.ok) throw new Error('推送失败 HTTP ' + r.status);
+      quizLastPushTs = Date.now();
+      if (!quiet) toast('刷题数据已推送到云端');
+    })
+    .catch(function (err) {
+      if (!quiet) toast('刷题同步失败：' + (err.message || err));
+    })
+    .finally(function () { quizSyncBusy = false; });
+}
+/* 从云端拉取刷题数据 */
+function quizGistPull(manual) {
+  if (!quizCloudEnabled()) return Promise.resolve();
+  return gistApi('/gists/' + encodeURIComponent(gistId))
+    .then(function (r) {
+      if (r.status === 404) throw new Error('Gist 不存在（404）');
+      if (r.status === 403 || r.status === 429) throw new Error('GitHub 限流（HTTP ' + r.status + '）');
+      if (!r.ok) throw new Error('拉取失败 HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (g) {
+      const f = g.files && g.files[QUIZ_CLOUD_KEY];
+      if (!f || !f.content) { if (manual) toast('云端暂无刷题数据'); return; }
+      const o = JSON.parse(f.content);
+      if (!o || typeof o.wrongBook !== 'object') throw new Error('云端刷题数据格式不对');
+      state.wrongBook = o.wrongBook || {};
+      state.history = o.history || [];
+      if (o.pendingSession && o.pendingSession.questions && o.pendingSession.questions.length) {
+        try { localStorage.setItem(SESSION_KEY, JSON.stringify(o.pendingSession)); } catch(e) {}
+      } else {
+        clearSession();
+      }
+      saveState();
+      renderSelectView();
+      renderWrongView();
+      renderCoverageView();
+      if (manual) toast('刷题数据已从云端同步');
+    })
+    .catch(function (err) {
+      if (manual) toast('刷题同步失败：' + (err.message || err));
+    });
 }
 
 /* ============ 会话状态 ============ */
@@ -2432,7 +2565,9 @@ function switchView(view) {
 
 /* ============ 选择状态 ============ */
 let selectedTopics = new Set();   // 选中的叶子考点
-let quizMode = 'normal';           // normal | wrong
+let quizMode = 'test';            // test(测试模式) | wrong(错题回顾)
+let quizMethod = 'all';           // all(全量) | random(随机抽题)
+let wizardStep = 1;               // 三步向导：1选考点 2选模式 3选方式
 
 /* ============ 渲染主框架 ============ */
 function renderShell() {
@@ -2456,22 +2591,51 @@ function renderShell() {
 }
 
 /* ============ 考点选择页 ============ */
+/* 计算当前所选范围内可用的题量（按模式） */
+function countAvailableQuestions() {
+  // 收集所选考点下的题
+  let pool = [];
+  selectedTopics.forEach(tid => {
+    (Q_BY_TOPIC[tid] || []).forEach(q => {
+      if (!pool.find(x => x.question_id === q.question_id)) pool.push(q);
+    });
+  });
+  if (quizMode === 'wrong') {
+    const wrongIds = Object.keys(state.wrongBook);
+    pool = pool.filter(q => wrongIds.includes(q.question_id));
+  }
+  return pool.length;
+}
+/* 计算随机抽题数：max(15, ceil(20% 总题量))，上限 20，不足全取 */
+function randomPickCount(total) {
+  if (total <= 0) return 0;
+  const min = Math.max(15, Math.ceil(total * 0.2));
+  return Math.min(20, Math.min(min, total));
+}
+
 function renderSelectView() {
   const el = $('#view-select');
-  // 统计
   const totalQ = QUESTIONS.length;
   const covered = new Set(QUESTIONS.map(q => q.topic_ids).flat()).size;
   const wrongCount = Object.keys(state.wrongBook).length;
+  const avail = countAvailableQuestions();
+  const pickCount = randomPickCount(avail);
 
-  el.innerHTML = `
-    <div class="stat-row">
-      <div class="stat-card"><div class="v">${LEAF_TOPICS.size}</div><div class="k">总考点</div></div>
-      <div class="stat-card"><div class="v teal">${covered}</div><div class="k">已覆盖考点</div></div>
-      <div class="stat-card"><div class="v">${totalQ}</div><div class="k">题库总数</div></div>
-      <div class="stat-card"><div class="v coral">${wrongCount}</div><div class="k">错题数</div></div>
-    </div>
+  const steps = ['选择考点范围', '选择模式', '选择方式'];
+
+  let body = '';
+  if (wizardStep === 1) {
+    const pending = loadSession();
+    const resumeBar = pending ? `
+    <div class="resume-bar">
+      <div class="resume-info">上次有未完成的答题（${pending.questions.length} 题，已答 ${Object.keys(pending.answers || {}).length} 题）</div>
+      <button class="resume-btn" id="btn-resume">继续答题</button>
+      <button class="resume-abandon" id="btn-abandon">放弃</button>
+    </div>` : '';
+    body = `
+    ${resumeBar}
     <div class="card">
-      <h2>选择考点范围 <span class="tag" id="sel-count">已选 0</span></h2>
+      <h2>① 选择考点范围 <span class="tag" id="sel-count">已选 ${selectedTopics.size}</span></h2>
       <div class="toolbar">
         <input type="search" id="q-search" placeholder="搜索考点名称 / 编号…">
         <button class="tbtn" id="q-btn-expand">展开</button>
@@ -2480,45 +2644,106 @@ function renderSelectView() {
         <button class="tbtn" id="q-btn-clear">清空</button>
       </div>
       <div id="q-catalog"></div>
-    </div>
+    </div>`;
+  } else if (wizardStep === 2) {
+    body = `
     <div class="card">
-      <h2>练习模式</h2>
+      <h2>② 选择模式</h2>
       <div class="mode-row">
-        <div class="mode-opt ${quizMode === 'normal' ? 'active' : ''}" data-mode="normal">
-          <div class="m-name">正常练习</div>
-          <div class="m-desc">从所选考点中抽题</div>
+        <div class="mode-opt ${quizMode === 'test' ? 'active' : ''}" data-mode="test">
+          <div class="m-name">📝 测试模式</div>
+          <div class="m-desc">从所选考点中抽取新题练习</div>
         </div>
         <div class="mode-opt ${quizMode === 'wrong' ? 'active' : ''}" data-mode="wrong">
-          <div class="m-name">只练错题</div>
-          <div class="m-desc">只抽所选范围内的错题</div>
+          <div class="m-name">🔁 错题回顾</div>
+          <div class="m-desc">重做所选范围内答错的题</div>
         </div>
       </div>
+    </div>`;
+  } else if (wizardStep === 3) {
+    const modeName = quizMode === 'wrong' ? '错题回顾' : '测试模式';
+    body = `
+    <div class="card">
+      <h2>③ 选择方式</h2>
+      <div class="method-row">
+        <div class="method-opt ${quizMethod === 'all' ? 'active' : ''}" data-method="all">
+          <div class="m-name">全量测试</div>
+          <div class="m-desc">${modeName}全部 ${avail} 题</div>
+        </div>
+        <div class="method-opt ${quizMethod === 'random' ? 'active' : ''}" data-method="random">
+          <div class="m-name">随机抽题</div>
+          <div class="m-desc">随机抽 ${pickCount} 题（≥20% 题量）</div>
+        </div>
+      </div>
+      <div class="wizard-summary">
+        模式：<b>${modeName}</b> · 范围：<b>${selectedTopics.size} 个考点</b> · 可用题量：<b>${avail} 题</b>
+      </div>
       <button class="start-btn" id="btn-start">开始答题</button>
+    </div>`;
+  }
+
+  el.innerHTML = `
+    <div class="stat-row">
+      <div class="stat-card"><div class="v">${LEAF_TOPICS.size}</div><div class="k">总考点</div></div>
+      <div class="stat-card"><div class="v teal">${covered}</div><div class="k">已覆盖考点</div></div>
+      <div class="stat-card"><div class="v">${totalQ}</div><div class="k">题库总数</div></div>
+      <div class="stat-card"><div class="v coral">${wrongCount}</div><div class="k">错题数</div></div>
+    </div>
+    <div class="wizard-steps">
+      ${steps.map((s, i) => `<div class="ws-step ${wizardStep === i + 1 ? 'active' : ''} ${wizardStep > i + 1 ? 'done' : ''}">${s}</div>`).join('')}
+    </div>
+    ${body}
+    <div class="wizard-nav">
+      ${wizardStep > 1 ? '<button class="nav-back" id="wizard-back">上一步</button>' : ''}
+      ${wizardStep < 3 ? '<button class="nav-next primary" id="wizard-next">下一步</button>' : ''}
     </div>
   `;
 
-  // 搜索
-  $('#q-search').addEventListener('input', renderCatalog);
-  $('#q-btn-expand').addEventListener('click', () => { expandAll(true); renderCatalog(); });
-  $('#q-btn-collapse').addEventListener('click', () => { expandAll(false); renderCatalog(); });
-  $('#q-btn-all').addEventListener('click', () => {
-    LEAF_TOPICS.forEach(t => selectedTopics.add(t));
-    renderCatalog(); updateSelCount();
-  });
-  $('#q-btn-clear').addEventListener('click', () => {
-    selectedTopics.clear();
-    renderCatalog(); updateSelCount();
-  });
-  document.querySelectorAll('.mode-opt').forEach(o => {
-    o.addEventListener('click', () => {
-      quizMode = o.dataset.mode;
-      document.querySelectorAll('.mode-opt').forEach(x => x.classList.remove('active'));
-      o.classList.add('active');
+  // 事件绑定
+  if (wizardStep === 1) {
+    $('#q-search').addEventListener('input', renderCatalog);
+    $('#q-btn-expand').addEventListener('click', () => { expandAll(true); renderCatalog(); });
+    $('#q-btn-collapse').addEventListener('click', () => { expandAll(false); renderCatalog(); });
+    $('#q-btn-all').addEventListener('click', () => {
+      LEAF_TOPICS.forEach(t => selectedTopics.add(t));
+      renderCatalog(); updateSelCount();
     });
+    $('#q-btn-clear').addEventListener('click', () => {
+      selectedTopics.clear();
+      renderCatalog(); updateSelCount();
+    });
+    const resumeBtn = $('#btn-resume');
+    if (resumeBtn) resumeBtn.addEventListener('click', resumeSession);
+    const abandonBtn = $('#btn-abandon');
+    if (abandonBtn) abandonBtn.addEventListener('click', abandonSession);
+    renderCatalog();
+    updateSelCount();
+  }
+  if (wizardStep === 2) {
+    document.querySelectorAll('.mode-opt').forEach(o => {
+      o.addEventListener('click', () => {
+        quizMode = o.dataset.mode;
+        renderSelectView();
+      });
+    });
+  }
+  if (wizardStep === 3) {
+    document.querySelectorAll('.method-opt').forEach(o => {
+      o.addEventListener('click', () => {
+        quizMethod = o.dataset.method;
+        renderSelectView();
+      });
+    });
+    $('#btn-start').addEventListener('click', startQuiz);
+  }
+  const backBtn = $('#wizard-back');
+  if (backBtn) backBtn.addEventListener('click', () => { wizardStep--; renderSelectView(); });
+  const nextBtn = $('#wizard-next');
+  if (nextBtn) nextBtn.addEventListener('click', () => {
+    if (wizardStep === 1 && selectedTopics.size === 0) { toast('请先选择考点范围'); return; }
+    wizardStep++;
+    renderSelectView();
   });
-  $('#btn-start').addEventListener('click', startQuiz);
-  renderCatalog();
-  updateSelCount();
 }
 
 let collapsedChapters = new Set();
@@ -2687,6 +2912,18 @@ function updateSelCount() {
 }
 
 /* ============ 开始答题 ============ */
+function resumeSession() {
+  const s = loadSession();
+  if (!s) return;
+  session = s;
+  renderQuiz();
+  switchView('quiz');
+}
+function abandonSession() {
+  clearSession();
+  renderSelectView();
+}
+
 function startQuiz() {
   if (selectedTopics.size === 0) {
     toast('请先选择考点范围');
@@ -2702,13 +2939,13 @@ function startQuiz() {
   });
 
   if (quizMode === 'wrong') {
-    // 只练错题：从所选范围内筛错题
+    // 错题回顾：从所选范围内筛错题
     const wrongIds = Object.keys(state.wrongBook);
     pool = pool.filter(q => wrongIds.includes(q.question_id));
     if (pool.length === 0) {
       showModal(`
         <h3>当前范围内没有错题</h3>
-        <p>你所选的考点范围内，错题集中还没有错题记录。请先通过「正常练习」做题，答错的题会自动进入错题集。</p>
+        <p>你所选的考点范围内，错题集中还没有错题记录。请先通过「测试模式」做题，答错的题会自动进入错题集。</p>
         <div class="m-actions"><button class="confirm" onclick="window.__quizCloseModal()">知道了</button></div>
       `);
       return;
@@ -2720,17 +2957,25 @@ function startQuiz() {
     return;
   }
 
-  // 打乱题目顺序
-  pool = shuffle(pool);
+  // 随机抽题：max(15, 20%总题量)，上限20，不足全取
+  if (quizMethod === 'random') {
+    pool = shuffle(pool).slice(0, randomPickCount(pool.length));
+  } else {
+    pool = shuffle(pool);
+  }
+
   session = {
     topics: Array.from(selectedTopics),
     mode: quizMode,
+    method: quizMethod,
+    sourceLabel: null,
     questions: pool,
     answers: {},
     current: 0,
     startTime: Date.now(),
     endTime: null
   };
+  saveSession();
   renderQuiz();
   switchView('quiz');
 }
@@ -2769,6 +3014,7 @@ function startChapterQuiz(chNum, mode) {
     startTime: Date.now(),
     endTime: null
   };
+  saveSession();
   renderQuiz();
   switchView('quiz');
 }
@@ -2851,14 +3097,15 @@ function renderQuiz() {
         else cur.push(key);
         session.answers[qid] = cur.sort();
       }
+      saveSession();
       renderQuiz();
     });
   });
-  $('#btn-prev').addEventListener('click', () => { if (idx > 0) { session.current--; renderQuiz(); } });
-  $('#btn-next').addEventListener('click', () => { if (idx < total - 1) { session.current++; renderQuiz(); } });
+  $('#btn-prev').addEventListener('click', () => { if (idx > 0) { session.current--; saveSession(); renderQuiz(); } });
+  $('#btn-next').addEventListener('click', () => { if (idx < total - 1) { session.current++; saveSession(); renderQuiz(); } });
   $('#btn-submit').addEventListener('click', confirmSubmit);
   $('#view-quiz').querySelectorAll('.sheet-cell').forEach(c => {
-    c.addEventListener('click', () => { session.current = Number(c.dataset.i); renderQuiz(); });
+    c.addEventListener('click', () => { session.current = Number(c.dataset.i); saveSession(); renderQuiz(); });
   });
 }
 
@@ -2918,6 +3165,9 @@ function doSubmit() {
   });
   if (state.history.length > 50) state.history = state.history.slice(-50);
   saveState();
+
+  // 交卷后清除断点续答进度
+  clearSession();
 
   // 渲染结果
   renderResult(results, correct, wrong, session.questions.length);
@@ -3179,6 +3429,9 @@ renderShell();
   window.__quizCloseModal = closeModal;
   window.__quizDoSubmit = doSubmit;
   window.__quizDoRemove = doRemove;
+
+  // 若已配置云端同步，启动时自动拉取一次刷题数据
+  if (quizCloudEnabled()) quizGistPull(false);
 
 })();
 
