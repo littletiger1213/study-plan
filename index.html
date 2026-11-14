@@ -169,6 +169,32 @@ table.wt tr.total td{font-weight:650;background:var(--surface);border-bottom:non
 .cat-item .daytag{flex:none;font-size:9.5px;padding:0 4px;border-radius:4px;background:var(--blue-l);color:var(--blue);font-variant-numeric:tabular-nums}
 .cat-item.pick{background:#FDF4E3;box-shadow:inset 0 0 0 1px #E9C877}
 
+/* 自定义内容（侧栏输入区 + 日历条目） */
+#custom-sec{border-top:1px solid var(--line);background:#fff;padding:8px 12px 10px;flex:none}
+.cs-h{display:flex;align-items:baseline;gap:6px;font-size:12.5px;font-weight:650;margin-bottom:6px}
+.cs-h .r{font-size:10.5px;color:var(--muted);font-weight:400}
+.cs-add{display:flex;gap:6px;margin-bottom:7px}
+.cs-add input{flex:1;min-width:0;border:1px solid var(--line);border-radius:7px;padding:5px 8px;font-size:12px;background:var(--surface);color:var(--text);outline:none}
+.cs-add input:focus{border-color:#BFD6EA;background:#fff}
+#custom-list{display:flex;flex-direction:column;gap:4px;max-height:170px;overflow-y:auto}
+#custom-list:empty{display:none}
+.cu-item{display:flex;align-items:center;gap:6px;border:1px dashed #C9C2B4;border-radius:8px;padding:4px 7px;font-size:11.5px;line-height:1.35;background:#FBFAF6;cursor:grab;user-select:none}
+.cu-item:hover{background:#F4F2EC}
+.cu-item.drag{opacity:.45}
+.cu-item .cu-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cu-item.done .cu-t{color:#12674E;font-weight:600;text-decoration:line-through}
+.cu-item .cu-del{flex:none;border:none;background:transparent;color:#B6B0A5;font-size:13px;cursor:pointer;padding:0 2px;line-height:1}
+.cu-item .cu-del:hover{color:#C25B4E}
+.cu-item .daytag{flex:none;font-size:9.5px;padding:0 4px;border-radius:4px;background:var(--blue-l);color:var(--blue);font-variant-numeric:tabular-nums}
+/* 日历格子里的自定义任务条（虚线描边，与章节任务区分） */
+.tku{display:flex;align-items:flex-start;gap:4px;font-size:10.5px;line-height:1.4;background:#FFF7E8;color:#8A6215;border:1px dashed #E3C88A;border-radius:5px;padding:2px 5px 2px 3px}
+.tku .chk{margin-top:1.5px}
+.tku .tkt{flex:1;min-width:0;word-break:break-all}
+.tku.on{background:var(--teal-l);color:#12674E;border-color:transparent}
+/* 手机端周视图里的自定义任务条 */
+.wn-cell .wn-task.tku{background:#FFF7E8;color:#8A6215;border:1px dashed #E3C88A}
+.wn-cell .wn-task.tku.on{background:var(--teal-l);color:#12674E;border-color:transparent}
+
 /* ---------- 选中提示条 ---------- */
 #selbar{position:fixed;left:50%;bottom:-70px;transform:translateX(-50%);background:#23211C;color:#fff;border-radius:22px;padding:9px 14px;display:flex;align-items:center;gap:10px;font-size:12px;box-shadow:0 6px 22px rgba(0,0,0,.22);transition:.22s;z-index:60;max-width:92vw}
 #selbar.on{bottom:18px}
@@ -668,6 +694,11 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
       <label class="tgl" data-page-node-id="tglUnasg01"><input type="checkbox" id="onlyUnasg" data-page-node-id="tglUnasg02"> 只看未排入</label>
     </div>
     <div id="catalog" data-page-node-id="DRYKydAIvCTAlgxEEq1yt1"></div>
+    <div id="custom-sec" data-page-node-id="customsec0001">
+      <div class="cs-h" data-page-node-id="csh0001"><b data-page-node-id="cshb0001">自定义内容</b><span class="r" data-page-node-id="cshr0001">输入后像章节一样拖到日历任意日期</span></div>
+      <div class="cs-add" data-page-node-id="csadd0001"><input type="text" id="custom-new" placeholder="如：刷错题、看网课、做真题卷…" maxlength="40" data-page-node-id="csnew0001"><button class="btn sm" id="custom-addbtn" data-page-node-id="csaddbtn0001">添加</button></div>
+      <div id="custom-list" data-page-node-id="cslist0001"></div>
+    </div>
   </aside>
 </div>
 
@@ -795,7 +826,8 @@ function asgW(i) {
   return n;
 }
 function dayAsg(x) {
-  return (x.c || []).reduce(function (s, i) { return s + asgW(i); }, 0);
+  const cu = (x.u || []).length;
+  return (x.c || []).reduce(function (s, i) { return s + asgW(i); }, 0) + cu;
 }
 /* 当天学习任务总页数：累加每个排入条目（章/节/目）自身的教材页数 */
 function dayPages(x) {
@@ -815,11 +847,17 @@ function leavesUnder(i) {
 }
 /* 加权完成任务数：与已排入同口径，统计排入条目下已打勾的知识点数 */
 function dayAsgDone(x) {
+  const cuDone = (x.u || []).filter(function (id) { return isDoneU(id); }).length;
   return (x.c || []).reduce(function (s, i) {
     const ls = leavesUnder(i);
     if (!ls.length) return s;
     return s + ls.filter(function (j) { return isDone(j); }).length;
-  }, 0);
+  }, 0) + cuDone;
+}
+/* 自定义内容：完成标记与查找 */
+function isDoneU(id) { return !!state.udone[id]; }
+function customById(id) {
+  return (state.custom || []).find(function (cu) { return cu.id === id; }) || null;
 }
 /* 某「目/特殊节」是否已排入：自身被排入，或其父节/所属章被整勾 */
 function isAsg(i) {
@@ -939,6 +977,7 @@ for (let i = 0; i < DAYS.length; i += 7) WEEKS.push(DAYS.slice(i, i + 7));
 /* ========== 状态 ========== */
 let state = newState();
 let A2D = {};
+let A2DU = {};   /* 自定义内容 id -> 日期 key */
 let selIdx = -1;
 let openKey = null;
 let collapsed = {};
@@ -953,7 +992,7 @@ function newState() {
       ex: dayExtras(d.k, d.dow)
     };
   });
-  return { v: 4, days: days, done: {}, snaps: [], mpp: 8, defW: 2, defThu: 1.5, defE: 4 };
+  return { v: 4, days: days, done: {}, custom: [], udone: {}, snaps: [], mpp: 8, defW: 2, defThu: 1.5, defE: 4 };
 }
 function load() {
   try {
@@ -963,16 +1002,21 @@ function load() {
     if (!o || o.v !== 4) return;
     state.days = o.days || {};
     state.done = o.done || {};
+    state.custom = Array.isArray(o.custom) ? o.custom : [];
+    state.udone = o.udone || {};
     state.snaps = o.snaps || [];
     state.mpp = o.mpp || 8;
     state.defW = o.defW == null ? 2 : o.defW;
     state.defThu = o.defThu == null ? 1.5 : o.defThu;
     state.defE = o.defE == null ? 4 : o.defE;
+    const cuIds = {};
+    state.custom.forEach(function (cu) { if (cu && cu.id != null) cuIds[cu.id] = 1; });
     DAYS.forEach(d => {
       const sp = SPECIAL_DAYS[d.k];
       if (!state.days[d.k]) state.days[d.k] = { h: sp && sp.h != null ? sp.h : defaultH(d.dow), c: [], note: '', ex: dayExtras(d.k, d.dow) };
       const x = state.days[d.k];
       x.c = (x.c || []).filter(i => typeof i === 'number' && i >= 0 && i < CAT.length);
+      x.u = (x.u || []).filter(id => typeof id === 'number' && cuIds[id]);
       x.note = x.note || '';
       x.h = Number(x.h) || 0;
       if (!Array.isArray(x.ex)) x.ex = dayExtras(d.k, d.dow);
@@ -1052,16 +1096,21 @@ function gistPull(manual) {
       if (!o || o.v !== 4) throw new Error('云端数据格式不对');
       state.days = o.days || {};
       state.done = o.done || {};
+      state.custom = Array.isArray(o.custom) ? o.custom : [];
+      state.udone = o.udone || {};
       state.snaps = o.snaps || [];
       state.mpp = o.mpp || 8;
       state.defW = o.defW == null ? 2 : o.defW;
       state.defThu = o.defThu == null ? 1.5 : o.defThu;
       state.defE = o.defE == null ? 4 : o.defE;
+      const cuIds2 = {};
+      state.custom.forEach(function (cu) { if (cu && cu.id != null) cuIds2[cu.id] = 1; });
       DAYS.forEach(function (d) {
         const sp = SPECIAL_DAYS[d.k];
         if (!state.days[d.k]) state.days[d.k] = { h: sp && sp.h != null ? sp.h : defaultH(d.dow), c: [], note: '', ex: dayExtras(d.k, d.dow) };
         const x = state.days[d.k];
         x.c = (x.c || []).filter(function (i) { return typeof i === 'number' && i >= 0 && i < CAT.length; });
+        x.u = (x.u || []).filter(function (id) { return typeof id === 'number' && cuIds2[id]; });
         x.note = x.note || '';
         x.h = Number(x.h) || 0;
         if (!Array.isArray(x.ex)) x.ex = dayExtras(d.k, d.dow);
@@ -1140,10 +1189,12 @@ function dayOf(k) {
 }
 function rebuildMap() {
   A2D = {};
+  A2DU = {};
   DAYS.forEach(d => {
     const x = state.days[d.k];
-    if (!x || !x.c) return;
-    x.c.forEach(i => { A2D[i] = d.k; });
+    if (!x) return;
+    if (x.c) x.c.forEach(i => { A2D[i] = d.k; });
+    if (x.u) x.u.forEach(id => { A2DU[id] = d.k; });
   });
 }
 function isDone(i) { return !!state.done[i]; }
@@ -1165,27 +1216,29 @@ function cellHTML(k) {
   if (!d) {
     return '<div class="cell out"><div class="c-h"><span class="c-d">' + Number(k.slice(8)) + '</span></div></div>';
   }
-  const x = state.days[k] || { h: 0, c: [], note: '', ex: [] };
+  const x = state.days[k] || { h: 0, c: [], u: [], note: '', ex: [] };
   const tk = x.c || [];
-  const dn = tk.filter(i => isDone(i)).length;
-  const allDone = tk.length > 0 && dn === tk.length;
+  const uk = x.u || [];
+  const nAll = tk.length + uk.length;
+  const dn = tk.filter(i => isDone(i)).length + uk.filter(id => isDoneU(id)).length;
+  const allDone = nAll > 0 && dn === nAll;
   // 过期未完成：日期已过（或今天已过 8 点）且有分配任务但未全部勾选
   const now = new Date();
   const passed = k < todayKey() || (k === todayKey() && now.getHours() >= 8);
-  const undone = passed && tk.length > 0 && dn < tk.length;
+  const undone = passed && nAll > 0 && dn < nAll;
   let h = '<div class="cell' + (k === todayKey() ? ' today' : '') + (allDone ? ' doneall' : '') + (undone ? ' undone' : '') + '" data-k="' + k + '">';
   h += '<div class="c-h"><span class="c-d">' + Number(k.slice(8)) + '</span><span class="c-w">' + WD[d.dow] + '</span>';
   h += '<span class="c-hh">';
   if (x.h > 0) h += '<b>' + fmtH(x.h) + 'h</b>';
-  if (x.h > 0 && tk.length) h += '<span class="sep">|</span>';
-  if (tk.length) h += '<span class="ok">' + dn + '/' + tk.length + '</span>';
+  if (x.h > 0 && nAll) h += '<span class="sep">|</span>';
+  if (nAll) h += '<span class="ok">' + dn + '/' + nAll + '</span>';
   const pgs = dayPages(x);
-  if (tk.length && pgs > 0) h += '<span class="sep">|</span>';
+  if (nAll && pgs > 0) h += '<span class="sep">|</span>';
   if (pgs > 0) h += '<span class="pgcnt">' + pgs + '</span>';
   h += '</span></div>';
 
   // 学习计划区（全部展示，不折叠）
-  if (tk.length) {
+  if (nAll) {
     h += '<div class="c-sec">学习计划</div>';
     h += '<div class="c-tks">';
     tk.forEach(i => {
@@ -1194,6 +1247,13 @@ function cellHTML(k) {
       h += '<div class="tk' + (isDone(i) ? ' on' : '') + '" data-i="' + i + '" title="' + esc(c.num + ' ' + c.t + '（' + c.pp + '页）') + '">';
       h += '<span class="chk' + (isDone(i) ? ' on' : '') + '"></span>';
       h += '<span class="tkn">' + esc(c.num) + '</span><span class="tkt">' + esc(c.t) + '</span></div>';
+    });
+    uk.forEach(id => {
+      const cu = customById(id);
+      if (!cu) return;
+      h += '<div class="tku' + (isDoneU(id) ? ' on' : '') + '" data-u="' + id + '" title="自定义：' + esc(cu.name) + '">';
+      h += '<span class="chk' + (isDoneU(id) ? ' on' : '') + '"></span>';
+      h += '<span class="tkt">' + esc(cu.name) + '</span></div>';
     });
     h += '</div>';
   } else {
@@ -1259,32 +1319,41 @@ function dayIndexOf(k) {
 }
 function dayCellHtml(d) {
   const k = d.k;
-  const x = state.days[k] || { h: 0, c: [], note: '', ex: [] };
+  const x = state.days[k] || { h: 0, c: [], u: [], note: '', ex: [] };
   const tk = x.c || [];
-  const dn = tk.filter(i => isDone(i)).length;
-  const allDone = tk.length > 0 && dn === tk.length;
+  const uk = x.u || [];
+  const nAll = tk.length + uk.length;
+  const dn = tk.filter(i => isDone(i)).length + uk.filter(id => isDoneU(id)).length;
+  const allDone = nAll > 0 && dn === nAll;
   const now = new Date();
   const passed = k < todayKey() || (k === todayKey() && now.getHours() >= 8);
-  const undone = passed && tk.length > 0 && dn < tk.length;
+  const undone = passed && nAll > 0 && dn < nAll;
   let cls = 'wn-cell' + (k === todayKey() ? ' today' : '') + (allDone ? ' doneall' : '') + (undone ? ' undone' : '');
   let h = '<div class="' + cls + '" data-k="' + k + '">';
   h += '<span class="wn-d">' + (Number(k.slice(5, 7)) + '/' + Number(k.slice(8))) + '</span>';
   h += '<span class="wn-w">' + WD[d.dow] + '</span>';
   h += '<span class="wn-hh">';
   if (x.h > 0) h += '<b>' + fmtH(x.h) + 'h</b>';
-  if (x.h > 0 && tk.length) h += '<span class="sep">|</span>';
-  if (tk.length) h += '<span class="ok">' + dn + '/' + tk.length + '</span>';
+  if (x.h > 0 && nAll) h += '<span class="sep">|</span>';
+  if (nAll) h += '<span class="ok">' + dn + '/' + nAll + '</span>';
   const pgs = dayPages(x);
-  if (tk.length && pgs > 0) h += '<span class="sep">|</span>';
+  if (nAll && pgs > 0) h += '<span class="sep">|</span>';
   if (pgs > 0) h += '<span class="pgcnt">' + pgs + '</span>';
   h += '</span>';
-  if (tk.length) {
+  if (nAll) {
     tk.forEach(function (i) {
       const c = CAT[i];
       if (!c) return;
       h += '<div class="wn-task' + (isDone(i) ? ' on' : '') + '" data-i="' + i + '">';
       h += '<span class="chk' + (isDone(i) ? ' on' : '') + '"></span>';
       h += '<span class="wn-tt" title="' + esc(c.num + ' ' + c.t) + '">' + esc(c.num) + ' ' + esc(c.t) + '</span></div>';
+    });
+    uk.forEach(function (id) {
+      const cu = customById(id);
+      if (!cu) return;
+      h += '<div class="wn-task tku' + (isDoneU(id) ? ' on' : '') + '" data-u="' + id + '">';
+      h += '<span class="chk' + (isDoneU(id) ? ' on' : '') + '"></span>';
+      h += '<span class="wn-tt" title="自定义：' + esc(cu.name) + '">' + esc(cu.name) + '</span></div>';
     });
   } else {
     h += '<div class="wn-empty">无任务</div>';
@@ -1435,6 +1504,7 @@ function renderAll() {
   renderStats();
   renderWeeks();
   renderCatalog();
+  renderCustomList();
 }
 
 /* ========== 目录交互 ========== */
@@ -1485,6 +1555,8 @@ const calwrap = document.getElementById('calwrap');
 calwrap.addEventListener('click', function (e) {
   const add = e.target.closest('.cell-add');
   if (add) { e.stopPropagation(); openCustomInput(add.dataset.k); return; }
+  const tku = e.target.closest('.tku');
+  if (tku) { toggleDoneU(+tku.dataset.u); return; }
   const chip = e.target.closest('.tk');
   const cell = e.target.closest('.cell');
   if (!cell || cell.classList.contains('out')) return;
@@ -1514,8 +1586,15 @@ calwrap.addEventListener('drop', function (e) {
   cell.classList.remove('over');
   const k = cell.dataset.k;
   if (!k || cell.classList.contains('out')) return;
+  let payload = '';
+  try { payload = e.dataTransfer.getData('text/plain') || ''; } catch (err) {}
+  /* 自定义内容拖拽：payload 形如 u3 */
+  if (payload.charAt(0) === 'u' && payload.length > 1 && !isNaN(+payload.slice(1))) {
+    assignCustom(+payload.slice(1), k);
+    return;
+  }
   let i = -1;
-  try { i = +e.dataTransfer.getData('text/plain'); } catch (err) {}
+  if (payload && !isNaN(+payload)) i = +payload;
   if (isNaN(i) || i < 0) i = selIdx;
   if (i >= 0) assign(i, k);
 });
@@ -1549,6 +1628,119 @@ function assign(i, k) {
   renderSelbar();
   toast((prev ? '已从 ' + md(prev) + ' 移到 ' : '已排入 ') + md(k) + ' · 计划 ' + fmtH(d.h) + 'h');
 }
+
+/* ========== 自定义内容（侧栏添加、拖拽排期） ========== */
+function toggleDoneU(id) {
+  if (state.udone[id]) delete state.udone[id];
+  else state.udone[id] = 1;
+  save();
+  renderAll();
+  const cu = customById(id);
+  toast(state.udone[id] ? ('已打勾：' + (cu ? cu.name : '自定义内容')) : ('已取消打勾：' + (cu ? cu.name : '自定义内容')));
+}
+
+function assignCustom(id, k) {
+  const prev = A2DU[id];
+  if (prev === k) {
+    toast('已在 ' + md(k) + '，无需重复');
+    return;
+  }
+  if (prev) {
+    const pd = dayOf(prev);
+    pd.u = (pd.u || []).filter(x => x !== id);
+  }
+  const d = dayOf(k);
+  if (!d.u) d.u = [];
+  if (d.u.indexOf(id) < 0) d.u.push(id);
+  save();
+  renderAll();
+  const cu = customById(id);
+  toast((prev ? '已从 ' + md(prev) + ' 移到 ' : '已排入 ') + md(k) + ' · ' + (cu ? cu.name : '自定义内容'));
+}
+
+function deleteCustom(id) {
+  const cu = customById(id);
+  if (!cu) return;
+  if (!confirm('删除自定义内容「' + cu.name + '」？已排到日历的也会一并移除。')) return;
+  state.custom = state.custom.filter(c => c.id !== id);
+  delete state.udone[id];
+  DAYS.forEach(function (d) {
+    const x = state.days[d.k];
+    if (x && x.u) x.u = x.u.filter(y => y !== id);
+  });
+  save();
+  renderAll();
+  toast('已删除：' + cu.name);
+}
+
+function nextCustomId() {
+  let mx = 0;
+  (state.custom || []).forEach(function (cu) { if (cu.id > mx) mx = cu.id; });
+  return mx + 1;
+}
+
+function addCustom(name) {
+  if (!Array.isArray(state.custom)) state.custom = [];
+  if (!state.udone) state.udone = {};
+  const cu = { id: nextCustomId(), name: name };
+  state.custom.push(cu);
+  save();
+  renderCustomList();
+  toast('已添加自定义内容「' + cu.name + '」，拖到日历即可排入某天');
+}
+
+function renderCustomList() {
+  const box = document.getElementById('custom-list');
+  if (!box) return;
+  const list = state.custom || [];
+  if (!list.length) {
+    box.innerHTML = '<div class="dp-empty" style="padding:2px 0">还没有自定义内容，在上面输入并添加</div>';
+    return;
+  }
+  box.innerHTML = list.map(function (cu) {
+    const dayK = A2DU[cu.id];
+    return '<div class="cu-item' + (isDoneU(cu.id) ? ' done' : '') + '" data-cu="' + cu.id + '" draggable="true" title="拖到日历某天排入">' +
+      '<span class="chk' + (isDoneU(cu.id) ? ' on' : '') + '" data-cudone="' + cu.id + '"></span>' +
+      '<span class="cu-t">' + esc(cu.name) + '</span>' +
+      (dayK ? '<span class="daytag">' + md(dayK) + '</span>' : '') +
+      '<button class="cu-del" data-cudel="' + cu.id + '" title="删除">×</button></div>';
+  }).join('');
+}
+
+const customBox = document.getElementById('custom-list');
+customBox.addEventListener('click', function (e) {
+  const del = e.target.closest('[data-cudel]');
+  if (del) { deleteCustom(+del.dataset.cudel); return; }
+  const chk = e.target.closest('[data-cudone]');
+  if (chk) { toggleDoneU(+chk.dataset.cudone); return; }
+});
+customBox.addEventListener('dragstart', function (e) {
+  const item = e.target.closest('.cu-item');
+  if (!item) return;
+  const id = +item.dataset.cu;
+  item.classList.add('drag');
+  selIdx = -1; renderSelbar();
+  try {
+    e.dataTransfer.setData('text/plain', 'u' + id);
+    e.dataTransfer.effectAllowed = 'copyMove';
+  } catch (err) {}
+});
+customBox.addEventListener('dragend', function (e) {
+  const item = e.target.closest('.cu-item');
+  if (item) item.classList.remove('drag');
+  document.querySelectorAll('.cell.over').forEach(c => c.classList.remove('over'));
+});
+document.getElementById('custom-addbtn').addEventListener('click', function () {
+  const inp = document.getElementById('custom-new');
+  const v = inp.value.trim();
+  if (!v) { toast('先输入内容再点添加'); return; }
+  addCustom(v);
+  inp.value = '';
+  inp.focus();
+});
+document.getElementById('custom-new').addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') document.getElementById('custom-addbtn').click();
+});
 
 /* ========== 自定义内容快捷添加 ========== */
 function openCustomInput(k) {
@@ -1624,22 +1816,36 @@ function renderDpList() {
   if (!k) return;
   const x = dayOf(k);
   const c = x.c || [];
+  const u = x.u || [];
+  const nAll = c.length + u.length;
   const box = document.getElementById('dp-list');
-  if (!c.length) {
-    box.innerHTML = '<div class="dp-empty">当天还没有学习任务，把右侧目录拖进来</div>';
+  if (!nAll) {
+    box.innerHTML = '<div class="dp-empty">当天还没有学习任务，把右侧目录拖进来，或在目录底部「自定义内容」里添加</div>';
   } else {
-    box.innerHTML = c.map(function (i) {
+    let html = '';
+    c.forEach(function (i) {
       const it = CAT[i];
-      return '<div class="dp-item' + (isDone(i) ? ' on' : '') + '">' +
+      html += '<div class="dp-item' + (isDone(i) ? ' on' : '') + '">' +
         '<span class="chk' + (isDone(i) ? ' on' : '') + '" data-tw="' + i + '"></span>' +
         '<span class="n">' + esc(it.num) + '</span>' +
         '<span class="t" title="' + esc(it.t) + '">' + esc(it.t) + '</span>' +
         '<span class="n" style="min-width:auto;color:#B3ADA2">' + it.pp + 'p</span>' +
         '<button class="del" data-rm="' + i + '">×</button></div>';
-    }).join('');
+    });
+    u.forEach(function (id) {
+      const cu = customById(id);
+      if (!cu) return;
+      html += '<div class="dp-item' + (isDoneU(id) ? ' on' : '') + '">' +
+        '<span class="chk' + (isDoneU(id) ? ' on' : '') + '" data-twu="' + id + '"></span>' +
+        '<span class="n" style="color:#8A6215">自定义</span>' +
+        '<span class="t" title="' + esc(cu.name) + '">' + esc(cu.name) + '</span>' +
+        '<span class="n" style="min-width:auto;color:#B3ADA2">—</span>' +
+        '<button class="del" data-rmu="' + id + '">×</button></div>';
+    });
+    box.innerHTML = html;
   }
-  const dn = c.filter(i => isDone(i)).length;
-  document.getElementById('dp-cnt').textContent = c.length ? (dn + ' / ' + c.length + ' 已完成') : '';
+  const dn = c.filter(i => isDone(i)).length + u.filter(id => isDoneU(id)).length;
+  document.getElementById('dp-cnt').textContent = nAll ? (dn + ' / ' + nAll + ' 已完成') : '';
 }
 function renderDpExtras() {
   const k = openKey;
@@ -1658,8 +1864,20 @@ function renderDpExtras() {
   }
 }
 document.getElementById('dp-list').addEventListener('click', function (e) {
+  const chu = e.target.closest('[data-twu]');
+  if (chu) { toggleDoneU(+chu.dataset.twu); renderDpList(); renderCal(); return; }
   const ch = e.target.closest('[data-tw]');
   if (ch) { toggleDone(+ch.dataset.tw); renderDpList(); renderCal(); return; }
+  const delu = e.target.closest('[data-rmu]');
+  if (delu) {
+    const id = +delu.dataset.rmu;
+    const x = dayOf(openKey);
+    x.u = (x.u || []).filter(y => y !== id);
+    save(); renderAll(); renderDpList();
+    document.getElementById('dp-pginfo').textContent = pagesOf(openKey) ? ('共 ' + pagesOf(openKey) + ' 页') : '未排任务';
+    toast('已移出当天');
+    return;
+  }
   const del = e.target.closest('[data-rm]');
   if (del) {
     const i = +del.dataset.rm;
@@ -1749,6 +1967,8 @@ function snapshot() {
     t: label,
     done: JSON.parse(JSON.stringify(state.done)),
     days: JSON.parse(JSON.stringify(state.days)),
+    custom: JSON.parse(JSON.stringify(state.custom || [])),
+    udone: JSON.parse(JSON.stringify(state.udone || {})),
     mpp: state.mpp, defW: state.defW, defThu: state.defThu, defE: state.defE
   };
 }
@@ -1793,6 +2013,8 @@ document.getElementById('snap-list').addEventListener('click', function (e) {
     const s = state.snaps[i];
     state.done = JSON.parse(JSON.stringify(s.done));
     state.days = JSON.parse(JSON.stringify(s.days));
+    if (Array.isArray(s.custom)) state.custom = JSON.parse(JSON.stringify(s.custom));
+    if (s.udone) state.udone = JSON.parse(JSON.stringify(s.udone));
     if (s.mpp) state.mpp = s.mpp;
     if (s.defThu != null) state.defThu = s.defThu;
     DAYS.forEach(function (d) { if (!state.days[d.k]) state.days[d.k] = { h: defaultH(d.dow), c: [], note: '', ex: [] }; });
@@ -1812,6 +2034,7 @@ document.getElementById('btn-json').addEventListener('click', function () {
   const data = JSON.stringify({
     v: 4, exportAt: new Date().toISOString(),
     days: state.days, done: state.done,
+    custom: state.custom || [], udone: state.udone || {},
     mpp: state.mpp, defW: state.defW, defThu: state.defThu, defE: state.defE
   }, null, 1);
   download(new Blob([data], { type: 'application/json' }), '学习计划备份-' + dk(new Date()) + '.json');
@@ -1828,15 +2051,20 @@ document.getElementById('fileinput').addEventListener('change', function (e) {
       const o = JSON.parse(fr.result);
       if (!o.days) throw new Error('缺少 days 字段');
       state.days = o.days; state.done = o.done || {};
+      state.custom = Array.isArray(o.custom) ? o.custom : [];
+      state.udone = o.udone || {};
       state.mpp = o.mpp || 8;
       state.defW = o.defW == null ? 2 : o.defW;
       state.defThu = o.defThu == null ? 1.5 : o.defThu;
       state.defE = o.defE == null ? 4 : o.defE;
+      const cuIds3 = {};
+      state.custom.forEach(function (cu) { if (cu && cu.id != null) cuIds3[cu.id] = 1; });
       DAYS.forEach(function (d) {
         const sp = SPECIAL_DAYS[d.k];
         if (!state.days[d.k]) state.days[d.k] = { h: sp && sp.h != null ? sp.h : defaultH(d.dow), c: [], note: '', ex: dayExtras(d.k, d.dow) };
         const x = state.days[d.k];
         x.c = (x.c || []).filter(i => typeof i === 'number' && i >= 0 && i < CAT.length);
+        x.u = (x.u || []).filter(function (id) { return typeof id === 'number' && cuIds3[id]; });
         x.note = x.note || ''; x.h = Number(x.h) || 0;
         if (!Array.isArray(x.ex)) x.ex = dayExtras(d.k, d.dow);
         if (sp) {
@@ -2097,14 +2325,15 @@ function buildXlsx() {
 
   const d1 = [['日期','星期','类型','计划时长(h)','任务数','已完成','完成率','学习任务清单','其他安排','自定义内容']];
   DAYS.forEach(function (d) {
-    const x = state.days[d.k] || { h: 0, c: [], note: '', ex: [] };
+    const x = state.days[d.k] || { h: 0, c: [], u: [], note: '', ex: [] };
     const c = x.c || [];
     const dn = dayAsgDone(x), tn = dayAsg(x);
+    const cuNames = (x.u || []).map(function (id) { const cu = customById(id); return cu ? cu.name : ''; }).filter(Boolean);
     d1.push([
       d.k, '周' + WD[d.dow], d.work ? '工作日' : '周末',
       Number(x.h) || 0, tn, dn,
       tn ? Math.round(dn / tn * 100) + '%' : '',
-      c.map(i => CAT[i].num + ' ' + CAT[i].t).join('；'),
+      c.map(i => CAT[i].num + ' ' + CAT[i].t).concat(cuNames).join('；'),
       (x.ex || []).join('；'),
       x.note || ''
     ]);
@@ -2310,6 +2539,7 @@ weeknav.addEventListener('click', function (e) {
   if (!cell) return;
   const k = cell.dataset.k;
   if (!k) return;
+  if (chip && chip.dataset.u !== undefined) { toggleDoneU(+chip.dataset.u); return; }
   if (chip) { toggleDone(+chip.dataset.i); return; }
   if (selIdx >= 0) { assign(selIdx, k); return; }
   openDay(k);
@@ -2332,8 +2562,15 @@ weeknav.addEventListener('drop', function (e) {
   cell.style.boxShadow = '';
   const k = cell.dataset.k;
   if (!k) return;
+  let payload = '';
+  try { payload = e.dataTransfer.getData('text/plain') || ''; } catch (err) {}
+  /* 自定义内容拖拽：payload 形如 u3 */
+  if (payload.charAt(0) === 'u' && payload.length > 1 && !isNaN(+payload.slice(1))) {
+    assignCustom(+payload.slice(1), k);
+    return;
+  }
   let i = -1;
-  try { i = +e.dataTransfer.getData('text/plain'); } catch (err) {}
+  if (payload && !isNaN(+payload)) i = +payload;
   if (isNaN(i) || i < 0) i = selIdx;
   if (i >= 0) assign(i, k);
 });
