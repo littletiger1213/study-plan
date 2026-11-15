@@ -330,6 +330,7 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
   .wn-cell{min-height:0;overflow-y:auto}
   .cell-add{opacity:.8}
   .cell-add-inp input{font-size:16px}
+  .ex-add input,.cs-add input{font-size:16px}
   .wsec{margin-top:8px;flex:none;overflow-y:auto;max-height:38vh;padding-bottom:62px}
   .topbar{padding:8px 10px;gap:8px}
   .brand{font-size:17px}
@@ -732,8 +733,9 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
         </div>
       </div>
       <div class="fld" data-page-node-id="cOiESr8eaObH6RccskBd2K">
-        <div class="lb" data-page-node-id="YTqY77Lyw9YmATcPsyQ7uj"><b data-page-node-id="XpiWJwZOA4n4Pt4c2LKKPU">学习任务</b>（章节）<span class="r" id="dp-cnt" data-page-node-id="iA5VmEZG2U0j4pdr7SmHjc"></span></div>
+        <div class="lb" data-page-node-id="YTqY77Lyw9YmATcPsyQ7uj"><b data-page-node-id="XpiWJwZOA4n4Pt4c2LKKPU">学习任务</b>（章节 + 自定义）<span class="r" id="dp-cnt" data-page-node-id="iA5VmEZG2U0j4pdr7SmHjc"></span></div>
         <div class="dp-list" id="dp-list" data-page-node-id="DOsCuuc0UFPsip5i2G02X2"></div>
+        <div class="ex-add" data-page-node-id="dpcuadd0001"><input type="text" id="dp-cu-new" placeholder="输入自定义任务，直接加到这一天…" maxlength="60" data-page-node-id="dpcunew0001"><button class="btn sm" id="dp-cu-addbtn" data-page-node-id="dpcuaddbtn0001">添加</button></div>
       </div>
       <div class="fld" data-page-node-id="5UZ7nf4xJFSynX9S1TYoA3">
         <div class="lb" data-page-node-id="mhRBSp3UnZ13goJbxZDKDq"><b data-page-node-id="A6nr457G3NhbSFB1JG4eBV">其他安排</b><span class="r" data-page-node-id="bWdPgeEdI44ffikoxBxVmj">固定活动 + 自定义</span></div>
@@ -1820,7 +1822,7 @@ function renderDpList() {
   const nAll = c.length + u.length;
   const box = document.getElementById('dp-list');
   if (!nAll) {
-    box.innerHTML = '<div class="dp-empty">当天还没有学习任务，把右侧目录拖进来，或在目录底部「自定义内容」里添加</div>';
+    box.innerHTML = '<div class="dp-empty">当天还没有学习任务：把右侧目录拖进来，或在下方输入框直接添加自定义任务</div>';
   } else {
     let html = '';
     c.forEach(function (i) {
@@ -1887,6 +1889,34 @@ document.getElementById('dp-list').addEventListener('click', function (e) {
     document.getElementById('dp-pginfo').textContent = pagesOf(openKey) ? ('共 ' + pagesOf(openKey) + ' 页') : '未排任务';
     toast('已移出当天');
   }
+});
+/* 学习任务区：自定义输入框（输入即添加到当天） */
+function addCustomToDay(v) {
+  if (!openKey) return;
+  if (!Array.isArray(state.custom)) state.custom = [];
+  if (!state.udone) state.udone = {};
+  const cu = { id: nextCustomId(), name: v };
+  state.custom.push(cu);
+  const d = dayOf(openKey);
+  if (!d.u) d.u = [];
+  d.u.push(cu.id);
+  save();
+  renderCustomList();
+  renderAll();
+  renderDpList();
+  document.getElementById('dp-pginfo').textContent = pagesOf(openKey) ? ('共 ' + pagesOf(openKey) + ' 页') : '未排任务';
+  toast('已添加自定义任务到 ' + md(openKey) + ' · ' + cu.name + '（侧栏可拖拽改期）');
+}
+document.getElementById('dp-cu-addbtn').addEventListener('click', function () {
+  const inp = document.getElementById('dp-cu-new');
+  const v = inp.value.trim();
+  if (!v) { toast('先输入内容再点添加'); return; }
+  addCustomToDay(v);
+  inp.value = '';
+  inp.focus();
+});
+document.getElementById('dp-cu-new').addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') { e.preventDefault(); document.getElementById('dp-cu-addbtn').click(); }
 });
 /* 其他安排：编辑、删除、添加 */
 document.getElementById('dp-extras').addEventListener('input', function (e) {
