@@ -996,6 +996,20 @@ function newState() {
   });
   return { v: 4, days: days, done: {}, custom: [], udone: {}, snaps: [], mpp: 8, defW: 2, defThu: 1.5, defE: 4 };
 }
+/* 旧数据迁移：勾选节/章仅标记自身的旧口径 → 级联口径（其下知识点全部完成，父标记移除） */
+function migrateCascadeDone() {
+  let ch = false;
+  Object.keys(state.done || {}).forEach(function (kk) {
+    const i = +kk;
+    if (!state.done[i] || isLeaf(i)) return;
+    const ls = leavesUnder(i);
+    if (!ls.length) return;
+    ls.forEach(function (j) { state.done[j] = 1; });
+    delete state.done[i];
+    ch = true;
+  });
+  return ch;
+}
 function load() {
   try {
     const raw = localStorage.getItem(CK);
@@ -1028,6 +1042,7 @@ function load() {
         if (sp.ex) sp.ex.forEach(function (e) { if (x.ex.indexOf(e) < 0) x.ex.push(e); });
       }
     });
+    if (migrateCascadeDone()) { try { localStorage.setItem(CK, JSON.stringify(state)); } catch (e) {} }
     if (migrateBoxing()) { try { localStorage.setItem(CK, JSON.stringify(state)); } catch (e) {} }
   } catch (e) {}
 }
@@ -1200,6 +1215,13 @@ function rebuildMap() {
   });
 }
 function isDone(i) { return !!state.done[i]; }
+/* 有效完成：叶子看自身；节/章看其下知识点是否全部完成（级联勾选的显示口径） */
+function effDone(i) {
+  if (isDone(i)) return true;
+  if (isLeaf(i)) return false;
+  const ls = leavesUnder(i);
+  return ls.length > 0 && ls.every(j => isDone(j));
+}
 function doneCount() { let n = 0; for (const k in state.done) if (state.done[k]) n++; return n; }
 
 function pagesOf(k) {
@@ -1222,7 +1244,7 @@ function cellHTML(k) {
   const tk = x.c || [];
   const uk = x.u || [];
   const nAll = tk.length + uk.length;
-  const dn = tk.filter(i => isDone(i)).length + uk.filter(id => isDoneU(id)).length;
+  const dn = tk.filter(i => effDone(i)).length + uk.filter(id => isDoneU(id)).length;
   const allDone = nAll > 0 && dn === nAll;
   // 过期未完成：日期已过（或今天已过 8 点）且有分配任务但未全部勾选
   const now = new Date();
@@ -1246,8 +1268,8 @@ function cellHTML(k) {
     tk.forEach(i => {
       const c = CAT[i];
       if (!c) return;
-      h += '<div class="tk' + (isDone(i) ? ' on' : '') + '" data-i="' + i + '" title="' + esc(c.num + ' ' + c.t + '（' + c.pp + '页）') + '">';
-      h += '<span class="chk' + (isDone(i) ? ' on' : '') + '"></span>';
+      h += '<div class="tk' + (effDone(i) ? ' on' : '') + '" data-i="' + i + '" title="' + esc(c.num + ' ' + c.t + '（' + c.pp + '页）') + '">';
+      h += '<span class="chk' + (effDone(i) ? ' on' : '') + '"></span>';
       h += '<span class="tkn">' + esc(c.num) + '</span><span class="tkt">' + esc(c.t) + '</span></div>';
     });
     uk.forEach(id => {
@@ -1325,7 +1347,7 @@ function dayCellHtml(d) {
   const tk = x.c || [];
   const uk = x.u || [];
   const nAll = tk.length + uk.length;
-  const dn = tk.filter(i => isDone(i)).length + uk.filter(id => isDoneU(id)).length;
+  const dn = tk.filter(i => effDone(i)).length + uk.filter(id => isDoneU(id)).length;
   const allDone = nAll > 0 && dn === nAll;
   const now = new Date();
   const passed = k < todayKey() || (k === todayKey() && now.getHours() >= 8);
@@ -1346,8 +1368,8 @@ function dayCellHtml(d) {
     tk.forEach(function (i) {
       const c = CAT[i];
       if (!c) return;
-      h += '<div class="wn-task' + (isDone(i) ? ' on' : '') + '" data-i="' + i + '">';
-      h += '<span class="chk' + (isDone(i) ? ' on' : '') + '"></span>';
+      h += '<div class="wn-task' + (effDone(i) ? ' on' : '') + '" data-i="' + i + '">';
+      h += '<span class="chk' + (effDone(i) ? ' on' : '') + '"></span>';
       h += '<span class="wn-tt" title="' + esc(c.num + ' ' + c.t) + '">' + esc(c.num) + ' ' + esc(c.t) + '</span></div>';
     });
     uk.forEach(function (id) {
@@ -1474,12 +1496,12 @@ function renderCatalog() {
       });
       if (!anyUnasg) return;
     }
-    if (onlyUndone && !onlyUnasg && isDone(i)) return;
+    if (onlyUndone && !onlyUnasg && effDone(i)) return;
     if (onlyUnasg) {
       if (leaf) { if (isAsg(i)) return; unasgTotal++; }
     }
     shown++;
-    const done = isDone(i);
+    const done = effDone(i);
     const dayK = isLeaf(i) ? asgDay(i) : A2D[i];
     let cls = 'cat-item lv' + c.lv + (done ? ' done' : '') + (selIdx === i ? ' pick' : '');
     let h = '<div class="' + cls + '" data-i="' + i + '" draggable="true">';
@@ -1602,6 +1624,20 @@ calwrap.addEventListener('drop', function (e) {
 });
 
 function toggleDone(i) {
+  const ls = leavesUnder(i);
+  if (!isLeaf(i) && ls.length) {
+    /* 节/章：级联勾选（或取消）其下全部知识点，目录与进度同步 */
+    const allDone = ls.every(j => isDone(j));
+    if (allDone) ls.forEach(j => delete state.done[j]);
+    else ls.forEach(j => { state.done[j] = 1; });
+    save();
+    renderAll();
+    const c = CAT[i];
+    toast(allDone
+      ? ('已取消打勾：' + c.num + ' ' + c.t + '（连带取消 ' + ls.length + ' 个知识点）')
+      : ('已打勾：' + c.num + ' ' + c.t + '（连带 ' + ls.length + ' 个知识点）'));
+    return;
+  }
   if (state.done[i]) delete state.done[i];
   else state.done[i] = 1;
   save();
@@ -1827,8 +1863,9 @@ function renderDpList() {
     let html = '';
     c.forEach(function (i) {
       const it = CAT[i];
-      html += '<div class="dp-item' + (isDone(i) ? ' on' : '') + '">' +
-        '<span class="chk' + (isDone(i) ? ' on' : '') + '" data-tw="' + i + '"></span>' +
+      const ed = effDone(i);
+      html += '<div class="dp-item' + (ed ? ' on' : '') + '">' +
+        '<span class="chk' + (ed ? ' on' : '') + '" data-tw="' + i + '"></span>' +
         '<span class="n">' + esc(it.num) + '</span>' +
         '<span class="t" title="' + esc(it.t) + '">' + esc(it.t) + '</span>' +
         '<span class="n" style="min-width:auto;color:#B3ADA2">' + it.pp + 'p</span>' +
@@ -1846,7 +1883,7 @@ function renderDpList() {
     });
     box.innerHTML = html;
   }
-  const dn = c.filter(i => isDone(i)).length + u.filter(id => isDoneU(id)).length;
+  const dn = c.filter(i => effDone(i)).length + u.filter(id => isDoneU(id)).length;
   document.getElementById('dp-cnt').textContent = nAll ? (dn + ' / ' + nAll + ' 已完成') : '';
 }
 function renderDpExtras() {
@@ -2401,7 +2438,7 @@ function buildXlsx() {
       c.t, c.pg, c.pp,
       (isLeaf(i) ? isAsg(i) : !!A2D[i]) ? '已排入' : '未排入',
       (isLeaf(i) ? isAsg(i) : !!A2D[i]) ? md(asgDay(i) || '') : '',
-      isDone(i) ? '已完成' : ''
+      effDone(i) ? '已完成' : ''
     ]);
   });
   sheets.push({ name: '任务进度', widths: [7, 12, 24, 34, 8, 7, 10, 11, 9], rows: d3 });
